@@ -1,0 +1,125 @@
+LARAVEL BASIC INFO
+1. Install xampp
+2. Install composer
+3. setup environment variables
+4. Install global Laravel installer as: 
+   composer global require Laravel/installer
+5. Setup php to work well with Laravel; Go into xampp>php>php.ini
+6. uncomment the following: extension=zip, extension=fileinfo, extension=mysqli
+
+
+// To do customed login authentication, drop all migractions, User model and welcome blade
+
+
+<title>{{ucfirst($title)}} - {{ucfirst(config('app.name'))}}</title>
+
+
+// validation
+ $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+    ], [
+        'name.required' => 'Please enter your name.',
+        'email.required' => 'We need your email address.',
+        'email.email' => 'This is not a valid email format.',
+        'email.unique' => 'This email is already registered.',
+    ]);
+
+    $notification = array(
+            'message'=>"Payment deleted successfully!!!",
+            'alert-type'=>'success',
+        );
+        return back()->with($notification);
+
+// end validation and save
+
+
+
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+
+
+$user = new User();
+    $user->name = $request->input('name');
+    $user->email = $request->input('email');
+    $user->password = bcrypt($request->input('password'));
+    $user->save();
+
+
+
+
+  $table->id();
+            $table->string('first_name');
+            $table->string('other_names');
+            $table->unsignedBigInteger('user_role');
+            $table->foreign('user_role')->references('id')->on('roles')
+              ->onDelete('cascade')
+              ->onUpdate('cascade');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->timestamps();
+
+
+
+
+
+// QUERIES
+
+$users = User::all();
+$user = User::find(1);
+$user = User::where('email', 'john@example.com')->first();
+$admins = User::where('user_role', 1)->get();
+$users = User::where('status', 'active')
+             ->where('user_role', '!=', 0)
+             ->get();
+
+$user = User::find(1);
+$user->email = 'newemail@example.com';
+$user->save();
+
+
+$user = User::find(1);
+$user->delete();
+
+
+$users = User::orderBy('first_name', 'asc')->get();
+$users = User::limit(10)->get();
+
+$users = User::where('first_name', 'like', '%john%')->get();
+
+
+$total = User::count(); // Total users
+
+$admins = User::where('user_role', 1)->count(); // Just admins
+
+
+
+
+
+
+ROUTES REDIRECTS
+return redirect()->route('users.index')->with('success', 'User created!');
+
+return redirect()->back()->with('success', 'User created successfully!');
+
+redirect()->intended('/admin/dashboard');
+
+
+
+SESSIONS
+
+session(['session_name' => ['name'=>'Gabriel', 'age'=>'38']])
+
+$url = url()->full();
+
+
+$request->session()->get('session_name');
+$request->session()->forget('session_name');
+
+
+Session::push();
+Session::put();
