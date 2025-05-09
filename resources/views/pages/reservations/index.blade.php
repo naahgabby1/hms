@@ -155,113 +155,61 @@ Add New Reservation
 </button>
 </div>
 </div>
-
 @include('pages.modals.modal_reservation')
-
 <div class="row gx-3">
 <div class="col-sm-12">
-<!-- Card start -->
 <div class="card">
 <div class="card-header">
-{{-- <h5 class="card-title">Summary</h5> --}}
 </div>
 <div class="card-body">
-
-<!-- Table start -->
 <div class="table-responsive">
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
 <th>#</th>
-<th>Product</th>
-<th>Dealer</th>
-<th>Department</th>
-<th>Purchase Date</th>
-<th>Payment</th>
-<th>Amount</th>
-<th>Status</th>
+<th>Name</th>
+<th>Phone number</th>
+<th>Duration</th>
+<th>Days</th>
+<th>Room</th>
+<th>Reservation Date</th>
 </tr>
 </thead>
 <tbody>
+@php
+use Carbon\Carbon;
+$nx=1;
+$duration=0;
+@endphp
+@foreach ($Reserved_data as $reservation)
 <tr>
-<td>1</td>
-<td>PicoPlus</td>
-<td>Jamaal Calhoun</td>
-<td>Anatomy</td>
-<td>08/05/2024</td>
-<td>PayPal</td>
-<td>$9980.00</td>
-<td><span class="badge bg-success">Approved</span></td>
+<td>{{ $nx }}</td>
+<td>{{ $reservation->name }}</td>
+<td>{{ $reservation->mobile_number }}</td>
+@php
+$duration = Carbon::parse($reservation->date_from)->diffInDays(Carbon::parse($reservation->date_to));
+$dateToCheck = Carbon::parse($reservation->date_to);
+$today = Carbon::today();
+if ($dateToCheck->isSameDay($today)) {
+if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
+$duration = $duration+1;
+}
+}
+@endphp
+<td>{{ $reservation->date_from  }} -to- {{ $reservation->date_to }}</td>
+<td>{{ $duration }}</td>
+<td>{{ $reservation->room }}</td>
+<td>{{ $reservation->date_entered }}</td>
 </tr>
-<tr>
-<td>2</td>
-<td>Excel V</td>
-<td>Holly Brock</td>
-<td>Neurology</td>
-<td>12/05/2024</td>
-<td>Credit Card</td>
-<td>$4678.00</td>
-<td><span class="badge bg-warning">Pending</span></td>
-</tr>
-<tr>
-<td>3</td>
-<td>Plasmage</td>
-<td>Leona Francis</td>
-<td>Orthopedics</td>
-<td>17/05/2024</td>
-<td>Cheque</td>
-<td>$5690.00</td>
-<td><span class="badge bg-danger">Rejected</span></td>
-</tr>
-<tr>
-<td>4</td>
-<td>Spectra</td>
-<td>Noah Terrell</td>
-<td>Cardiology</td>
-<td>23/05/2024</td>
-<td>PayPal</td>
-<td>$7690.00</td>
-<td><span class="badge bg-dark">New</span></td>
-</tr>
-<tr>
-<td>5</td>
-<td>Ultherapy</td>
-<td>Tisha Lin</td>
-<td>Neurology</td>
-<td>19/05/2024</td>
-<td>Cheque</td>
-<td>$3470.00</td>
-<td><span class="badge bg-success">Approved</span></td>
-</tr>
-<tr>
-<td>6</td>
-<td>Ballancer</td>
-<td>Vance Schultz</td>
-<td>Anatomy</td>
-<td>30/05/2024</td>
-<td>Debit Card</td>
-<td>$8789.00</td>
-<td><span class="badge bg-warning">Pending</span></td>
-</tr>
-<tr>
-<td>7</td>
-<td>Plasmage</td>
-<td>Millard Perkins</td>
-<td>Gastroenterology</td>
-<td>29/05/2024</td>
-<td>Credit Card</td>
-<td>$3490.00</td>
-<td><span class="badge bg-success">Approved</span></td>
-</tr>
+@php
+$nx++;
+@endphp
+@endforeach
 </tbody>
 </table>
 </div>
-<!-- Table end -->
-
 </div>
 </div>
-<!-- Card end -->
-
 </div>
 </div>
 @endsection

@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Countries;
 use App\Models\Room;
 use App\Models\Roomtype;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -27,7 +28,8 @@ $breadCrumbs = 'Reservations';
 $Countries = Countries::orderBy('name')->get();
 $RoomType = Roomtype::orderBy('description')->get();
 $Room = Room::orderBy('description')->get();
-return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room'));
+$Reserved_data = DB::table('vw_reservationbooking')->get();
+return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room','Reserved_data'));
 }
 
 public function activereservation(){
