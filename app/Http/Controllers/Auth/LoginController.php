@@ -69,7 +69,7 @@ class LoginController extends Controller
 
         session([
             'user_id' => Auth::guard('logindetails')->user()->id,
-            'user_name' => Auth::guard('logindetails')->user()->first_name.' '.Auth::guard('logindetails')->user()->other_names,
+            'user_name' => Auth::guard('logindetails')->user()->user_name,
             'user_email' => Auth::guard('logindetails')->user()->email,
             'user_role' => Auth::guard('logindetails')->user()->user_role,
             'user_role_description' => Auth::guard('logindetails')->user()->role_description,
