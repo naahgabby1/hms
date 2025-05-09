@@ -21,10 +21,13 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('reservation')}}">New Reservation</a>
+<a href="{{ route('booking')}}">Bookings</a>
 </li>
 <li>
-<a href="{{ route('active-reservation')}}">Active Reservations</a>
+<a href="{{ route('cancelled-booking')}}">Cancelled Booking</a>
+</li>
+<li>
+<a href="{{ route('reservation')}}">Reservations</a>
 </li>
 <li>
 <a href="{{ route('cancelled-reservation')}}">Cancelled Reservations</a>
