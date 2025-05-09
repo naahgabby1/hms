@@ -95,7 +95,7 @@ $notification = array(
     'message'=>"Reservation Successfully Saved..!!!",
     'alert-type'=>'success',
 );
-// return back()->with($notification);
+return back()->with($notification);
 }
 
 public function update_booking(){

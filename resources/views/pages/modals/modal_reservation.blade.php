@@ -94,7 +94,7 @@ value="female">
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="room_type">Room Type <span class="text-danger">*</span></label>
-<select class="form-select" id="room_type">
+<select class="form-select" id="room_type" name="room_type">
 <option value="">Select</option>
 @foreach($RoomType as $roomtype)
 <option value="{{ $roomtype->id }}">{{ $roomtype->description.' ('.strtoupper($roomtype->alias).')' }}</option>

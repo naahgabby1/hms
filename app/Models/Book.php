@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
+    public $timestamps = false;
     protected $table = 'booking_reservation';
     protected $fillable = [
         'first_name', 'last_name', 'mobile_number', 'gender',
