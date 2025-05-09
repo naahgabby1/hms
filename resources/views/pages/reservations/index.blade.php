@@ -43,12 +43,17 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">8</h2>
-<p class="m-0">Check-ins Today</p>
+
+@php
+$total = $Reserved_data->sum('fees'); // Replace 'amount' with your actual field
+@endphp
+
+<h2 class="lh-1">{{ count($Reserved_data)}}</h2>
+<p class="m-0">Reservations Today</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-success" href="{{route('dashboard')}}">
+<a class="text-success" href="{{route('reservation')}}">
 <span>View All</span>
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
@@ -70,8 +75,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">360</h2>
-<p class="m-0">Check-outs Today</p>
+<h2 class="lh-1">{{ count($Booked_data) }}</h2>
+<p class="m-0">Total Check-ins Today</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -97,7 +102,7 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">980</h2>
+<h2 class="lh-1">{{ $Booked_data->sum('fees') }}</h2>
 <p class="m-0">Today's Revenue</p>
 </div>
 </div>
@@ -120,12 +125,12 @@
 <div class="d-flex align-items-center">
 <div class="p-2 border border-warning rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="ri-money-dollar-circle-line fs-4 text-warning"></i>
+<i class="fs-4 text-warning">₵</i>
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">$98000</h2>
-<p class="m-0">Pending Payments</p>
+<h2 class="lh-1">{{ $total }}</h2>
+<p class="m-0">Expected Revenue</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -173,6 +178,7 @@ Add New Reservation
 <th>Days</th>
 <th>Room</th>
 <th>Reservation Date</th>
+<th>Action</th>
 </tr>
 </thead>
 <tbody>
@@ -200,6 +206,14 @@ $duration = $duration+1;
 <td>{{ $duration }}</td>
 <td>{{ $reservation->room }}</td>
 <td>{{ $reservation->date_entered }}</td>
+<td>
+<button type="button" class="btn btn-success">
+<i class="ri-thumb-up-line"></i>
+</button>
+<button type="button" class="btn btn-danger">
+<i class="ri-delete-bin-line"></i>
+</button>
+</td>
 </tr>
 @php
 $nx++;

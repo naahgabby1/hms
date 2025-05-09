@@ -27,48 +27,7 @@
 @endpush
 
 @push('page_head')
-<div class="row gx-3">
-<div class="col-xxl-12 col-sm-12">
-<div class="card mb-3 bg-2">
-<div class="card-body">
-<div class="py-4 px-3 text-white">
-<h6>Good Morning,</h6>
-<h2>Gabriel Duon-naah</h2>
-<!-- <h5>Your schedule today.</h5> -->
-<div class="mt-4 d-flex gap-3">
-<div class="d-flex align-items-center">
-<div class="icon-box lg bg-arctic rounded-3 me-3">
-<i class="ri-surgical-mask-line fs-4"></i>
-</div>
-<div class="d-flex flex-column">
-<h2 class="m-0 lh-1">9</h2>
-<p class="m-0">New Bookings</p>
-</div>
-</div>
-<div class="d-flex align-items-center">
-<div class="icon-box lg bg-lime rounded-3 me-3">
-<i class="ri-lungs-line fs-4"></i>
-</div>
-<div class="d-flex flex-column">
-<h2 class="m-0 lh-1">3</h2>
-<p class="m-0">Checked-in Rooms</p>
-</div>
-</div>
-<div class="d-flex align-items-center">
-<div class="icon-box lg bg-peach rounded-3 me-3">
-<i class="ri-walk-line fs-4"></i>
-</div>
-<div class="d-flex flex-column">
-<h2 class="m-0 lh-1">2</h2>
-<p class="m-0">Checked-outs Today</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+
 @endpush
 
 
@@ -84,12 +43,12 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">8</h2>
-<p class="m-0">Check-ins Today</p>
+<h2 class="lh-1">{{ count($cancelled_data_thisweek)}}</h2>
+<p class="m-0">Cancelled Reservations Thisweek</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-success" href="{{route('dashboard')}}">
+<a class="text-success" href="{{route('reservation')}}">
 <span>View All</span>
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
@@ -111,8 +70,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">360</h2>
-<p class="m-0">Check-outs Today</p>
+<h2 class="lh-1">{{ $cancelled_data_thismonth }}</h2>
+<p class="m-0">Cancelled Reservations Thismonth</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -138,8 +97,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">980</h2>
-<p class="m-0">Today's Revenue</p>
+<h2 class="lh-1">{{ $cancelled_data_thisyear }}</h2>
+<p class="m-0">Cancelled Reservations Thisyear</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -161,12 +120,12 @@
 <div class="d-flex align-items-center">
 <div class="p-2 border border-warning rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="ri-money-dollar-circle-line fs-4 text-warning"></i>
+<i class="fs-4 text-warning">₵</i>
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">$98000</h2>
-<p class="m-0">Pending Payments</p>
+<h2 class="lh-1">{{ $cancelled_data_thisweek->sum('fees') }}</h2>
+<p class="m-0">Thisweek Revenue Cancelled</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -183,219 +142,74 @@
 </div>
 </div>
 </div>
-<div class="row gx-3">
-<div class="col-xl-2 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex flex-column align-items-center">
-<div class="icon-box md rounded-5 bg-primary mb-3">
-<i class="ri-verified-badge-line fs-4 lh-1"></i>
-</div>
-<h6>Customers</h6>
-<h2 class="text-primary m-0">639</h2>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-2 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex flex-column align-items-center">
-<div class="icon-box md rounded-5 bg-primary mb-3">
-<i class="ri-stethoscope-line fs-4 lh-1"></i>
-</div>
-<h6>Rooms</h6>
-<h2 class="text-primary m-0">83</h2>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-2 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex flex-column align-items-center">
-<div class="icon-box md rounded-5 bg-primary mb-3">
-<i class="ri-psychotherapy-line fs-4 lh-1"></i>
-</div>
-<h6>Users</h6>
-<h2 class="text-primary m-0">296</h2>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-2 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex flex-column align-items-center">
-<div class="icon-box md rounded-5 bg-primary mb-3">
-<i class="ri-lungs-line fs-4 lh-1"></i>
-</div>
-<h6>Staff</h6>
-<h2 class="text-primary m-0">49</h2>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-2 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex flex-column align-items-center">
-<div class="icon-box md rounded-5 bg-primary mb-3">
-<i class="ri-hotel-bed-line fs-4 lh-1"></i>
-</div>
-<h6>Cancelled</h6>
-<h2 class="text-primary m-0">2</h2>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-2 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex flex-column align-items-center">
-<div class="icon-box md rounded-5 bg-primary mb-3">
-<i class="ri-walk-line fs-4 lh-1"></i>
-</div>
-<h6>Lost & Found</h6>
-<h2 class="text-primary m-0">3</h2>
-</div>
-</div>
-</div>
-</div>
-</div>
 @endpush
 
 
 
 @section('main_content_body')
+<div class="row mb-2">
+<div class="col-12">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+data-bs-target="#resModal">
+Add New Reservation
+</button>
+</div>
+</div>
 <div class="row gx-3">
-<div class="col-xxl-12 col-sm-12">
-<div class="card mb-3">
+<div class="col-sm-12">
+<div class="card">
 <div class="card-header">
-<h5 class="card-title">Available Beds</h5>
 </div>
 <div class="card-body">
-<div id="availableBeds"></div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6 col-sm-12">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Patients</h5>
-</div>
-<div class="card-body">
-<div id="patients"></div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6 col-sm-12">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Treatment Type</h5>
-</div>
-<div class="card-body">
-<div id="treatment"></div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6 col-sm-12">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Hospital Earnings</h5>
-</div>
-<div class="card-body">
-
-<!-- Row start -->
-<div class="row g-3">
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline1"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<h4 class="m-0 fw-bold">$4900</h4>
-<div class="ms-2 text-primary d-flex">
-<small>20%</small> <i class="ri-arrow-right-up-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small>Online Consultation</small>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline2"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<div class="fs-4 fw-bold">$750</div>
-<div class="ms-2 text-danger d-flex">
-<small>26%</small> <i class="ri-arrow-right-down-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small class="text-dark">Overall Purchases</small>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline3"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<div class="fs-4 fw-bold">$560</div>
-<div class="ms-2 text-primary d-flex">
-<small>28%</small> <i class="ri-arrow-right-up-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small class="text-dark">Pending Invoices</small>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline4"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<div class="fs-4 fw-bold">$390</div>
-<div class="ms-2 text-primary d-flex">
-<small>30%</small> <i class="ri-arrow-right-up-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small class="text-dark">Monthly Billing</small>
-</div>
-</div>
-</div>
-</div>
-<!-- Row ends -->
-
-</div>
-</div>
-</div>
-<div class="col-xxl-3 col-sm-6">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Insurance Claims</h5>
-</div>
-<div class="card-body">
-<div id="claims"></div>
-</div>
-</div>
-</div>
-<div class="col-xxl-3 col-sm-6">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Patients by Gender</h5>
-</div>
-<div class="card-body">
-<div class="auto-align-graph">
-<div id="genderAge"></div>
+<div class="table-responsive">
+<table id="customButtons" class="table m-0 align-middle">
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Phone number</th>
+<th>Duration</th>
+<th>Days</th>
+<th>Room</th>
+<th>Reservation Date</th>
+<th>Cancelled Date</th>
+<th>Cancelled By</th>
+</tr>
+</thead>
+<tbody>
+@php
+use Carbon\Carbon;
+$nx=1;
+$duration=0;
+@endphp
+@foreach ($cancelled_data_thisweek as $cancelled)
+<tr>
+<td>{{ $nx }}</td>
+<td>{{ $cancelled->name }}</td>
+<td>{{ $cancelled->mobile_number }}</td>
+@php
+$duration = Carbon::parse($cancelled->date_from)->diffInDays(Carbon::parse($cancelled->date_to));
+$dateToCheck = Carbon::parse($cancelled->date_to);
+$today = Carbon::today();
+if ($dateToCheck->isSameDay($today)) {
+if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
+$duration = $duration+1;
+}
+}
+@endphp
+<td>{{ $cancelled->date_from  }} -to- {{ $cancelled->date_to }}</td>
+<td>{{ $duration }}</td>
+<td>{{ $cancelled->room }}</td>
+<td>{{ $cancelled->date_entered }}</td>
+<td>{{ $cancelled->cancelled_date }}</td>
+<td>{{ $cancelled->cancelled_by }}</td>
+</tr>
+@php
+$nx++;
+@endphp
+@endforeach
+</tbody>
+</table>
 </div>
 </div>
 </div>

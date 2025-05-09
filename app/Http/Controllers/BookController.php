@@ -7,6 +7,7 @@ use App\Models\Countries;
 use App\Models\Room;
 use App\Models\Roomtype;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class BookController extends Controller
 {
@@ -28,8 +29,9 @@ $breadCrumbs = 'Reservations';
 $Countries = Countries::orderBy('name')->get();
 $RoomType = Roomtype::orderBy('description')->get();
 $Room = Room::orderBy('description')->get();
-$Reserved_data = DB::table('vw_reservationbooking')->get();
-return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room','Reserved_data'));
+$Reserved_data = DB::table('vw_reservationbooking')->where('status', 0)->get();
+$Booked_data = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->get();
+return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room','Reserved_data','Booked_data'));
 }
 
 public function activereservation(){
@@ -41,7 +43,22 @@ return view('pages.reservations.cancelled', compact('title','breadCrumbs'));
 public function cancelledreservation(){
 $title = 'Reservations';
 $breadCrumbs = 'Cancelled Reservations';
-return view('pages.reservations.cancelled', compact('title','breadCrumbs'));
+$cancelled_data_thisweek = DB::table('vw_reservationbooking')->whereBetween('date_entered', [
+    Carbon::now()->startOfWeek(),
+    Carbon::now()->endOfWeek()
+])->where('status', 2)->get();
+
+$cancelled_data_thismonth = DB::table('vw_reservationbooking')
+->whereMonth('date_entered', Carbon::now()->month)
+->whereYear('date_entered', Carbon::now()->year)->where('status', 2)
+->count();
+
+
+$cancelled_data_thisyear = DB::table('vw_reservationbooking')
+->whereYear('date_entered', Carbon::now()->year)->where('status', 2)
+->count();
+
+return view('pages.reservations.cancelled', compact('title','breadCrumbs','cancelled_data_thisweek','cancelled_data_thismonth','cancelled_data_thisyear'));
 }
 
 public function save_booking(Request $request){
