@@ -12,16 +12,13 @@ Route::post('forgetpassword-save', [LoginController::class, 'password'])->name('
 Route::get('register-user', [LoginController::class, 'showregisterform'])->name('register');
 Route::post('register-save', [LoginController::class, 'register'])->name('register.submit');
 
-
-
 Route::middleware('auth:logindetails')->group(function(){
 Route::prefix('admin')->group( function (){
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-
 // Booking & Reservations
 Route::get('booking', [BookController::class, 'bookings'])->name('booking');
-Route::get('cancelled-booking', [BookController::class, 'cancelledbooking'])->name('active.booking');
+Route::get('cancelled-booking', [BookController::class, 'cancelledbooking'])->name('cancelled.booking');
 Route::get('reservation', [BookController::class, 'reservations'])->name('reservation');
 Route::get('active-reservation', [BookController::class, 'activereservation'])->name('active.reservation');
 Route::get('cancelled-reservation', [BookController::class, 'cancelledreservation'])->name('cancelled.reservation');

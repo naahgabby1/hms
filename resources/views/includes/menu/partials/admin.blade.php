@@ -24,13 +24,13 @@
 <a href="{{ route('booking')}}">Bookings</a>
 </li>
 <li>
-<a href="{{ route('cancelled-booking')}}">Cancelled Booking</a>
+<a href="{{ route('cancelled.booking')}}">Cancelled Booking</a>
 </li>
 <li>
 <a href="{{ route('reservation')}}">Reservations</a>
 </li>
 <li>
-<a href="{{ route('cancelled-reservation')}}">Cancelled Reservations</a>
+<a href="{{ route('cancelled.reservation')}}">Cancelled Reservations</a>
 </li>
 </ul>
 </li>
@@ -55,10 +55,10 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('old-customers')}}">Old Customers</a>
+<a href="{{ route('old.customers')}}">Old Customers</a>
 </li>
 <li>
-<a href="{{ route('recent-customers')}}">Recent Customers</a>
+<a href="{{ route('recent.customers')}}">Recent Customers</a>
 </li>
 </ul>
 </li>
@@ -69,10 +69,10 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('expenses-list')}}">Expenses List</a>
+<a href="{{ route('expenses.list')}}">Expenses List</a>
 </li>
 <li>
-<a href="{{ route('expenses-category')}}">Expenses Category</a>
+<a href="{{ route('expenses.category')}}">Expenses Category</a>
 </li>
 </ul>
 </li>
@@ -83,7 +83,7 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('other-activities')}}">Side Activities</a>
+<a href="{{ route('other.activities')}}">Side Activities</a>
 </li>
 </ul>
 </li>
@@ -94,7 +94,7 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('staff-list')}}">Staff List</a>
+<a href="{{ route('staff.list')}}">Staff List</a>
 </li>
 </ul>
 </li>
@@ -105,7 +105,7 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('user-list')}}">Users List</a>
+<a href="{{ route('user.list')}}">Users List</a>
 </li>
 </ul>
 </li>
@@ -116,7 +116,7 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('room-type')}}">Room Types</a>
+<a href="{{ route('room.type')}}">Room Types</a>
 </li>
 
 <li>
@@ -124,16 +124,16 @@
 </li>
 
 <li>
-<a href="{{ route('tax-rates')}}">Tax Rates</a>
+<a href="{{ route('tax.rates')}}">Tax Rates</a>
 </li>
 <li>
-<a href="{{ route('sms-settings')}}">SMS Settings</a>
+<a href="{{ route('sms.settings')}}">SMS Settings</a>
 </li>
 <li>
-<a href="{{ route('general-settings')}}">General Settings</a>
+<a href="{{ route('general.settings')}}">General Settings</a>
 </li>
 <li>
-<a href="{{ route('currency-settings')}}">Currency Settings</a>
+<a href="{{ route('currency.settings')}}">Currency Settings</a>
 </li>
 </ul>
 </li>

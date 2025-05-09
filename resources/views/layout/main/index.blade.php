@@ -12,6 +12,12 @@
 <link rel="stylesheet" href="{{asset('app_assets/assets/fonts/remix/remixicon.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/css/main.min.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/overlay-scroll/OverlayScrollbars.min.css')}}">
+
+<link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/dataTables.bs5.css')}}">
+<link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/dataTables.bs5-custom.css')}}">
+<link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/buttons/dataTables.bs5-custom.css')}}">
+
+
 </head>
 <body>
 @include('layout.main.partials.loader')
@@ -193,6 +199,17 @@ $date_code = Date('Y')
 <script src="{{asset('app_assets/assets/vendor/apex/custom/home/earnings.js')}}"></script>
 <script src="{{asset('app_assets/assets/vendor/apex/custom/home/gender-age.js')}}"></script>
 <script src="{{asset('app_assets/assets/vendor/apex/custom/home/claims.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/dataTables.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/dataTables.bootstrap.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/custom/custom-datatables.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/dataTables.buttons.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/jszip.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/dataTables.buttons.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/pdfmake.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/vfs_fonts.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/buttons.html5.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/buttons.print.min.js')}}"></script>
+<script src="{{asset('app_assets/assets/vendor/datatables/buttons/buttons.colVis.min.js')}}"></script>
 <script src="{{asset('app_assets/assets/js/custom.js')}}"></script>
 </body>
 </html>
