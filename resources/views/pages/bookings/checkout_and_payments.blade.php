@@ -77,32 +77,32 @@
     @endphp
 
 
-    <label class="form-label" for="room">Duration (Days)</label>
-    <input type="number" class="form-control" id="room" value="{{$duration}}" name="room" readonly>
+    <label class="form-label" for="room">Country</label>
+    <input type="text" class="form-control" id="room" value="{{ $checkoutdata->country }}" name="room" readonly>
     </div>
     </div>
     <div class="col-xxl-3 col-lg-4 col-sm-6">
     <div class="mb-3">
     <label class="form-label" for="date_from">Date From</label>
-    <input type="text" class="form-control" id="date_from" name="date_from" placeholder="Enter phone number">
+    <input type="text" class="form-control" value="{{ Carbon::parse($checkoutdata->date_from)->format('d-M-Y') }}" readonly>
     </div>
     </div>
     <div class="col-xxl-3 col-lg-4 col-sm-6">
     <div class="mb-3">
-    <label class="form-label" for="a6">Date To</label>
-    <input type="date" class="form-control" id="date_to" name="date_to" placeholder="Select date">
+    <label class="form-label" for="date_to">Date To</label>
+    <input type="text" class="form-control" value="{{ Carbon::parse($checkoutdata->date_to)->format('d-M-Y') }}" readonly>
     </div>
     </div>
     <div class="col-xxl-3 col-lg-4 col-sm-6">
     <div class="mb-3">
-    <label class="form-label" for="duration">Duration of Stay</label>
-    <input type="text" class="form-control" id="duration" name="duration" placeholder="Select time">
+    <label class="form-label" for="duration">Duration of Stay (Days)</label>
+    <input type="text" class="form-control" id="duration" name="duration" value="{{$duration}}" readonly>
     </div>
     </div>
     <div class="col-xxl-3 col-lg-4 col-sm-6">
     <div class="mb-3">
     <label class="form-label" for="amount">Amount Due</label>
-    <input type="text" class="form-control" id="amount" name="anount" placeholder="Select time">
+    <input type="text" class="form-control" id="amount" name="anount" value="{{ $duration*$checkoutdata->fees }}" readonly>
     </div>
     </div>
     <div class="col-sm-12">
