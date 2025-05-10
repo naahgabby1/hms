@@ -44,7 +44,7 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ count($cancelled_data_thisweek)}}</h2>
-<p class="m-0">Cancelled Reservations Thisweek</p>
+<p class="m-0">Cancelled Thisweek</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -71,7 +71,7 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ $cancelled_data_thismonth }}</h2>
-<p class="m-0">Cancelled Reservations Thismonth</p>
+<p class="m-0">Cancelled Thismonth</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -98,7 +98,7 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ $cancelled_data_thisyear }}</h2>
-<p class="m-0">Cancelled Reservations Thisyear</p>
+<p class="m-0">Cancelled Thisyear</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -149,10 +149,9 @@
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#resModal">
-Add New Reservation
-</button>
+<a href="{{ route('reservation') }}" class="btn btn-primary">
+New Reservation
+</a>
 </div>
 </div>
 <div class="row gx-3">

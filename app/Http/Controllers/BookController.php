@@ -14,7 +14,13 @@ class BookController extends Controller
 public function bookings(){
 $title = 'Booking';
 $breadCrumbs = 'Booking';
-return view('pages.bookings.index', compact('title','breadCrumbs'));
+$Countries = Countries::orderBy('name')->get();
+$RoomType = Roomtype::orderBy('description')->get();
+$Room = Room::orderBy('description')->get();
+$Booked_thisyear = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->whereYear('date_entered', Carbon::now()->year)->sum('fees');
+$Booked_data = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->get();
+$Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->where('out_status', 0)->get();
+return view('pages.bookings.index', compact('title','breadCrumbs','Countries','RoomType','Room','Booked_data','Booked_data_today','Booked_thisyear'));
 }
 
 public function cancelledbooking(){
@@ -33,6 +39,15 @@ $Reserved_data = DB::table('vw_reservationbooking')->where('status', 0)->get();
 $Booked_data = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->get();
 return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room','Reserved_data','Booked_data'));
 }
+
+
+public function check_out($id){
+    $title = 'Check-outs';
+    $breadCrumbs = 'Payments & Check-outs';
+    $checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
+    return view('pages.bookings.checkout_and_payments', compact('title','breadCrumbs','checkoutdata'));
+    }
+
 
 public function activereservation(){
 $title = 'Reservations';
@@ -62,13 +77,60 @@ return view('pages.reservations.cancelled', compact('title','breadCrumbs','cance
 }
 
 public function save_booking(Request $request){
-$title = 'Customers';
-// return view('pages.reservations', compact('title'));
+    $title = 'Booking';
+    $breadCrumbs = 'Booking';
+    $validated = $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'mobile_phone' => 'required|max:25',
+        'gender' => 'required|max:25',
+        'date_from' => 'required',
+        'date_to' => 'required',
+        'country' => 'required',
+        'city' => 'required',
+        'room_type' => 'required',
+        'room' => 'required',
+        'address' => 'required',
+    ], [
+        'first_name.required' => 'Please enter first name.',
+        'last_name.required' => 'Please enter last name',
+        'mobile_phone.required' => 'Please enter phone number',
+        'gender.required' => 'Please select gender',
+        'date_from.required' => 'Select date from',
+        'date_to.required' => 'Select date to',
+        'country.required' => 'Select country',
+        'city.required' => 'Enter city',
+        'room_type.required' => 'Select room type',
+        'room.required' => 'Select room',
+        'address.required' => 'Enter address',
+    ]);
+    $reservation = new Book();
+    $reservation->first_name = $request->input('first_name');
+    $reservation->last_name = $request->input('last_name');
+    $reservation->mobile_number = $request->input('mobile_phone');
+    $reservation->gender = $request->input('gender');
+    $reservation->date_from = $request->input('date_from');
+    $reservation->date_to = $request->input('date_to');
+    $reservation->country = $request->input('country');
+    $reservation->city = $request->input('city');
+    $reservation->room_type_id = $request->input('room_type');
+    $reservation->room_id = $request->input('room');
+    $reservation->address = $request->input('address');
+    $reservation->entered_by = session('user_name');
+    $reservation->status = 1;
+    $reservation->save();
+
+    $notification = array(
+        'message'=>"Booking Successfully Saved..!!!",
+        'alert-type'=>'success',
+    );
+    return back()->with($notification);
+
 }
 
 public function save_reservation(Request $request){
 $title = 'Reservation';
-$title = 'Reservation';
+$breadCrumbs = 'Reservation';
 
 $validated = $request->validate([
     'first_name' => 'required|string|max:255',

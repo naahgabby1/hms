@@ -24,7 +24,7 @@
 <a href="{{ route('booking')}}">Bookings</a>
 </li>
 <li>
-<a href="{{ route('cancelled.booking')}}">Cancelled Booking</a>
+{{-- <a href="{{ route('cancelled.booking')}}">Cancelled Booking</a> --}}
 </li>
 <li>
 <a href="{{ route('reservation')}}">Reservations</a>
