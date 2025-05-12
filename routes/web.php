@@ -23,7 +23,13 @@ Route::get('reservation', [BookController::class, 'reservations'])->name('reserv
 Route::get('active-reservation', [BookController::class, 'activereservation'])->name('active.reservation');
 Route::get('cancelled-reservation', [BookController::class, 'cancelledreservation'])->name('cancelled.reservation');
 Route::get('payments-and-checkouts/{id}', [BookController::class, 'check_out'])->name('check.out');
-// Route::get('payments-and-checkouts', [BookController::class, 'check_out'])->name('check.out');
+Route::post('confirm-checkout', [BookController::class, 'save_checkout'])->name('checkout.save');
+Route::get('confirmation', [BookController::class, 'confirmation_alert'])->name('confirmation');
+
+
+Route::post('print-receipt', [BookController::class, 'display_receipt'])->name('receipt.show');
+
+
 
 Route::post('save_booking', [BookController::class, 'save_booking'])->name('save.booking');
 Route::post('save_reservation', [BookController::class, 'save_reservation'])->name('save.reservation');

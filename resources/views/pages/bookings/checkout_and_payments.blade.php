@@ -1,123 +1,189 @@
-    @extends('layout.main.index')
+@extends('layout.main.index')
 
-    @push('breadcrumbs')
-    <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-    <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
-    <a href="{{route('dashboard')}}">Home</a>
-    </li>
-    <li class="breadcrumb-item text-primary" aria-current="page">
-    {{$breadCrumbs}}
-    </li>
-    </ol>
-    @endpush
+@push('breadcrumbs')
+<ol class="breadcrumb">
+<li class="breadcrumb-item">
+<i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+<a href="{{route('dashboard')}}">Home</a>
+</li>
+<li class="breadcrumb-item text-primary" aria-current="page">
+{{$breadCrumbs}}
+</li>
+</ol>
+@endpush
 
-    @push('breadcrumbs_right')
-    <div class="ms-auto d-lg-flex d-none flex-row">
-    <div class="d-flex flex-row gap-1 day-sorting">
-    <button class="btn btn-sm btn-primary">Today</button>
-    <button class="btn btn-sm">7d</button>
-    <button class="btn btn-sm">2w</button>
-    <button class="btn btn-sm">1m</button>
-    <button class="btn btn-sm">3m</button>
-    <button class="btn btn-sm">6m</button>
-    <button class="btn btn-sm">1y</button>
-    </div>
-    </div>
-    @endpush
+@push('breadcrumbs_right')
+<div class="ms-auto d-lg-flex d-none flex-row">
+<div class="d-flex flex-row gap-1 day-sorting">
+<button class="btn btn-sm btn-primary">Today</button>
+<button class="btn btn-sm">7d</button>
+<button class="btn btn-sm">2w</button>
+<button class="btn btn-sm">1m</button>
+<button class="btn btn-sm">3m</button>
+<button class="btn btn-sm">6m</button>
+<button class="btn btn-sm">1y</button>
+</div>
+</div>
+@endpush
 
-    @push('page_head')
+@push('page_head')
 
-    @endpush
-
-
-    @push('page_head2')
-
-    @endpush
+@endpush
 
 
+@push('page_head2')
 
-    @section('main_content_body')
+@endpush
+@php
+use Carbon\Carbon;
+$duration=0;
+$duration = Carbon::parse($checkoutdata->date_from)->diffInDays(Carbon::parse($checkoutdata->date_to));
+$dateToCheck = Carbon::parse($checkoutdata->date_to);
+$today = Carbon::today();
+if ($dateToCheck->isSameDay($today)) {
+if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
+$duration = $duration+1;
+}
+}
+@endphp
+@section('main_content_body')
+<div class="row">
+<div class="col-xl-12">
+<div class="card">
+<div class="card-body">
+<div class="row">
+<div class="col-xxl-3 col-sm-3 col-12">
+<img src="{{asset('app_assets/assets/images/logo-dark.svg')}}" alt="Bootstrap Admin Dashboard" class="img-fluid">
+</div>
+<div class="col-sm-9 col-12">
+<div class="text-end">
+<p class="mb-2">
+Invoice - <span class="text-danger">{{ $CodeChex }}</span>
+</p>
+<p class="mb-2">{{Carbon::parse(now())->format('d-M-Y')}}</p>
+<span class="badge bg-success">Receipt</span>
+</div>
+</div>
+<div class="col-12 mb-5"></div>
+</div>
+<div class="row justify-content-between">
+<div class="col-lg-6 col-12">
+<h6 class="fw-semibold">Billed To :</h6>
+<p class="m-0">
+{{$checkoutdata->name}},<br>
+{{$checkoutdata->address}},<br>
+{{$checkoutdata->country}}
+</p>
+</div>
+<div class="col-lg-6 col-12">
+<div class="text-end">
+<h6 class="fw-semibold">Quabenya Hills Resort :</h6>
+<p class="text-end m-0">
+Kwabennya Hills, Accra. <br>
+Ghana West-Africa
+</p>
+</div>
+</div>
+<div class="col-12 mb-3"></div>
+</div>
+<!-- Row end -->
 
-    {{-- @include('pages.modals.modal_booking') --}}
-    <div class="row gx-3">
-    <div class="col-sm-12">
-    <div class="card">
-    <div class="card-header">
-    <h5 class="card-title">Payments & Check-outs</h5>
-    </div>
-    <div class="card-body">
-    <div class="row gx-3">
-    <div class="col-xxl-6 col-lg-4 col-sm-6">
-    <div class="mb-3">
-    <label class="form-label" for="name">Customer Name</label>
-    <input type="text" class="form-control" id="name" value="{{$checkoutdata->name}}" name="name" readonly>
-    </div>
-    </div>
-    <div class="col-xxl-3 col-lg-4 col-sm-6">
-    <div class="mb-3">
-    <label class="form-label" for="phone">Phone Number</label>
-    <input type="text" class="form-control" id="phone_number" value="{{$checkoutdata->mobile_number}}" name="phone_number" readonly>
-    </div>
-    </div>
-    <div class="col-xxl-3 col-lg-4 col-sm-6">
-    <div class="mb-3">
-    @php
-    use Carbon\Carbon;
-    $nx=1;
-    $duration=0;
-    $duration = Carbon::parse($checkoutdata->date_from)->diffInDays(Carbon::parse($checkoutdata->date_to));
-    $dateToCheck = Carbon::parse($checkoutdata->date_to);
-    $today = Carbon::today();
-    if ($dateToCheck->isSameDay($today)) {
-    if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
-    $duration = $duration+1;
-    }
-    }
-    @endphp
+<!-- Row start -->
+<div class="row">
+<div class="col-12">
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Description</th>
+<th>Rate</th>
+<th>Duration (Days)</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<h6>Hotel-Guest House Occupancy Charges</h6>
+<p>
+Charges for nights spent in our Hotel/Guest house for a period of days
+</p>
+</td>
+<td>
+<h6>{{ $checkoutdata->fees }}</h6>
+</td>
+<td>
+<h6>{{ $duration }}</h6>
+</td>
+<td>
+<h6>{{ $duration*$checkoutdata->fees }}</h6>
+</td>
+</tr>
+<tr>
+<td colspan="2">&nbsp;</td>
+<td>
+<p>Subtotal</p>
+<p>Discount</p>
+<p>VAT</p>
+<h5 class="mt-4 text-primary">Total GHS</h5>
+</td>
+<td>
+@php
+$subtotal = $duration*$checkoutdata->fees;
+$discount = 0.00;
+$vat = 0.00;
+$final_amount = $subtotal + $discount + $vat;
+@endphp
+<p>{{ $subtotal }}</p>
+<p>{{ $discount }}</p>
+<p>{{ $vat }}</p>
+<h5 class="mt-4 text-primary">{{ $final_amount }}</h5>
+</td>
+</tr>
+<tr>
+<td colspan="4">
+<h6 class="text-danger">NOTICE</h6>
+<p class="small m-0">
+We really appreciate your business with Quabenya Hills Resort. Hope to see you again.
+</p>
+</td>
+</tr>
+<tr>
+<td colspan="6"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-12">
+<div class="d-flex justify-content-end gap-2">
+<a href="{{ route('booking') }}" class="btn btn-danger">Cancel Payments & Checkout</a>
+@php
+if ($chex==1) {
+$dex = 'Hotel/Gueshouse payments';
+$cat = 1;
+}
 
-
-    <label class="form-label" for="room">Country</label>
-    <input type="text" class="form-control" id="room" value="{{ $checkoutdata->country }}" name="room" readonly>
-    </div>
-    </div>
-    <div class="col-xxl-3 col-lg-4 col-sm-6">
-    <div class="mb-3">
-    <label class="form-label" for="date_from">Date From</label>
-    <input type="text" class="form-control" value="{{ Carbon::parse($checkoutdata->date_from)->format('d-M-Y') }}" readonly>
-    </div>
-    </div>
-    <div class="col-xxl-3 col-lg-4 col-sm-6">
-    <div class="mb-3">
-    <label class="form-label" for="date_to">Date To</label>
-    <input type="text" class="form-control" value="{{ Carbon::parse($checkoutdata->date_to)->format('d-M-Y') }}" readonly>
-    </div>
-    </div>
-    <div class="col-xxl-3 col-lg-4 col-sm-6">
-    <div class="mb-3">
-    <label class="form-label" for="duration">Duration of Stay (Days)</label>
-    <input type="text" class="form-control" id="duration" name="duration" value="{{$duration}}" readonly>
-    </div>
-    </div>
-    <div class="col-xxl-3 col-lg-4 col-sm-6">
-    <div class="mb-3">
-    <label class="form-label" for="amount">Amount Due</label>
-    <input type="text" class="form-control" id="amount" name="anount" value="{{ $duration*$checkoutdata->fees }}" readonly>
-    </div>
-    </div>
-    <div class="col-sm-12">
-    <div class="d-flex gap-2 justify-content-end">
-    <a href="appointments-list.html" class="btn btn-outline-secondary">
-    Cancel
-    </a>
-    <a href="appointments-list.html" class="btn btn-primary">
-    Confirm Payment
-    </a>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    @endsection
+@endphp
+<form action="{{ route('checkout.save') }}" method="POST">
+@csrf
+<input type="hidden" name="code" value="{{ $CodeChex }}">
+<input type="hidden" name="payment_cat" value="{{ $cat }}">
+<input type="hidden" name="description" value="{{ $dex }}">
+<input type="hidden" name="amount" value="{{ $final_amount }}">
+<input type="hidden" name="transaction_code" value="{{ $checkoutdata->id }}">
+<button type="submit" class="btn btn-primary">
+Confirm Payment & Checkout
+</button>
+</form>
+</div>
+</div>
+</div>
+<!-- Row end -->
+</div>
+</div>
+</div>
+</div>
+@endsection
