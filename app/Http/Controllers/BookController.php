@@ -7,51 +7,61 @@ use App\Models\Countries;
 use App\Models\Room;
 use App\Models\Roomtype;
 use App\Models\Payment;
+use App\Models\Customer;
+use App\Models\Viewbooking;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
 public function genCode()
 {
 do { $code = '#00-' . mt_rand(100000, 999999); }
-    while (Payment::where('code', $code)->exists());
+while (Payment::where('code', $code)->exists());
 return $code;
 }
 
-
-
+//
+public function booking_delete($id){
+$title = 'Booking';
+$breadCrumbs = 'Delete Booking';
+Book::findOrFail($id)->delete();
+return redirect()->back()->with('success', 'Item deleted successfully.');
+}
 
 public function bookings(){
 $title = 'Booking';
 $breadCrumbs = 'Booking';
 $Countries = Countries::orderBy('name')->get();
-$RoomType = Roomtype::orderBy('description')->get();
+$RoomType = Roomtype::orderBy('id', 'asc')->get();
 $Room = Room::orderBy('description')->get();
-$Booked_thisyear = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->whereYear('date_entered', Carbon::now()->year)->sum('fees');
+$customers = Customer::orderBy('first_name', 'asc')->get();
+$Booked_thisyear = DB::table('payments')->where('void_status', 0)->whereYear('date_time', Carbon::now()->year)->sum('amount');
 $Booked_data = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->get();
+$Booked_thisday = DB::table('payments')->where('void_status', 0)->whereDate('date_time', Carbon::today())->sum('amount');
 $Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->where('out_status', 0)->get();
-return view('pages.bookings.index', compact('title','breadCrumbs','Countries','RoomType','Room','Booked_data','Booked_data_today','Booked_thisyear'));
+return view('pages.bookings.index', compact('title','breadCrumbs','Countries','RoomType','Room','Booked_data','Booked_data_today','Booked_thisyear','Booked_thisday','customers'));
 }
 
 
 public function display_receipt(Request $request){
-    $title = 'Receipt';
-    $breadCrumbs = 'Print Receipt';
-    $printing_data = DB::table('vw_reservationbooking')->where('id', $request->mid)->first();
-    $printing_paid_data = DB::table('payments')->where('resbooking_id', $request->mid)->first();
-    $hotel_details = DB::table('company_details')->first();
-    return view('pages.bookings.receipt', compact('title','breadCrumbs','printing_data','printing_paid_data','hotel_details'));
-    }
+$title = 'Receipt';
+$breadCrumbs = 'Print Receipt';
+$printing_data = DB::table('vw_reservationbooking')->where('id', $request->mid)->first();
+$printing_paid_data = DB::table('payments')->where('resbooking_id', $request->mid)->first();
+$hotel_details = DB::table('company_details')->first();
+return view('pages.bookings.receipt', compact('title','breadCrumbs','printing_data','printing_paid_data','hotel_details'));
+}
 
 
 
 public function confirmation_alert(){
-    $title = 'Confirmation';
-    $breadCrumbs = 'Confirmed Check-out';
-    return view('pages.bookings.checked_out_confirmed', compact('title','breadCrumbs'));
-    }
+$title = 'Confirmation';
+$breadCrumbs = 'Confirmed Check-out';
+return view('pages.bookings.checked_out_confirmed', compact('title','breadCrumbs'));
+}
 
 public function cancelledbooking(){
 $title = 'Booking';
@@ -63,22 +73,25 @@ public function reservations(){
 $title = 'Reservations';
 $breadCrumbs = 'Reservations';
 $Countries = Countries::orderBy('name')->get();
+$customers = Customer::orderBy('first_name', 'asc')->get();
 $RoomType = Roomtype::orderBy('description')->get();
 $Room = Room::orderBy('description')->get();
-$Reserved_data = DB::table('vw_reservationbooking')->where('status', 0)->get();
-$Booked_data = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->get();
-return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room','Reserved_data','Booked_data'));
+// $Reserved_data = DB::table('vw_reservationbooking')->where('status', 0)->where('cancelled', 0)->get();
+$Reserved_data = Viewbooking::with('rooms')->where('status', 0)->where('cancelled', 0)->get();
+$Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->get();
+$Booked_data_pending = DB::table('vw_reservationbooking')->where('status', 1)->where('cancelled', 0)->get();
+return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room','Reserved_data','Booked_data_today','customers','Booked_data_pending'));
 }
 
 
 public function check_out($id){
-    $title = 'Check-outs';
-    $breadCrumbs = 'Payments & Check-outs';
-    $CodeChex = $this->genCode();
-    $chex = 1;
-    $checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
-    return view('pages.bookings.checkout_and_payments', compact('title','breadCrumbs','checkoutdata','CodeChex','chex'));
-    }
+$title = 'Check-outs';
+$breadCrumbs = 'Payments & Check-outs';
+$CodeChex = $this->genCode();
+$chex = 1;
+$checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
+return view('pages.bookings.checkout_and_payments', compact('title','breadCrumbs','checkoutdata','CodeChex','chex'));
+}
 
 
 public function activereservation(){
@@ -91,8 +104,8 @@ public function cancelledreservation(){
 $title = 'Reservations';
 $breadCrumbs = 'Cancelled Reservations';
 $cancelled_data_thisweek = DB::table('vw_reservationbooking')->whereBetween('date_entered', [
-    Carbon::now()->startOfWeek(),
-    Carbon::now()->endOfWeek()
+Carbon::now()->startOfWeek(),
+Carbon::now()->endOfWeek()
 ])->where('status', 2)->get();
 
 $cancelled_data_thismonth = DB::table('vw_reservationbooking')
@@ -109,121 +122,348 @@ return view('pages.reservations.cancelled', compact('title','breadCrumbs','cance
 }
 
 
-
-
-public function save_checkout(Request $request){
-    $title = 'Printout';
-    $breadCrumbs = 'Printout';
-    $confirmation = new Payment();
-    $confirmation->resbooking_id = $request->input('transaction_code');
-    $confirmation->payment_category = $request->input('payment_cat');
-    $confirmation->description = $request->input('description');
-    $confirmation->amount = $request->input('amount');
-    $confirmation->entered_by = session('user_name');
-    $confirmation->code = $request->input('code');
-    $confirmation->save();
-    $mid = $request->input('transaction_code');
-
-    Book::where('id', $request->input('transaction_code'))->update(['status' => 2]);
-
-    $notification = array(
-        'message'=>"Successfully Checkout",
-        'alert-type'=>'success',
-    );
-    return view('pages.bookings.checked_out_confirmed', compact('title','breadCrumbs','mid'));
+public function confirm_reservation(Request $request, $id){
+$title = 'Reservation';
+$breadCrumbs = 'Reservation Update';
+$validated = $request->validate([
+'first_name_confirmation' => 'required|string|max:255',
+'last_name_confirmation' => 'required|string|max:255',
+'mobile_phone_confirmation' => 'required|max:25',
+'gender_confirmation' => 'required|max:25',
+'date_from_confirmation' => 'required',
+'date_to_confirmation' => 'required',
+'country_confirmation' => 'required',
+'city_confirmation' => 'required',
+'room_type_confirmation' => 'required',
+'room_confirmation' => 'required',
+'address_confirmation' => 'required',
+], [
+'first_name_confirmation.required' => 'Please enter first name.',
+'last_name_confirmation.required' => 'Please enter last name',
+'mobile_phone_confirmation.required' => 'Please enter phone number',
+'gender_confirmation.required' => 'Please select gender',
+'date_from_confirmation.required' => 'Select date from',
+'date_to_confirmation.required' => 'Select date to',
+'country_confirmation.required' => 'Select country',
+'city_confirmation.required' => 'Enter city',
+'room_type_confirmation.required' => 'Select room type',
+'room_confirmation.required' => 'Select room',
+'address_confirmation.required' => 'Enter address',
+]);
+if (Room::where('id', $request->input('room_confirmation'))->where('availability', 0)->exists()) {
+Book::where('id', $id)->update([
+'first_name' => $request->input('first_name_confirmation'),
+'last_name' => $request->input('last_name_confirmation'),
+'mobile_number' => $request->input('mobile_phone_confirmation'),
+'gender' => $request->input('gender_confirmation'),
+'date_from' => $request->input('date_from_confirmation'),
+'date_to' => $request->input('date_to_confirmation'),
+'country' => $request->input('country_confirmation'),
+'city' => $request->input('city_confirmation'),
+'room_type_id' => $request->input('room_type_confirmation'),
+'room_id' => $request->input('room_confirmation'),
+'address' => $request->input('address_confirmation'),
+'status' => 1,
+]);
+Room::findOrFail($request->input('room_confirmation'))->update([
+"availability"=>1
+]);
+$status = 'success';
+} else {
+$status = 'error';
+}
+$notification = array(
+'message'=>"Reservation Successfully Confirmed..!!!",
+'alert-type'=>$status
+);
+return back()->with($notification,compact('title','breadCrumbs'));
 }
 
 
 
+public function reservation_editted(Request $request, $rid){
+$title = 'Reservation';
+$breadCrumbs = 'Reservation Update';
+$validated = $request->validate([
+'first_name_edits' => 'required|string|max:255',
+'last_name_edits' => 'required|string|max:255',
+'mobile_phone_edits' => 'required|max:25',
+'gender_edits' => 'required|max:25',
+'date_from_edits' => 'required',
+'date_to_edits' => 'required',
+'country_edits' => 'required',
+'city_edits' => 'required',
+'room_type_edits' => 'required',
+'room_edits' => 'required',
+'address_edits' => 'required',
+], [
+'first_name_edits.required' => 'Please enter first name.',
+'last_name_edits.required' => 'Please enter last name',
+'mobile_phone_edits.required' => 'Please enter phone number',
+'gender_edits.required' => 'Please select gender',
+'date_from_edits.required' => 'Select date from',
+'date_to_edits.required' => 'Select date to',
+'country_edits.required' => 'Select country',
+'city_edits.required' => 'Enter city',
+'room_type_edits.required' => 'Select room type',
+'room_edits.required' => 'Select room',
+'address_edits.required' => 'Enter address',
+]);
+
+Book::where('id', $rid)->update([
+'first_name' => $request->input('first_name_edits'),
+'last_name' => $request->input('last_name_edits'),
+'mobile_number' => $request->input('mobile_phone_edits'),
+'gender' => $request->input('gender_edits'),
+'date_from' => $request->input('date_from_edits'),
+'date_to' => $request->input('date_to_edits'),
+'country' => $request->input('country_edits'),
+'city' => $request->input('city_edits'),
+'room_type_id' => $request->input('room_type_edits'),
+'room_id' => $request->input('room_edits'),
+'address' => $request->input('address_edits'),
+]);
+
+$notification = array(
+'message'=>"Reservation Successfully Updated..!!!",
+'alert-type'=>'success',
+);
+return back()->with($notification,compact('title','breadCrumbs'));
+}
+
+public function booking_editted(Request $request, $id){
+$title = 'Booking';
+$breadCrumbs = 'Booking Update';
+$validated = $request->validate([
+'first_name_edit' => 'required|string|max:255',
+'last_name_edit' => 'required|string|max:255',
+'mobile_phone_edit' => 'required|max:25',
+'gender_edit' => 'required|max:25',
+'date_from_edit' => 'required',
+'date_to_edit' => 'required',
+'country_edit' => 'required',
+'city_edit' => 'required',
+'room_type_edit' => 'required',
+'room_edit' => 'required',
+'address_edit' => 'required',
+], [
+'first_name_edit.required' => 'Please enter first name.',
+'last_name_edit.required' => 'Please enter last name',
+'mobile_phone_edit.required' => 'Please enter phone number',
+'gender_edit.required' => 'Please select gender',
+'date_from_edit.required' => 'Select date from',
+'date_to_edit.required' => 'Select date to',
+'country_edit.required' => 'Select country',
+'city_edit.required' => 'Enter city',
+'room_type_edit.required' => 'Select room type',
+'room_edit.required' => 'Select room',
+'address_edit.required' => 'Enter address',
+]);
+
+Book::where('id', $id)->update([
+'first_name' => $request->input('first_name_edit'),
+'last_name' => $request->input('last_name_edit'),
+'mobile_number' => $request->input('mobile_phone_edit'),
+'gender' => $request->input('gender_edit'),
+'date_from' => $request->input('date_from_edit'),
+'date_to' => $request->input('date_to_edit'),
+'country' => $request->input('country_edit'),
+'city' => $request->input('city_edit'),
+'room_type_id' => $request->input('room_type_edit'),
+'room_id' => $request->input('room_edit'),
+'address' => $request->input('address_edit'),
+]);
+
+$notification = array(
+'message'=>"Booking Successfully Updated..!!!",
+'alert-type'=>'success',
+);
+return back()->with($notification,compact('title','breadCrumbs'));
+}
 
 
+
+public function save_checkout(Request $request){
+$title = 'Printout';
+$breadCrumbs = 'Printout';
+$confirmation = new Payment();
+$confirmation->resbooking_id = $request->input('transaction_code');
+$confirmation->payment_category = $request->input('payment_cat');
+$confirmation->description = $request->input('description');
+$confirmation->amount = $request->input('amount');
+$confirmation->entered_by = session('user_name');
+$confirmation->code = $request->input('code');
+$confirmation->save();
+$mid = $request->input('transaction_code');
+
+Book::where('id', $request->input('transaction_code'))->update(['status' => 2]);
+
+$notification = array(
+'message'=>"Successfully Checkout",
+'alert-type'=>'success',
+);
+return view('pages.bookings.checked_out_confirmed', compact('title','breadCrumbs','mid'));
+}
 
 public function save_booking(Request $request){
-    $title = 'Booking';
-    $breadCrumbs = 'Booking';
-    $validated = $request->validate([
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'mobile_phone' => 'required|max:25',
-        'gender' => 'required|max:25',
-        'date_from' => 'required',
-        'date_to' => 'required',
-        'country' => 'required',
-        'city' => 'required',
-        'room_type' => 'required',
-        'room' => 'required',
-        'address' => 'required',
-    ], [
-        'first_name.required' => 'Please enter first name.',
-        'last_name.required' => 'Please enter last name',
-        'mobile_phone.required' => 'Please enter phone number',
-        'gender.required' => 'Please select gender',
-        'date_from.required' => 'Select date from',
-        'date_to.required' => 'Select date to',
-        'country.required' => 'Select country',
-        'city.required' => 'Enter city',
-        'room_type.required' => 'Select room type',
-        'room.required' => 'Select room',
-        'address.required' => 'Enter address',
-    ]);
-    $reservation = new Book();
-    $reservation->first_name = $request->input('first_name');
-    $reservation->last_name = $request->input('last_name');
-    $reservation->mobile_number = $request->input('mobile_phone');
-    $reservation->gender = $request->input('gender');
-    $reservation->date_from = $request->input('date_from');
-    $reservation->date_to = $request->input('date_to');
-    $reservation->country = $request->input('country');
-    $reservation->city = $request->input('city');
-    $reservation->room_type_id = $request->input('room_type');
-    $reservation->room_id = $request->input('room');
-    $reservation->address = $request->input('address');
-    $reservation->entered_by = session('user_name');
-    $reservation->status = 1;
-    $reservation->save();
+$title = 'Booking';
+$breadCrumbs = 'Booking';
+$validated = $request->validate(['customer_type' => 'required'],['customer_type.required' => 'Please Select Customer Type']);
+$typex = $request->customer_type;
+if ($typex==1) {
+$validated = $request->validate([
+'first_name' => 'required|string|max:255',
+'last_name' => 'required|string|max:255',
+'mobile_phone' => 'required|max:25',
+'gender' => 'required|max:25',
+'date_from' => 'required',
+'date_to' => 'required',
+'country' => 'required',
+'city' => 'required',
+'room_type' => 'required',
+'room' => 'required',
+'address' => 'required',
+], [
+'first_name.required' => 'Please enter first name.',
+'last_name.required' => 'Please enter last name',
+'mobile_phone.required' => 'Please enter phone number',
+'gender.required' => 'Please select gender',
+'date_from.required' => 'Select date from',
+'date_to.required' => 'Select date to',
+'country.required' => 'Select country',
+'city.required' => 'Enter city',
+'room_type.required' => 'Select room type',
+'room.required' => 'Select room',
+'address.required' => 'Enter address',
+]);
+$firstname = $request->input('first_name');
+$lastname = $request->input('last_name');
+$mobilephone = $request->input('mobile_phone');
+$ugender = $request->input('gender');
+} else {
+$uid = $request->customer_type_existing;
+$cdata = Customer::findOrFail($uid);
+$validated = $request->validate([
+'date_from' => 'required',
+'date_to' => 'required',
+'country' => 'required',
+'city' => 'required',
+'room_type' => 'required',
+'room' => 'required',
+'address' => 'required',
+], [
+'date_from.required' => 'Select date from',
+'date_to.required' => 'Select date to',
+'country.required' => 'Select country',
+'city.required' => 'Enter city',
+'room_type.required' => 'Select room type',
+'room.required' => 'Select room',
+'address.required' => 'Enter address',
+]);
+$firstname = $cdata->first_name;
+$lastname = $cdata->last_names;
+$mobilephone = $cdata->phone_number;
+$ugender = $cdata->gender;
+}
 
-    $notification = array(
-        'message'=>"Booking Successfully Saved..!!!",
-        'alert-type'=>'success',
-    );
-    return back()->with($notification);
+$reservation = new Book();
+$reservation->first_name = $firstname;
+$reservation->last_name = $lastname;
+$reservation->mobile_number = $mobilephone;
+$reservation->gender = strtolower($ugender);
+$reservation->date_from = $request->input('date_from');
+$reservation->date_to = $request->input('date_to');
+$reservation->country = $request->input('country');
+$reservation->city = $request->input('city');
+$reservation->room_type_id = $request->input('room_type');
+$reservation->room_id = $request->input('room');
+$reservation->address = $request->input('address');
+$reservation->entered_by = session('user_name');
+$reservation->status = 1;
+$reservation->save();
+Room::findOrFail($request->input('room'))->update([
+"availability"=>1
+]);
+$notification = array(
+'message'=>"Booking Successfully Saved..!!!",
+'alert-type'=>'success',
+);
+return back()->with($notification);
 
 }
 
 public function save_reservation(Request $request){
 $title = 'Reservation';
 $breadCrumbs = 'Reservation';
+$validated = $request->validate(['customer_type' => 'required'],['customer_type.required' => 'Please Select Customer Type']);
+$typex = $request->customer_type;
 
+if ($typex==1) {
 $validated = $request->validate([
-    'first_name' => 'required|string|max:255',
-    'last_name' => 'required|string|max:255',
-    'mobile_phone' => 'required|max:25',
-    'gender' => 'required|max:25',
-    'date_from' => 'required',
-    'date_to' => 'required',
-    'country' => 'required',
-    'city' => 'required',
-    'room_type' => 'required',
-    'room' => 'required',
-    'address' => 'required',
+'first_name' => 'required|string|max:255',
+'last_name' => 'required|string|max:255',
+'mobile_phone' => 'required|max:25',
+'gender' => 'required|max:25',
+'date_from' => 'required',
+'date_to' => 'required',
+'country' => 'required',
+'city' => 'required',
+'room_type' => 'required',
+'room' => 'required',
+'address' => 'required',
 ], [
-    'first_name.required' => 'Please enter first name.',
-    'last_name.required' => 'Please enter last name',
-    'mobile_phone.required' => 'Please enter phone number',
-    'gender.required' => 'Please select gender',
-    'date_from.required' => 'Select date from',
-    'date_to.required' => 'Select date to',
-    'country.required' => 'Select country',
-    'city.required' => 'Enter city',
-    'room_type.required' => 'Select room type',
-    'room.required' => 'Select room',
-    'address.required' => 'Enter address',
+'first_name.required' => 'Please enter first name.',
+'last_name.required' => 'Please enter last name',
+'mobile_phone.required' => 'Please enter phone number',
+'gender.required' => 'Please select gender',
+'date_from.required' => 'Select date from',
+'date_to.required' => 'Select date to',
+'country.required' => 'Select country',
+'city.required' => 'Enter city',
+'room_type.required' => 'Select room type',
+'room.required' => 'Select room',
+'address.required' => 'Enter address',
 ]);
+
+$firstname = $request->input('first_name');
+$lastname = $request->input('last_name');
+$mobilephone = $request->input('mobile_phone');
+$ugender = $request->input('gender');
+}else{
+$uid = $request->customer_type_existing;
+$cdata = Customer::findOrFail($uid);
+$validated = $request->validate([
+'date_from' => 'required',
+'date_to' => 'required',
+'country' => 'required',
+'city' => 'required',
+'room_type' => 'required',
+'room' => 'required',
+'address' => 'required',
+], [
+'date_from.required' => 'Select date from',
+'date_to.required' => 'Select date to',
+'country.required' => 'Select country',
+'city.required' => 'Enter city',
+'room_type.required' => 'Select room type',
+'room.required' => 'Select room',
+'address.required' => 'Enter address',
+]);
+
+
+$firstname = $cdata->first_name;
+$lastname = $cdata->last_names;
+$mobilephone = $cdata->phone_number;
+$ugender = $cdata->gender;
+}
+
+
+
 $reservation = new Book();
-$reservation->first_name = $request->input('first_name');
-$reservation->last_name = $request->input('last_name');
-$reservation->mobile_number = $request->input('mobile_phone');
-$reservation->gender = $request->input('gender');
+$reservation->first_name = $firstname;
+$reservation->last_name = $lastname;
+$reservation->mobile_number = $mobilephone;
+$reservation->gender = strtolower($ugender);
 $reservation->date_from = $request->input('date_from');
 $reservation->date_to = $request->input('date_to');
 $reservation->country = $request->input('country');
@@ -235,8 +475,8 @@ $reservation->entered_by = session('user_name');
 $reservation->save();
 
 $notification = array(
-    'message'=>"Reservation Successfully Saved..!!!",
-    'alert-type'=>'success',
+'message'=>"Reservation Successfully Saved..!!!",
+'alert-type'=>'success',
 );
 return back()->with($notification);
 }
@@ -250,6 +490,33 @@ public function update_reservation(){
 $title = 'Customers';
 // return view('pages.reservations', compact('title'));
 }
+
+
+
+
+public function reservation_cancelled($cid){
+Book::findOrFail($cid)->update([
+"cancelled"=>1,
+"cancelled_by"=>Auth::guard('logindetails')->user()->email,
+]);
+return response()->json([
+'success' => true,
+'message' => 'Reservation Cancelled Successfully.',
+]);
+}
+
+
+
+
+
+public function reservation_deleted($id){
+Book::findOrFail($id)->delete();
+return response()->json([
+'success' => true,
+'message' => 'Order deleted successfully.',
+]);
+}
+
 
 public function destroy_booking(Request $request){
 $customer = Book::find($request->id);

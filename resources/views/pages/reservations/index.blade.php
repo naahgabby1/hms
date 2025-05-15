@@ -45,21 +45,21 @@
 <div class="d-flex flex-column">
 
 @php
-$total = $Reserved_data->sum('fees'); // Replace 'amount' with your actual field
+$total = $Reserved_data->sum('fees');
 @endphp
 
-<h2 class="lh-1">{{ count($Reserved_data)}}</h2>
-<p class="m-0">Reservations Today</p>
+<h2 class="lh-1">{{ count($Reserved_data) }}</h2>
+<p class="m-0">Active Reservations</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-success" href="{{route('reservation')}}">
+<a class="text-success" href="{{ route('reservation') }}">
 <span>View All</span>
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
 <div class="text-end">
 <p class="mb-0 text-success">+40%</p>
-<span class="badge bg-success-subtle text-success small">this month</span>
+<span class="badge bg-success-subtle text-success small">as at now</span>
 </div>
 </div>
 </div>
@@ -75,18 +75,18 @@ $total = $Reserved_data->sum('fees'); // Replace 'amount' with your actual field
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ count($Booked_data) }}</h2>
-<p class="m-0">Total Check-ins Today</p>
+<h2 class="lh-1">{{ count($Booked_data_today) }}</h2>
+<p class="m-0">Checked-Ins Today</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-primary" href="javascript:void(0);">
+<a class="text-primary" href="#">
 <span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
 <p class="mb-0 text-primary">+30%</p>
-<span class="badge bg-primary-subtle text-primary small">this month</span>
+<span class="badge bg-primary-subtle text-primary small">as at now</span>
 </div>
 </div>
 </div>
@@ -102,18 +102,18 @@ $total = $Reserved_data->sum('fees'); // Replace 'amount' with your actual field
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ $Booked_data->sum('fees') }}</h2>
-<p class="m-0">Today's Revenue</p>
+<h2 class="lh-1">{{ number_format($Booked_data_pending->sum('fees'),2) }}</h2>
+<p class="m-0">Booked Revenue Pending</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-danger" href="javascript:void(0);">
+<a class="text-danger" href="#">
 <span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
 <p class="mb-0 text-danger">+60%</p>
-<span class="badge bg-danger-subtle text-danger small">this month</span>
+<span class="badge bg-danger-subtle text-danger small">as at now</span>
 </div>
 </div>
 </div>
@@ -129,18 +129,18 @@ $total = $Reserved_data->sum('fees'); // Replace 'amount' with your actual field
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ $total }}</h2>
-<p class="m-0">Expected Revenue</p>
+<h2 class="lh-1">{{ number_format($total,2) }}</h2>
+<p class="m-0">Pending Revenue Reserved</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-warning" href="javascript:void(0);">
+<a class="text-warning" href="#">
 <span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
 <p class="mb-0 text-warning">+20%</p>
-<span class="badge bg-warning-subtle text-warning small">this month</span>
+<span class="badge bg-warning-subtle text-warning small">as at now</span>
 </div>
 </div>
 </div>
@@ -156,7 +156,7 @@ $total = $Reserved_data->sum('fees'); // Replace 'amount' with your actual field
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#resModal">
-Add New Reservation
+New Reservation
 </button>
 </div>
 </div>
@@ -188,7 +188,7 @@ $nx=1;
 $duration=0;
 @endphp
 @foreach ($Reserved_data as $reservation)
-<tr>
+<tr id="row-{{ $reservation->id }}">
 <td>{{ $nx }}</td>
 <td>{{ $reservation->name }}</td>
 <td>{{ $reservation->mobile_number }}</td>
@@ -202,15 +202,29 @@ $duration = $duration+1;
 }
 }
 @endphp
-<td>{{ $reservation->date_from  }} -to- {{ $reservation->date_to }}</td>
+<td>{{ Carbon::parse($reservation->date_from)->format('d-M-Y') }} -to- {{ Carbon::parse($reservation->date_to)->format('d-M-Y') }}</td>
 <td>{{ $duration }}</td>
-<td>{{ $reservation->room }}</td>
-<td>{{ $reservation->date_entered }}</td>
 <td>
-<button type="button" class="btn btn-success">
+@if ($reservation->rooms && $reservation->rooms->availability == 1)
+<span class="badge bg-danger">{{ $reservation->room }} - Booked</span>
+@else
+<span class="badge bg-success">{{ $reservation->room }} - Available</span>
+@endif
+</td>
+<td>{{ Carbon::parse($reservation->date_entered)->format('d-M-Y') }}</td>
+<td>
+<button type="button" class="btn btn-success" data-bs-toggle="modal"
+data-bs-target="#confrimModalMasterUpdate{{$reservation->id}}">
 <i class="ri-thumb-up-line"></i>
 </button>
-<button type="button" class="btn btn-danger">
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#resModalMasterUpdate{{$reservation->id}}">
+<i class="ri-edit-line"></i>
+</button>
+<button type="submit" id="canClicked" class="btn btn-warning" data-cxid="{{ $reservation->id }}">
+<i class="ri-close-fill"></i>
+</button>
+<button type="button" id="delClicked" class="btn btn-danger" data-id="{{ $reservation->id }}">
 <i class="ri-delete-bin-line"></i>
 </button>
 </td>
@@ -218,6 +232,9 @@ $duration = $duration+1;
 @php
 $nx++;
 @endphp
+
+@include('pages.modals.modal_reservation_edits')
+@include('pages.modals.modal_reservation_confimation')
 @endforeach
 </tbody>
 </table>
@@ -226,4 +243,197 @@ $nx++;
 </div>
 </div>
 </div>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
+
+@push('customed_js')
+<script type="text/javascript">
+$(document).ready(function(){
+$('#hideShowOld').hide();
+
+$.ajaxSetup({
+headers: {
+'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+}
+});
+
+
+$(document).on('click','#canClicked',function(){
+const cancelledId = $(this).data('cxid');
+_alertCancelReservation(cancelledId);
+});
+
+
+$(document).on('click','#delClicked',function(){
+const deleteId = $(this).data('id');
+const rowdel = $('#row-' + deleteId);
+_alertDeleteReservation(deleteId,rowdel);
+});
+
+
+
+$('#customer_type').change(function() {
+var selected = $(this).val();
+if (selected === '1') {
+$('#hideShow').show();
+$('#hideShowOld').hide();
+} else {
+$('#hideShowOld').show();
+$('#hideShow').hide();
+}
+});
+
+
+$('#room_type').change(function() {
+var selected = $(this).val();
+$.get("filter-list/"+ selected, function(responses){
+let select = $('#room');
+select.empty();
+select.append('<option value="">Select Available Room</option>');
+$.each(responses.data, function (index, room) {
+select.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+});
+});
+
+
+
+$(document).on('change', '.room_type_confirmation', function () {
+var selected = $(this).val();
+var row = $(this).closest('.modal');
+var roomSelect = row.find('.room_confirmation');
+$.get("filter-list/"+ selected, function(responses){
+roomSelect.empty();
+roomSelect.append('<option value="">Select Available Room</option>');
+if (responses.data && responses.data.length > 0) {
+$.each(responses.data, function (index, room) {
+roomSelect.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+} else {
+roomSelect.append('<option value="">No rooms available</option>');
+}
+}).fail(function () {
+alert("Error fetching room data.");
+});
+});
+
+
+
+$(document).on('change', '.room_type_edits', function () {
+var selected = $(this).val();
+var row = $(this).closest('.modal');
+var roomSelect = row.find('.room_edits');
+$.get("filter-list/"+ selected, function(responses){
+roomSelect.empty();
+roomSelect.append('<option value="">Select Available Room</option>');
+if (responses.data && responses.data.length > 0) {
+$.each(responses.data, function (index, room) {
+roomSelect.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+} else {
+roomSelect.append('<option value="">No rooms available</option>');
+}
+}).fail(function () {
+alert("Error fetching room data.");
+});
+});
+
+
+
+function _alert(mheader,form){
+Swal.fire({
+title: `Delete `+mheader+` ?`,
+text: "This action cannot be undone!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#d33',
+cancelButtonColor: '#3085d6',
+confirmButtonText: 'Yes, delete it!',
+reverseButtons: true
+}).then((result) => {
+if (result.isConfirmed) {
+form.submit();
+}
+});
+}
+
+
+
+
+
+// Cancel Reservation
+
+function _alertCancelReservation(cid){
+Swal.fire({
+title: `Cancel Reservation ?`,
+text: "This action cannot be undone!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#d33',
+cancelButtonColor: '#3085d6',
+confirmButtonText: 'Yes, cancel it!',
+reverseButtons: true
+}).then((result) => {
+if (result.isConfirmed) {
+$.ajax({
+url:'cancelled-cus-reservation/'+cid,
+type:'PUT',
+data: {
+cancelled: 1
+},
+success:function(rdata){
+if (rdata.success) {
+Swal.fire({
+title: "Cancelled!",
+text: rdata['message'],
+icon: "success"
+});
+setTimeout(function(){
+location.reload();
+},1000);
+}
+}
+});
+}
+});
+}
+
+
+
+// Delete Reservation
+
+function _alertDeleteReservation(id,rowdata){
+Swal.fire({
+title: `Delete Reservation ?`,
+text: "This action cannot be undone!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#d33',
+cancelButtonColor: '#3085d6',
+confirmButtonText: 'Yes, delete it!',
+reverseButtons: true
+}).then((result) => {
+if (result.isConfirmed) {
+$.ajax({
+url:'delete-reservation/'+id,
+type:'DELETE',
+success:function(rdata){
+if (rdata.success) {
+rowdata.remove();
+Swal.fire({
+title: "Deleted!",
+text: "Your file has been deleted.",
+icon: "success"
+});
+}
+}
+});
+}
+});
+}
+
+
+
+});
+</script>
+@endpush

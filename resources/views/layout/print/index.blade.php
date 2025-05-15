@@ -1,4 +1,7 @@
 <title>{{ucfirst($title)}} - {{ucfirst(config('app.name'))}}</title>
+@php
+use Carbon\Carbon;
+@endphp
 <link rel="icon" href="assets/img/favicon.png" type="image/x-icon">
 <section class="content" >
 <div class="container-fluid" style="padding-top: 2px">
@@ -9,8 +12,12 @@
 <thead style="font-size:13px;">
 <span style="font-family:'Times New Roman', Times, serif; font-size:23px;" >
 <u>
+<a href="{{ route('booking')}}">
 <img src="{{asset('app_assets/assets/logo/logo.jpg')}}" alt="logo.jpg" style="width: 100px;height: 100px">
-</u></span><br />
+</a>
+</u>
+</span>
+<br>
 <span style="font-size: 30px; font-weight: bolder">{{ $hotel_details->name }}</span><br/>
 <b>Contact: {{ $hotel_details->phone_number }}</b><br>
 <b>Website: {{ $hotel_details->url }}</b><br>
@@ -26,7 +33,7 @@
 <p><span><b>Receipt Code</b> : {{ $printing_paid_data->code }}</span></p>
 {{-- <p><span><b>Branch</b> : {{'01092'}}</span></p> --}}
 <p><span><b>Printed By</b> : {{ session('user_name') }}</span></p>
-<p><span><b>Date</b> : {{'01092'}}</span></p>
+<p><span><b>Date</b> : {{ Carbon::parse(now())->format('d-M-Y') }}</span></p>
 <p><span><b>Customer</b> : {{ $printing_data->name }}</span></p>
 <table id="simpletable" class="table table-striped table-bordered nowrap" style="border: 1px solid black">
 <thead style="border: 1px solid black">

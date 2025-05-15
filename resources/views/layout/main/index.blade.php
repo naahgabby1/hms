@@ -211,5 +211,7 @@ $date_code = Date('Y')
 <script src="{{asset('app_assets/assets/vendor/datatables/buttons/buttons.print.min.js')}}"></script>
 <script src="{{asset('app_assets/assets/vendor/datatables/buttons/buttons.colVis.min.js')}}"></script>
 <script src="{{asset('app_assets/assets/js/custom.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@stack('customed_js')
 </body>
 </html>

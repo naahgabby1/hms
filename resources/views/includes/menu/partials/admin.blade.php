@@ -55,10 +55,7 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('old.customers')}}">Old Customers</a>
-</li>
-<li>
-<a href="{{ route('recent.customers')}}">Recent Customers</a>
+<a href="{{ route('index.customers')}}">Customers</a>
 </li>
 </ul>
 </li>

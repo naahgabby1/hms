@@ -1,13 +1,14 @@
 <section>
-<div class="modal fade" id="resModal" tabindex="-1" aria-labelledby="resModalLabel"
+<div class="modal fade" id="confrimModalMasterUpdate{{$reservation->id}}" tabindex="-1" aria-labelledby="resModalLabel"
 aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog modal-xl">
 <div class="modal-content">
-<form action="{{ route('save.reservation') }}" method="post">
+<form action="{{ route('confirm.reservation', $reservation->id) }}" method="post">
 @csrf
+@method('PUT')
 <div class="modal-header">
 <h5 class="modal-title" id="resModalLabel">
-Reservations
+Confirm Reservations
 </h5>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
@@ -15,49 +16,33 @@ Reservations
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="bg-light rounded-2 px-3 py-2 mb-3">
-<h6 class="m-0">Reservation Details</h6>
+<h6>
+@if ($reservation->rooms && $reservation->rooms->availability == 1)
+Reserved room is booked. Select an available room to avoid rejection
+@else
+Reserved room is available for confirmation
+@endif
+</h6>
 </div>
 </div>
-
-<div class="col-xxl-3 col-lg-3 col-sm-3 mb-3">
-    <label class="form-label" for="a1">Customer Type<span class="text-danger">*</span></label>
-    <select class="form-select" id="customer_type" name="customer_type">
-    <option value="1">Walkin Customer</option>
-    <option value="2">Existing Customer</option>
-    </select>
-    </div>
-    <div class="col-xxl-3 col-lg-3 col-sm-3 mb-3" id="hideShowOld">
-    <label class="form-label" for="a1">Customer<span class="text-danger">*</span></label>
-    <select class="form-select" id="customer_type_existing" name="customer_type_existing">
-    <option value="1">Select</option>
-    @foreach ($customers as $customer)
-    <option value="{{ $customer->id }}">{{ $customer->first_name.' '.$customer->last_names }}</option>
-    @endforeach
-    </select>
-    </div>
-
-
-
-</div>
-<div class="row gx-3" id="hideShow">
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="a1">First Name <span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name">
+<input type="text" value="{{ $reservation->first_name }}" class="form-control" id="first_name_confirmation" name="first_name_confirmation" placeholder="Enter First Name">
 @error('first_name')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="a2">Last Name <span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name">
+<input type="text" value="{{ $reservation->last_name }}" class="form-control" id="last_name_confirmation" name="last_name_confirmation" placeholder="Enter Last Name">
 @error('last_name')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="a3">Mobile Number<span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="mobile_phone" name="mobile_phone" placeholder="Enter Mobile Number">
+<input type="text" value="{{ $reservation->mobile_number }}" class="form-control" id="mobile_phone_confirmation" name="mobile_phone_confirmation" placeholder="Enter Mobile Number">
 @error('mobile_phone')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
@@ -67,41 +52,38 @@ Reservations
 class="text-danger">*</span></label>
 <div class="m-0">
 <div class="form-check form-check-inline">
-<input class="form-check-input" type="radio" name="gender" id="gender"
-value="male">
+<input class="form-check-input" type="radio" name="gender_confirmation" id="gender_confirmation"
+value="male" {{ $reservation->gender === 'male' ? 'checked' : '' }}>
 <label class="form-check-label" for="gender">Male</label>
 </div>
 <div class="form-check form-check-inline">
-<input class="form-check-input" type="radio" name="gender" id="gender"
-value="female">
+<input class="form-check-input" type="radio" name="gender_confirmation" id="gender_confirmation"
+value="female" {{ $reservation->gender === 'female' ? 'checked' : '' }}>
 <label class="form-check-label" for="gender">Female</label>
 </div>
 </div>
 @error('gender')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
-</div>
-
-<div class="row gx-3">
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="date_from">Date From <span class="text-danger">*</span></label>
-<input type="date" class="form-control" id="date_from" name="date_from" placeholder="Enter Date From">
+<input type="date" value="{{ $reservation->date_from }}" class="form-control" id="date_from_confirmation" name="date_from_confirmation" placeholder="Enter Date From">
 @error('date_from')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="date_to">Date To <span class="text-danger">*</span></label>
-<input type="date" class="form-control" id="date_to" name="date_to" placeholder="Enter Date To">
+<input type="date" value="{{ $reservation->date_to }}" class="form-control" id="date_to_confirmation" name="date_to_confirmation" placeholder="Enter Date To">
 @error('date_to')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="country">Country <span class="text-danger">*</span></label>
-<select class="form-select" id="country" name="country">
-<option value="">Select</option>
+<select class="form-select" id="country_confirmation" name="country_confirmation">
+<option value="{{ $reservation->country }}">{{ $reservation->country }}</option>
 @foreach($Countries as $country)
 <option value="{{ $country->name }}">{{ $country->name }}</option>
 @endforeach
@@ -112,15 +94,15 @@ value="female">
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="city">City <span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="city" name="city" placeholder="Enter City">
+<input type="text" value="{{ $reservation->city }}" class="form-control" id="city_confirmation" name="city_confirmation" placeholder="Enter City">
 @error('city')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="room_type">Room Type <span class="text-danger">*</span></label>
-<select class="form-select" id="room_type" name="room_type">
-<option value="">Select</option>
+<select class="form-select room_type_confirmation" name="room_type_confirmation">
+<option value="{{ $reservation->room_type_id }}">{{ $reservation->description}}</option>
 @foreach($RoomType as $roomtype)
 <option value="{{ $roomtype->id }}">{{ $roomtype->description.' ('.strtoupper($roomtype->alias).')' }}</option>
 @endforeach
@@ -131,8 +113,8 @@ value="female">
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="room">Room <span class="text-danger">*</span></label>
-<select class="form-select" id="room" name="room">
-<option value="">Select Available Room</option>
+<select class="form-select room_confirmation" name="room_confirmation">
+<option value="{{ $reservation->room_id }}">{{ $reservation->room }}</option>
 </select>
 @error('room')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
@@ -140,7 +122,7 @@ value="female">
 <div class="col-xxl-6 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="address">Address <span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="address" name="address" placeholder="Enter Customer Address">
+<input type="text" value="{{ $reservation->address }}" class="form-control" id="address_confirmation" name="address_confirmation" placeholder="Enter Customer Address">
 @error('address')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
@@ -148,10 +130,10 @@ value="female">
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-Cancel Reservation
+Cancel Confirmation
 </button>
 <button type="submit" class="btn btn-primary">
-Save Reservation
+Confirm Reservation
 </button>
 </div>
 </form>

@@ -31,6 +31,8 @@
 @endpush
 
 
+
+
 @push('page_head2')
 <div class="row gx-3">
 <div class="col-xl-3 col-sm-6 col-12">
@@ -44,17 +46,17 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ count($Booked_data_today)}}</h2>
-<p class="m-0">Check-ins Today</p>
+<p class="m-0">Checked-Ins Today</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-success" href="{{route('reservation')}}">
+<a class="text-success" href="{{route('booking')}}">
 <span>View All</span>
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
 <div class="text-end">
 <p class="mb-0 text-success">+40%</p>
-<span class="badge bg-success-subtle text-success small">this month</span>
+<span class="badge bg-success-subtle text-success small">as at now</span>
 </div>
 </div>
 </div>
@@ -81,7 +83,7 @@
 </a>
 <div class="text-end">
 <p class="mb-0 text-primary">+30%</p>
-<span class="badge bg-primary-subtle text-primary small">this month</span>
+<span class="badge bg-primary-subtle text-primary small">as at now</span>
 </div>
 </div>
 </div>
@@ -97,8 +99,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ $Booked_data_today->sum('fees') }}</h2>
-<p class="m-0">Today's Revenue Today</p>
+<h2 class="lh-1">{{ number_format($Booked_thisday,2) }}</h2>
+<p class="m-0">Bookings Revenue Today</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -108,7 +110,7 @@
 </a>
 <div class="text-end">
 <p class="mb-0 text-danger">+60%</p>
-<span class="badge bg-danger-subtle text-danger small">this month</span>
+<span class="badge bg-danger-subtle text-danger small">as at now</span>
 </div>
 </div>
 </div>
@@ -124,8 +126,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ $Booked_thisyear }}</h2>
-<p class="m-0">Total Revenue Thisyear</p>
+<h2 class="lh-1">{{ number_format($Booked_thisyear,2) }}</h2>
+<p class="m-0">Bookings Revenue Thisyear</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -135,7 +137,7 @@
 </a>
 <div class="text-end">
 <p class="mb-0 text-warning">+20%</p>
-<span class="badge bg-warning-subtle text-warning small">this month</span>
+<span class="badge bg-warning-subtle text-warning small">as at now</span>
 </div>
 </div>
 </div>
@@ -197,25 +199,31 @@ $duration = $duration+1;
 }
 }
 @endphp
-<td>{{ $book->date_from  }} -to- {{ $book->date_to }}</td>
+<td>{{ Carbon::parse($book->date_from)->format('d-M-Y') }} -to- {{ Carbon::parse($book->date_to)->format('d-M-Y') }}</td>
 <td>{{ $duration }}</td>
-<td>{{ $book->room }}</td>
-<td>{{ $book->date_entered }}</td>
+<td><span class="badge bg-success">{{ $book->room }} - Booked</span></td>
+<td>{{ Carbon::parse($book->date_entered)->format('d-M-Y') }}</td>
 <td>
-<button type="button" class="btn btn-info">
+<form action="{{ route('booking.destroy', $book->id) }}" method="POST">
+@csrf
+@method('DELETE')
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#resModalUpdates{{$book->id}}">
 <i class="ri-edit-line"></i>
 </button>
 <a href="{{ route('check.out', $book->id) }}" class="btn btn-success">
-    <i class="fs-6 text-warning">₵</i>
+<i class="fs-6 text-warning">₵</i>
 </a>
-<button type="button" class="btn btn-danger">
-<i class="ri-currency-fill"></i>
+<button type="button" id="delClicked" class="btn btn-danger">
+<i class="ri-delete-bin-line"></i>
 </button>
+</form>
 </td>
 </tr>
 @php
 $nx++;
 @endphp
+@include('pages.modals.modal_booking_edits')
 @endforeach
 </tbody>
 </table>
@@ -225,3 +233,86 @@ $nx++;
 </div>
 </div>
 @endsection
+
+@push('customed_js')
+<script type="text/javascript">
+$(document).ready(function(){
+$('#hideShowOld').hide();
+
+
+
+$(document).on('click','#delClicked',function(){
+const form = this.closest('form');
+_alert('This Booking',form);
+});
+
+
+
+$('#customer_type').change(function() {
+var selected = $(this).val();
+if (selected === '1') {
+$('#hideShow').show();
+$('#hideShowOld').hide();
+} else {
+$('#hideShowOld').show();
+$('#hideShow').hide();
+}
+});
+
+
+
+$(document).on('change', '.room_type_edits', function () {
+var selected = $(this).val();
+var row = $(this).closest('.modal');
+var roomSelect = row.find('.room_edit');
+$.get("filter-list/"+ selected, function(responses){
+roomSelect.empty();
+roomSelect.append('<option value="">Select Available Room</option>');
+if (responses.data && responses.data.length > 0) {
+$.each(responses.data, function (index, room) {
+roomSelect.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+} else {
+roomSelect.append('<option value="">No rooms available</option>');
+}
+}).fail(function () {
+alert("Error fetching room data.");
+});
+});
+
+
+
+
+$('#room_type').change(function() {
+var selected = $(this).val();
+$.get("filter-list/"+ selected, function(responses){
+let select = $('#room');
+select.empty();
+select.append('<option value="">Select Available Room</option>');
+$.each(responses.data, function (index, room) {
+select.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+});
+});
+
+
+
+function _alert(mheader,form){
+Swal.fire({
+title: `Delete `+mheader+` ?`,
+text: "This action cannot be undone!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#d33',
+cancelButtonColor: '#3085d6',
+confirmButtonText: 'Yes, delete it!',
+reverseButtons: true
+}).then((result) => {
+if (result.isConfirmed) {
+form.submit();
+}
+});
+}
+});
+</script>
+@endpush
