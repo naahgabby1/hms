@@ -66,10 +66,7 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('expenses.list')}}">Expenses List</a>
-</li>
-<li>
-<a href="{{ route('expenses.category')}}">Expenses Category</a>
+<a href="{{ route('index.expenses')}}">Expenses</a>
 </li>
 </ul>
 </li>
@@ -91,7 +88,10 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('staff.list')}}">Staff List</a>
+<a href="{{ route('index.staffpage')}}">Staff List</a>
+</li>
+<li>
+<a href="{{ route('salary.staff')}}">Staff Salary</a>
 </li>
 </ul>
 </li>
@@ -102,7 +102,7 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('user.list')}}">Users List</a>
+<a href="{{ route('index.users')}}">Users List</a>
 </li>
 </ul>
 </li>
@@ -119,7 +119,9 @@
 <li>
 <a href="{{ route('rooms')}}">Hotel Rooms</a>
 </li>
-
+<li>
+<a href="{{ route('expenses.category')}}">Expenses Type</a>
+</li>
 <li>
 <a href="{{ route('tax.rates')}}">Tax Rates</a>
 </li>

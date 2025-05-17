@@ -47,7 +47,7 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format(count($expenses_type)) }}</h2>
+<h2 class="lh-1">{{ number_format($ExpensesCount) }}</h2>
 <p class="m-0">Expenses Categories</p>
 </div>
 </div>
@@ -74,7 +74,7 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format($expenses_captured) }}</h2>
+<h2 class="lh-1">{{ number_format($ExpensesCaptured) }}</h2>
 <p class="m-0">Expenses Captured</p>
 </div>
 </div>
@@ -100,12 +100,12 @@
 <div class="row mb-2">
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#enterExpenseModal">
-New Expenses
+data-bs-target="#cusModal">
+New Category
 </button>
 </div>
 </div>
-@include('pages.modals.modal_expensescapture')
+@include('pages.modals.modal_expense_type')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -117,8 +117,7 @@ New Expenses
 <thead>
 <tr>
 <th>#</th>
-<th>Expenses</th>
-<th>Amount</th>
+<th>Expenses Description</th>
 <th>Date Captured</th>
 <th>Action</th>
 </tr>
@@ -129,21 +128,20 @@ use Carbon\Carbon;
 $nx=1;
 $duration=0;
 @endphp
-@foreach ($expenses_data as $expenses)
+@foreach ($ExpenType_data as $type)
 <tr>
 <td>{{ $nx }}</td>
-<td>{{ $expenses->expenses_type }}</td>
-<td>{{ $expenses->amount }}</td>
+<td>{{ $type->description }}</td>
 @php
 $today = Carbon::today();
 @endphp
-<td>{{ Carbon::parse($expenses->date_time)->format('d-M-Y') }}</td>
+<td>{{ Carbon::parse($type->date_time)->format('d-M-Y') }}</td>
 <td>
-<form action="{{ route('delete.expenses', $expenses->id) }}" method="POST">
+<form action="{{ route('delete.expensescategory', $type->id) }}" method="POST">
 @csrf
 @method('DELETE')
 <button type="button" class="btn btn-info" data-bs-toggle="modal"
-data-bs-target="#expensesEditModal{{$expenses->id}}">
+data-bs-target="#expensesEditModal{{$type->id}}">
 <i class="ri-edit-line"></i>
 </button>
 <button type="button" id="delClicked" class="btn btn-danger">
@@ -155,7 +153,7 @@ data-bs-target="#expensesEditModal{{$expenses->id}}">
 @php
 $nx++;
 @endphp
-@include('pages.modals.modal_expensescapture_edit')
+@include('pages.modals.modal_expenses_type_edit')
 @endforeach
 </tbody>
 </table>
@@ -173,7 +171,7 @@ $(document).ready(function(){
 
 $(document).on('click','#delClicked',function(){
 const form = this.closest('form');
-_alert('This Expenses',form);
+_alert('This Expenses Category',form);
 });
 
 

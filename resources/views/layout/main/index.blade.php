@@ -33,7 +33,7 @@
 </div>
 <div class="app-brand ms-3">
 <a href="index.html" class="d-lg-block d-none">
-<img src="{{asset('app_assets/assets/images/logo.svg')}}" class="logo" alt="Medicare Admin Template">
+<img src="{{asset('app_assets/assets/images/logo.jpg')}}" class="logo" alt="Medicare Admin Template">
 </a>
 <a href="index.html" class="d-lg-none d-md-block">
 <img src="{{asset('app_assets/assets/images/logo-sm.svg')}}" class="logo" alt="Medicare Admin Template">

@@ -55,11 +55,15 @@ Route::put('update-customer/{id}', [CustomerController::class, 'update_customers
 Route::post('save-customer', [CustomerController::class, 'save_customers'])->name('save.customer');
 Route::delete('delete-customer/{id}', [CustomerController::class, 'destroy_customers'])->name('delete.customer');
 
-// expenses
+// Expenses
 Route::get('expenses', [ExpenseController::class, 'index'])->name('index.expenses');
 Route::put('update-expenses/{id}', [ExpenseController::class, 'update_expenses'])->name('update.expenses');
+Route::put('update-expenses-category/{id}', [ExpenseController::class, 'update_expenses_category'])->name('update.expensescategory');
 Route::post('save-expenses', [ExpenseController::class, 'save_expenses'])->name('save.expenses');
+Route::post('save-expenses-category', [ExpenseController::class, 'save_expenses_category'])->name('save.expensescategory');
 Route::delete('delete-expenses/{id}', [ExpenseController::class, 'destroy_expenses'])->name('delete.expenses');
+Route::delete('delete-expenses-category/{id}', [ExpenseController::class, 'destroy_expenses_category'])->name('delete.expensescategory');
+Route::get('expenses-categories', [ExpenseController::class, 'index_exptypes'])->name('expenses.category');
 
 // Users
 Route::get('users', [SystemuserController::class, 'index'])->name('index.users');
@@ -71,14 +75,17 @@ Route::get('payments', [PaymentController::class, 'index'])->name('index.payment
 Route::put('update-payment/{id}', [PaymentController::class, 'update_payments'])->name('update.payments');
 Route::post('save-payment', [PaymentController::class, 'save_payments'])->name('save.payments');
 Route::delete('delete-payment/{id}', [PaymentController::class, 'destroy_payments'])->name('delete.payments');
+Route::post('open-payment/{id}', [StaffController::class, 'open_payments'])->name('open.payment.schedule');
+
 
 
 
 // Staff
-Route::get('staff-list', [StaffController::class, 'index'])->name('index.staff');
+Route::get('registered-staff', [StaffController::class, 'index'])->name('index.staffpage');
 Route::put('update-staff/{id}', [StaffController::class, 'update_staff'])->name('update.staff');
 Route::post('save-staff', [StaffController::class, 'save_staff'])->name('save.staff');
 Route::delete('delete-staff/{id}', [StaffController::class, 'destroy_staff'])->name('delete.staff');
+Route::get('staff-salary', [StaffController::class, 'salary_staff'])->name('salary.staff');
 
 
 
@@ -87,8 +94,8 @@ Route::get('invoice', [DashboardController::class, 'index'])->name('invoice');
 Route::get('payments', [DashboardController::class, 'index'])->name('payments');
 Route::get('old-customers', [DashboardController::class, 'index'])->name('old.customers');
 Route::get('recent-customers', [DashboardController::class, 'index'])->name('recent.customers');
-Route::get('expenses-list', [DashboardController::class, 'index'])->name('expenses.list');
-Route::get('expenses-category', [DashboardController::class, 'index'])->name('expenses.category');
+// Route::get('expenses-list', [DashboardController::class, 'index'])->name('expenses.list');
+// Route::get('expenses-category', [DashboardController::class, 'index'])->name('expenses.category');
 Route::get('other-activities', [DashboardController::class, 'index'])->name('other.activities');
 Route::get('staff-list', [DashboardController::class, 'index'])->name('staff.list');
 Route::get('user-list', [DashboardController::class, 'index'])->name('user.list');

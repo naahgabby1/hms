@@ -36,7 +36,33 @@
 @push('page_head2')
 <div class="row gx-3">
 <div class="col-xl-3 col-sm-6 col-12"></div>
-<div class="col-xl-3 col-sm-6 col-12"></div>
+<div class="col-xl-3 col-sm-6 col-12">
+<div class="card mb-3">
+<div class="card-body">
+<div class="d-flex align-items-center">
+<div class="p-2 border border-success rounded-circle me-3">
+<div class="icon-box md bg-success-subtle rounded-5">
+<i class="ri-surgical-mask-line fs-4 text-success"></i>
+</div>
+</div>
+<div class="d-flex flex-column">
+<h2 class="lh-1">{{ number_format(12)}}</h2>
+<p class="m-0">Active Staff Count</p>
+</div>
+</div>
+<div class="d-flex align-items-end justify-content-between mt-1">
+<a class="text-success" href="{{route('booking')}}">
+<span>View All</span>
+<i class="ri-arrow-right-line text-success ms-1"></i>
+</a>
+<div class="text-end">
+<p class="mb-0 text-success">+40%</p>
+<span class="badge bg-success-subtle text-success small">as at now</span>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="col-xl-3 col-sm-6 col-12">
 <div class="card mb-3">
 <div class="card-body">
@@ -47,8 +73,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format(count($expenses_type)) }}</h2>
-<p class="m-0">Expenses Categories</p>
+<h2 class="lh-1">{{ number_format(12) }}</h2>
+<p class="m-0">Current Payment Total</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -74,8 +100,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format($expenses_captured) }}</h2>
-<p class="m-0">Expenses Captured</p>
+<h2 class="lh-1">{{ number_format(1002) }}</h2>
+<p class="m-0">Total Payments Alltime</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -99,13 +125,22 @@
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#enterExpenseModal">
-New Expenses
+<form action="{{ route('open.payment.schedule', $Open_close->status) }}" method="POST">
+@csrf
+@if ($Open_close->status === 1)
+<button type="submit" class="btn btn-primary">
+Open Payment Schedule
 </button>
+@else
+<button type="submit" class="btn btn-primary">
+Close Payment Schedule
+</button>
+@endif
+<a href="{{ route('index.staffpage') }}" class="btn btn-warning">Staff Registration</a>
+</form>
 </div>
 </div>
-@include('pages.modals.modal_expensescapture')
+@include('pages.modals.modal_staff')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -117,46 +152,42 @@ New Expenses
 <thead>
 <tr>
 <th>#</th>
-<th>Expenses</th>
-<th>Amount</th>
-<th>Date Captured</th>
+<th>Name</th>
+<th>Period</th>
+<th>Payment Category</th>
+<th>Salary</th>
 <th>Action</th>
 </tr>
 </thead>
 <tbody>
 @php
 use Carbon\Carbon;
-$nx=1;
-$duration=0;
+$nx = 1;
+$duration = 0;
 @endphp
-@foreach ($expenses_data as $expenses)
+
+@if ($Open_close->status === 0)
+@foreach ($Staff_paylist as $staff)
 <tr>
 <td>{{ $nx }}</td>
-<td>{{ $expenses->expenses_type }}</td>
-<td>{{ $expenses->amount }}</td>
-@php
-$today = Carbon::today();
-@endphp
-<td>{{ Carbon::parse($expenses->date_time)->format('d-M-Y') }}</td>
+<td>{{ $staff->name }}</td>
+<td>{{ $staff->period }}</td>
+<td>{{ $staff->category }}</td>
+<td>{{ $staff->amount }}</td>
 <td>
-<form action="{{ route('delete.expenses', $expenses->id) }}" method="POST">
-@csrf
-@method('DELETE')
 <button type="button" class="btn btn-info" data-bs-toggle="modal"
-data-bs-target="#expensesEditModal{{$expenses->id}}">
+data-bs-target="#staffEditModal{{ $staff->id }}">
 <i class="ri-edit-line"></i>
 </button>
-<button type="button" id="delClicked" class="btn btn-danger">
-<i class="ri-delete-bin-line"></i>
-</button>
-</form>
 </td>
 </tr>
-@php
-$nx++;
-@endphp
-@include('pages.modals.modal_expensescapture_edit')
+
+@php $nx++; @endphp
+
+{{-- @include('pages.modals.modal_staff_edit') --}}
 @endforeach
+@endif
+
 </tbody>
 </table>
 </div>
@@ -166,6 +197,10 @@ $nx++;
 </div>
 @endsection
 
+
+
+
+
 @push('customed_js')
 <script type="text/javascript">
 $(document).ready(function(){
@@ -173,7 +208,7 @@ $(document).ready(function(){
 
 $(document).on('click','#delClicked',function(){
 const form = this.closest('form');
-_alert('This Expenses',form);
+_alert('This Staff',form);
 });
 
 

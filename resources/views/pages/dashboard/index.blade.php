@@ -29,7 +29,8 @@
 @push('page_head')
 <div class="row gx-3">
 <div class="col-xxl-12 col-sm-12">
-<div class="card mb-3 bg-2">
+{{-- <div class="card mb-3 bg-2"> --}}
+<div class="card mb-3" style="background: #108185">
 <div class="card-body">
 <div class="py-4 px-3 text-white">
 <h6>Good Morning,</h6>
@@ -272,14 +273,14 @@
 <div class="col-xxl-12 col-sm-12">
 <div class="card mb-3">
 <div class="card-header">
-<h5 class="card-title">Available Beds</h5>
+{{-- <h5 class="card-title">Available Beds</h5> --}}
 </div>
 <div class="card-body">
 <div id="availableBeds"></div>
 </div>
 </div>
 </div>
-<div class="col-xxl-6 col-sm-12">
+{{-- <div class="col-xxl-6 col-sm-12">
 <div class="card mb-3">
 <div class="card-header">
 <h5 class="card-title">Patients</h5>
@@ -288,8 +289,8 @@
 <div id="patients"></div>
 </div>
 </div>
-</div>
-<div class="col-xxl-6 col-sm-12">
+</div> --}}
+{{-- <div class="col-xxl-6 col-sm-12">
 <div class="card mb-3">
 <div class="card-header">
 <h5 class="card-title">Treatment Type</h5>
@@ -298,8 +299,8 @@
 <div id="treatment"></div>
 </div>
 </div>
-</div>
-<div class="col-xxl-6 col-sm-12">
+</div> --}}
+{{-- <div class="col-xxl-6 col-sm-12">
 <div class="card mb-3">
 <div class="card-header">
 <h5 class="card-title">Hospital Earnings</h5>
@@ -377,8 +378,8 @@
 
 </div>
 </div>
-</div>
-<div class="col-xxl-3 col-sm-6">
+</div> --}}
+{{-- <div class="col-xxl-3 col-sm-6">
 <div class="card mb-3">
 <div class="card-header">
 <h5 class="card-title">Insurance Claims</h5>
@@ -387,8 +388,8 @@
 <div id="claims"></div>
 </div>
 </div>
-</div>
-<div class="col-xxl-3 col-sm-6">
+</div> --}}
+{{-- <div class="col-xxl-3 col-sm-6">
 <div class="card mb-3">
 <div class="card-header">
 <h5 class="card-title">Patients by Gender</h5>
@@ -399,6 +400,6 @@
 </div>
 </div>
 </div>
-</div>
+</div> --}}
 </div>
 @endsection
