@@ -1,0 +1,13 @@
+Demo 1 on sunday 16th May 2025: issues
+1. Must include audit trails
+Distinguish between booking, checkin and reservation
+Must have a coporate registration
+Must also have coporate reservations
+Corporate checkin
+Corporates can pay later
+Exclude any complete deletions
+Select 2 at the booking and reservations to bring out existing customers
+Include lost and founds
+Documents will be submitted for further actions and activities
+
+

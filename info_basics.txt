@@ -2,7 +2,7 @@ LARAVEL BASIC INFO
 1. Install xampp
 2. Install composer
 3. setup environment variables
-4. Install global Laravel installer as: 
+4. Install global Laravel installer as:
    composer global require Laravel/installer
 5. Setup php to work well with Laravel; Go into xampp>php>php.ini
 6. uncomment the following: extension=zip, extension=fileinfo, extension=mysqli
@@ -95,6 +95,45 @@ $users = User::where('first_name', 'like', '%john%')->get();
 $total = User::count(); // Total users
 
 $admins = User::where('user_role', 1)->count(); // Just admins
+
+
+
+// check to see if a record exist before save
+Systemuser::firstOrCreate(
+    ['username' => $request->input('username')],
+    [
+        'password' => Hash::make('$P@ssw0rd'),
+        'role_id' => $request->input('role_id'),
+        'forlife_permission' => $request->input('chex_permission_t4l'),
+        'yfc_permission' => $request->input('chex_permission_yfc'),
+        'status' => 1
+    ]
+);
+
+
+// check to see is a record exist and onUpdate
+Systemuser::updateOrCreate(
+    ['username' => $request->input('username')], // search condition
+    [
+        'password' => Hash::make('$P@ssw0rd'),
+        'role_id' => $request->input('role_id'),
+        'forlife_permission' => $request->input('chex_permission_t4l'),
+        'yfc_permission' => $request->input('chex_permission_yfc'),
+        'status' => 1
+    ]
+);
+
+
+
+// tree 4 life stuff
+    // session([
+    //     'staffID' => Auth::guard('web')->user()->username,
+    //     'name' => Auth::guard('web')->user()->name,
+    //     'role' => Auth::guard('web')->user()->role_id,
+    //     'station' => Auth::guard('web')->user()->station_name,
+    //     'district' => Auth::guard('web')->user()->district_name,
+    //     'region' => Auth::guard('web')->user()->region_name,
+    // ]);
 
 
 

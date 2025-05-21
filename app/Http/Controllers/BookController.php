@@ -37,12 +37,13 @@ $breadCrumbs = 'Booking';
 $Countries = Countries::orderBy('name')->get();
 $RoomType = Roomtype::orderBy('id', 'asc')->get();
 $Room = Room::orderBy('description')->get();
-$customers = Customer::orderBy('first_name', 'asc')->get();
+$customers = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate', 1)->get();
+$corporates = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate', 2)->get();
 $Booked_thisyear = DB::table('payments')->where('void_status', 0)->whereYear('date_time', Carbon::now()->year)->sum('amount');
 $Booked_data = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->get();
 $Booked_thisday = DB::table('payments')->where('void_status', 0)->whereDate('date_time', Carbon::today())->sum('amount');
 $Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->where('out_status', 0)->get();
-return view('pages.bookings.index', compact('title','breadCrumbs','Countries','RoomType','Room','Booked_data','Booked_data_today','Booked_thisyear','Booked_thisday','customers'));
+return view('pages.bookings.index', compact('title','breadCrumbs','Countries','RoomType','Room','Booked_data','Booked_data_today','Booked_thisyear','Booked_thisday','customers','corporates'));
 }
 
 
@@ -305,7 +306,90 @@ $notification = array(
 return view('pages.bookings.checked_out_confirmed', compact('title','breadCrumbs','mid'));
 }
 
-public function save_booking(Request $request){
+
+// corporate_group_type
+// corporate_type_existing
+// corporate_main_name
+// corporate_mobile_phone
+// corporate_date_from
+// corporate_date_to
+// corporate_country
+// corporate_city
+// corporate_room_type
+// corporate_room
+// corporate_address
+// room_confirmation
+
+
+public function save_booking_corporate(Request $request){
+$title = 'Booking';
+$breadCrumbs = 'Booking';
+$validated = $request->validate(['corporate_group_type' => 'required'],['corporate_group_type.required' => 'Please Select Corporate Visit Category']);
+$typex = $request->corporate_group_type;
+if ($typex==1) {
+$validated = $request->validate([
+'corporate_main_name' => 'required|string|max:255',
+'corporate_mobile_phone' => 'required|max:25',
+'corporate_date_from' => 'required',
+'corporate_date_to' => 'required',
+'corporate_room_type' => 'required',
+'corporate_room' => 'required'
+], [
+'corporate_main_name.required' => 'Please enter corporate or company name.',
+'corporate_mobile_phone.required' => 'Please enter phone number',
+'corporate_date_from.required' => 'Select date from',
+'corporate_date_to.required' => 'Select date to',
+'corporate_room_type.required' => 'Select room type',
+'corporate_room.required' => 'Select room'
+]);
+$firstname = $request->input('corporate_main_name');
+$mobilephone = $request->input('corporate_mobile_phone');
+} else {
+$uid = $request->corporate_type_existing;
+$cdata = Customer::findOrFail($uid);
+$validated = $request->validate([
+'corporate_date_from' => 'required',
+'corporate_date_to' => 'required',
+'corporate_room_type' => 'required',
+'corporate_room' => 'required'
+], [
+'corporate_date_from.required' => 'Select date from',
+'corporate_date_to.required' => 'Select date to',
+'corporate_room_type.required' => 'Select room type',
+'corporate_room.required' => 'Select room'
+]);
+$firstname = $cdata->first_name;
+$mobilephone = $cdata->phone_number;
+}
+
+$reservation = new Book();
+$reservation->first_name = $firstname;
+$reservation->mobile_number = $mobilephone;
+$reservation->date_from = $request->input('corporate_date_from');
+$reservation->date_to = $request->input('corporate_date_to');
+$reservation->country = $request->input('corporate_country');
+$reservation->city = $request->input('corporate_city');
+$reservation->room_type_id = $request->input('corporate_room_type');
+$reservation->room_id = $request->input('corporate_room');
+$reservation->address = $request->input('corporate_address');
+$reservation->entered_by = Auth::guard('logindetails')->user()->email;
+$reservation->status = 1;
+$reservation->confirm_chexedin = $request->input('room_confirmation');
+$reservation->save();
+Room::findOrFail($request->input('room'))->update([
+"availability"=>1
+]);
+$notification = array(
+'message'=>"Booking Successfully Saved..!!!",
+'alert-type'=>'success',
+);
+return back()->with($notification);
+
+}
+
+
+
+public function save_booking_customer(Request $request){
 $title = 'Booking';
 $breadCrumbs = 'Booking';
 $validated = $request->validate(['customer_type' => 'required'],['customer_type.required' => 'Please Select Customer Type']);

@@ -152,12 +152,17 @@
 <div class="row mb-2">
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#resModal">
-New Booking
+data-bs-target="#personalModal">
+New Personal Booking
+</button>
+<button type="button" class="btn btn-warning" data-bs-toggle="modal"
+data-bs-target="#corporateModal">
+New Corporate Booking
 </button>
 </div>
 </div>
-@include('pages.modals.modal_booking')
+@include('pages.modals.modal_personal_booking')
+@include('pages.modals.modal_corporate_booking')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -238,6 +243,34 @@ $nx++;
 <script type="text/javascript">
 $(document).ready(function(){
 $('#hideShowOld').hide();
+$('#hideShowOldCorporate').hide();
+
+// Corporate side
+$('#corporate_group_type').change(function() {
+var selected = $(this).val();
+if (selected === '1') {
+$('#hideShowCorporate').show();
+$('#hideShowOldCorporate').hide();
+} else {
+$('#hideShowOldCorporate').show();
+$('#hideShowCorporate').hide();
+}
+});
+
+$('#corporate_room_type').change(function() {
+var selected = $(this).val();
+$.get("filter-list/"+ selected, function(responses){
+let select = $('#corporate_room');
+select.empty();
+select.append('<option value="">Select Available Room</option>');
+$.each(responses.data, function (index, room) {
+select.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+});
+});
+
+
+
 
 
 

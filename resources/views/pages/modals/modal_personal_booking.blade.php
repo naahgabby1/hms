@@ -1,13 +1,13 @@
 <section>
-<div class="modal fade" id="resModal" tabindex="-1" aria-labelledby="resModalLabel"
+<div class="modal fade" id="personalModal" tabindex="-1" aria-labelledby="personalModalLabel"
 aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog modal-xl">
 <div class="modal-content">
-<form action="{{ route('save.booking') }}" method="post">
+<form action="{{ route('save.booking.customer') }}" method="post">
 @csrf
 @method('POST')
 <div class="modal-header">
-<h5 class="modal-title" id="resModalLabel">
+<h5 class="modal-title" id="personalModalLabel">
 Booking
 </h5>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

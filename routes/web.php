@@ -40,7 +40,12 @@ Route::put('confirm-reservation/{id}', [BookController::class, 'confirm_reservat
 
 Route::get('filter-list/{id}', [RoomController::class, 'getRooms'])->name('get.rooms');
 Route::post('print-receipt', [BookController::class, 'display_receipt'])->name('receipt.show');
-Route::post('save_booking', [BookController::class, 'save_booking'])->name('save.booking');
+Route::post('save_booking_customer', [BookController::class, 'save_booking_customer'])->name('save.booking.customer');
+Route::post('save_booking_corporate', [BookController::class, 'save_booking_corporate'])->name('save.booking.corporate');
+
+
+
+
 Route::post('save_reservation', [BookController::class, 'save_reservation'])->name('save.reservation');
 
 Route::put('update_booking', [BookController::class, 'update_booking'])->name('update.booking');
