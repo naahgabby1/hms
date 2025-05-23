@@ -125,6 +125,13 @@ Systemuser::updateOrCreate(
 
 
 
+cp .env.example .env
+composer install
+
+
+
+
+
 // tree 4 life stuff
     // session([
     //     'staffID' => Auth::guard('web')->user()->username,
