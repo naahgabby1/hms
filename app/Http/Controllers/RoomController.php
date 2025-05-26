@@ -11,6 +11,21 @@ use App\Models\Room;
 
 class RoomController extends Controller
 {
+
+
+
+    public function getRooms_reservation($id)
+{
+    $rooms = Room::select('id', 'description')->where('type_id', $id)->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $rooms
+    ]);
+}
+
+
+
     public function getRooms($id)
 {
     $rooms = Room::select('id', 'description')->where('type_id', $id)->where('availability', 0)->get();

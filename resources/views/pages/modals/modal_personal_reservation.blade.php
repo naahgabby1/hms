@@ -1,14 +1,14 @@
 <section>
-<div class="modal fade" id="personalModal" tabindex="-1" aria-labelledby="personalModalLabel"
+<div class="modal fade" id="resModal" tabindex="-1" aria-labelledby="personalModalLabel"
 aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog modal-xl">
 <div class="modal-content">
-<form action="{{ route('save.booking.customer') }}" method="post">
+<form action="{{ route('save.reservation') }}" method="post">
 @csrf
 @method('POST')
 <div class="modal-header">
-<h5 class="modal-title" id="personalModalLabel">
-Booking & Check-In Customer
+<h5 class="modal-title" id="resModalLabel">
+Customer Reservations
 </h5>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
@@ -16,7 +16,7 @@ Booking & Check-In Customer
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="bg-light rounded-2 px-3 py-2 mb-3">
-<h6 class="m-0">Booking Details</h6>
+<h6 class="m-0">Reservation Details</h6>
 </div>
 </div>
 <div class="col-xxl-3 col-lg-3 col-sm-3 mb-3">
@@ -145,20 +145,28 @@ value="female">
 <div class="col-xxl-3 col-lg-3 col-sm-12">
 <div class="mb-3 mt-3" style="padding-top: 20px">
 <div class="form-check">
-<input class="form-check-input" type="checkbox" value="1" name="flexCheckChecked" id="flexCheckChecked" checked="checked" disabled>
-<label class="form-check-label" for="flexCheckChecked">Customer Checked In</label>
+<input class="form-check-input" type="checkbox" value="1"
+name="flexCheckChecked" id="flexCheckChecked">
+<label class="form-check-label" for="flexCheckChecked">MAKE PAYMENT</label>
 </div>
+</div>
+</div>
+</div>
+<div class="row gx-3" id="hidePayment" style="display: none">
+<div class="col-xxl-9 col-lg-9 col-sm-12">
+<label class="form-label" for="address">Enter Payment Amount <span class="text-danger"></span></label>
+<input type="number" class="form-control"
+name="payAmount" id="payAmount" style="text-align: right">
 </div>
 </div>
 
-</div>
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
 Cancel
 </button>
 <button type="submit" class="btn btn-primary">
-Save Booking & Check-in
+Save Reservation
 </button>
 </div>
 </form>

@@ -156,11 +156,18 @@ $total = $Reserved_data->sum('fees');
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#resModal">
-New Reservation
+Customer Reservation
+</button>
+<button type="button" class="btn btn-warning" data-bs-toggle="modal"
+data-bs-target="#corporateReservationModal">
+Corporate Reservation
 </button>
 </div>
 </div>
-@include('pages.modals.modal_reservation')
+
+
+@include('pages.modals.modal_personal_reservation')
+@include('pages.modals.modal_corporate_reservation')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -217,10 +224,20 @@ $duration = $duration+1;
 data-bs-target="#confrimModalMasterUpdate{{$reservation->id}}">
 <i class="ri-thumb-up-line"></i>
 </button>
+
+
+@if($reservation->category==1)
 <button type="button" class="btn btn-info" data-bs-toggle="modal"
-data-bs-target="#resModalMasterUpdate{{$reservation->id}}">
+data-bs-target="#cusresModalUpdates{{$reservation->id}}">
 <i class="ri-edit-line"></i>
 </button>
+@else
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#corResUpdates{{$reservation->id}}">
+<i class="ri-edit-line"></i>
+</button>
+@endif
+
 <button type="submit" id="canClicked" class="btn btn-warning" data-cxid="{{ $reservation->id }}">
 <i class="ri-close-fill"></i>
 </button>
@@ -233,8 +250,10 @@ data-bs-target="#resModalMasterUpdate{{$reservation->id}}">
 $nx++;
 @endphp
 
-@include('pages.modals.modal_reservation_edits')
-@include('pages.modals.modal_reservation_confimation')
+@include('pages.modals.modal_personal_reservation_edits')
+@include('pages.modals.modal_corporate_reservation_edits')
+@include('pages.modals.modal_personal_reservation_confimation')
+@include('pages.modals.modal_corporate_reservation_confimation')
 @endforeach
 </tbody>
 </table>
@@ -250,6 +269,66 @@ $nx++;
 <script type="text/javascript">
 $(document).ready(function(){
 $('#hideShowOld').hide();
+$('#hideShowOldCorporate').hide();
+
+$('#flexCheckChecked').on('change', function () {
+if ($(this).is(':checked')) {
+$('#hidePayment').show();
+} else {
+$('#hidePayment').hide();
+}
+});
+
+
+$('#flexCheckChecked2_edit').on('change', function () {
+if ($(this).is(':checked')) {
+$('#hidePayment2Editted_edit').show();
+} else {
+$('#hidePayment2Editted_edit').hide();
+}
+});
+
+
+
+
+
+$('#flexCheckChecked2').on('change', function () {
+if ($(this).is(':checked')) {
+$('#hidePayment2').show();
+} else {
+$('#hidePayment2').hide();
+}
+});
+
+
+
+
+$('#corporate_group_type').change(function() {
+var selected = $(this).val();
+if (selected === '1') {
+$('#hideShowCorporate').show();
+$('#hideShowOldCorporate').hide();
+} else {
+$('#hideShowOldCorporate').show();
+$('#hideShowCorporate').hide();
+}
+});
+
+
+
+$('#corporate_room_type').change(function() {
+var selected = $(this).val();
+$.get("filter-list-reservation/"+ selected, function(responses){
+let select = $('#corporate_room');
+select.empty();
+select.append('<option value="">Select Available Room</option>');
+$.each(responses.data, function (index, room) {
+select.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+});
+});
+
+
 
 $.ajaxSetup({
 headers: {
@@ -286,7 +365,7 @@ $('#hideShow').hide();
 
 $('#room_type').change(function() {
 var selected = $(this).val();
-$.get("filter-list/"+ selected, function(responses){
+$.get("filter-list-reservation/"+ selected, function(responses){
 let select = $('#room');
 select.empty();
 select.append('<option value="">Select Available Room</option>');

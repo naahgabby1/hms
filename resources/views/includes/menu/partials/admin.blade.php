@@ -17,34 +17,34 @@
 <li class="treeview">
 <a href="#!">
 <i class="ri-stethoscope-line"></i>
-<span class="menu-text">Booking & Reserv</span>
+<span class="menu-text">Booking</span>
 </a>
 <ul class="treeview-menu">
 <li>
 <a href="{{ route('booking')}}">Bookings</a>
 </li>
 <li>
-{{-- <a href="{{ route('cancelled.booking')}}">Cancelled Booking</a> --}}
+<a href="{{ route('cancelled.booking')}}">Cancelled Booking</a>
 </li>
-<li>
+{{-- <li>
 <a href="{{ route('reservation')}}">Reservations</a>
-</li>
-<li>
+</li> --}}
+{{-- <li>
 <a href="{{ route('cancelled.reservation')}}">Cancelled Reservations</a>
-</li>
+</li> --}}
 </ul>
 </li>
 <li class="treeview">
 <a href="#!">
 <i class="ri-heart-pulse-line"></i>
-<span class="menu-text">Billings & Payments</span>
+<span class="menu-text">Reservation</span>
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('invoice')}}">Invoice</a>
+<a href="{{ route('reservation')}}">Reservations</a>
 </li>
 <li>
-<a href="{{ route('payments')}}">Track Payments</a>
+<a href="{{ route('cancelled.reservation')}}">Cancelled Reservations</a>
 </li>
 </ul>
 </li>

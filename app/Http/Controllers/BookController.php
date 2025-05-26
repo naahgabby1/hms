@@ -16,6 +16,21 @@ use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
+protected $user;
+protected $user_role;
+
+public function __construct()
+{
+$user = Auth::guard('logindetails')->user();
+if ($user) {
+$this->user = $user->email;
+$this->user_role = $user->user_role;
+} else {
+$this->user = null;
+$this->user_role = null;
+}
+}
+
 public function genCode()
 {
 do { $code = '#00-' . mt_rand(100000, 999999); }
@@ -34,15 +49,40 @@ return redirect()->back()->with('success', 'Item deleted successfully.');
 public function bookings(){
 $title = 'Booking';
 $breadCrumbs = 'Booking';
-$Countries = Countries::orderBy('name')->get();
+$Countries = Countries::orderByRaw("CASE WHEN name = 'Ghana' THEN 0 ELSE 1 END")
+                      ->orderBy('name')
+                      ->get();
 $RoomType = Roomtype::orderBy('id', 'asc')->get();
 $Room = Room::orderBy('description')->get();
 $customers = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate', 1)->get();
 $corporates = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate', 2)->get();
+if ($this->user_role < 3) {
 $Booked_thisyear = DB::table('payments')->where('void_status', 0)->whereYear('date_time', Carbon::now()->year)->sum('amount');
 $Booked_data = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->get();
 $Booked_thisday = DB::table('payments')->where('void_status', 0)->whereDate('date_time', Carbon::today())->sum('amount');
 $Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->where('out_status', 0)->get();
+} else {
+$Booked_thisyear = DB::table('payments')->where('void_status', 0)
+->whereYear('date_time', Carbon::now()->year)
+->where('entered_by', $this->user)
+->sum('amount');
+$Booked_data = DB::table('vw_reservationbooking')
+->where('status', 1)
+->where('entered_by', $this->user)
+->where('out_status', 0)->get();
+
+$Booked_thisday = DB::table('payments')
+->where('void_status', 0)
+->where('entered_by', $this->user)
+->whereDate('date_time', Carbon::today())
+->sum('amount');
+
+$Booked_data_today = DB::table('vw_reservationbooking')
+->whereDate('date_entered', Carbon::today())
+->where('status', 1)
+->where('entered_by', $this->user)
+->where('out_status', 0)->get();
+}
 return view('pages.bookings.index', compact('title','breadCrumbs','Countries','RoomType','Room','Booked_data','Booked_data_today','Booked_thisyear','Booked_thisday','customers','corporates'));
 }
 
@@ -73,15 +113,22 @@ return view('pages.bookings.cancelled', compact('title','breadCrumbs'));
 public function reservations(){
 $title = 'Reservations';
 $breadCrumbs = 'Reservations';
-$Countries = Countries::orderBy('name')->get();
+$Countries = Countries::orderByRaw("CASE WHEN name = 'Ghana' THEN 0 ELSE 1 END")
+                      ->orderBy('name')
+                      ->get();
+$corporates = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate', 2)->get();
 $customers = Customer::orderBy('first_name', 'asc')->get();
 $RoomType = Roomtype::orderBy('description')->get();
 $Room = Room::orderBy('description')->get();
 // $Reserved_data = DB::table('vw_reservationbooking')->where('status', 0)->where('cancelled', 0)->get();
 $Reserved_data = Viewbooking::with('rooms')->where('status', 0)->where('cancelled', 0)->get();
-$Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->get();
+$Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_from', Carbon::today())->where('status', 1)->get();
 $Booked_data_pending = DB::table('vw_reservationbooking')->where('status', 1)->where('cancelled', 0)->get();
-return view('pages.reservations.index', compact('title','breadCrumbs','Countries','RoomType','Room','Reserved_data','Booked_data_today','customers','Booked_data_pending'));
+return view('pages.reservations.index',
+compact('title','breadCrumbs','Countries',
+'RoomType','Room','Reserved_data',
+'Booked_data_today','customers',
+'Booked_data_pending','corporates'));
 }
 
 
@@ -181,6 +228,62 @@ return back()->with($notification,compact('title','breadCrumbs'));
 }
 
 
+public function corporate_reservation_editted(Request $request, $rid){
+$title = 'Reservation';
+$breadCrumbs = 'Reservation Update';
+$validated = $request->validate([
+'corporate_main_name_edit' => 'required|string|max:255',
+'corporate_mobile_phone_edit' => 'required|max:25',
+'corporate_date_from_edit' => 'required',
+'corporate_date_to_edit' => 'required',
+'corporate_country_edit' => 'required',
+'corporate_city_edit' => 'required'
+], [
+'corporate_main_name_edit.required' => 'Please enter first name.',
+'corporate_mobile_phone_edit.required' => 'Please enter phone number',
+'corporate_date_from_edit.required' => 'Select date from',
+'corporate_date_to_edit.required' => 'Select date to',
+'corporate_country_edit.required' => 'Select country',
+'corporate_city_edit.required' => 'Enter city'
+]);
+
+$mdate_from = Carbon::parse($request->input('corporate_date_from_edit'));
+$mdate_to = Carbon::parse($request->input('corporate_date_to_edit'));
+
+if (
+$mdate_to->greaterThan($mdate_from)
+) {
+Book::where('id', $rid)->update([
+'first_name' => $request->input('corporate_main_name_edit'),
+'mobile_number' => $request->input('corporate_mobile_phone_edit'),
+'date_to' => $request->input('corporate_date_to_edit'),
+'country' => $request->input('corporate_country_edit'),
+'city' => $request->input('corporate_city_edit'),
+'res_payment' => $request->input('payAmount_edit')
+]);
+
+$notification = array(
+'message'=>"Reservation Successfully Updated..!!!",
+'alert-type'=>'success',
+);
+}else{
+$notification = array(
+'message'=>"Failed To Update..!!!",
+'alert-type'=>'success',
+);
+}
+return back()->with($notification,compact('title','breadCrumbs'));
+}
+
+
+
+
+
+
+
+
+
+
 
 public function reservation_editted(Request $request, $rid){
 $title = 'Reservation';
@@ -237,35 +340,35 @@ $title = 'Booking';
 $breadCrumbs = 'Booking Update';
 $validated = $request->validate([
 'first_name_edit' => 'required|string|max:255',
-'last_name_edit' => 'required|string|max:255',
 'mobile_phone_edit' => 'required|max:25',
 'gender_edit' => 'required|max:25',
 'date_from_edit' => 'required',
 'date_to_edit' => 'required',
 'country_edit' => 'required',
-'city_edit' => 'required',
 'room_type_edit' => 'required',
-'room_edit' => 'required',
-'address_edit' => 'required',
+'room_edit' => 'required'
 ], [
 'first_name_edit.required' => 'Please enter first name.',
-'last_name_edit.required' => 'Please enter last name',
 'mobile_phone_edit.required' => 'Please enter phone number',
 'gender_edit.required' => 'Please select gender',
 'date_from_edit.required' => 'Select date from',
 'date_to_edit.required' => 'Select date to',
 'country_edit.required' => 'Select country',
-'city_edit.required' => 'Enter city',
 'room_type_edit.required' => 'Select room type',
 'room_edit.required' => 'Select room',
-'address_edit.required' => 'Enter address',
 ]);
 
+$mdate_from = Carbon::parse($request->input('date_from_edit'));
+$mdate_to = Carbon::parse($request->input('date_to_edit'));
+
+if (
+$mdate_to->greaterThan($mdate_from)
+) {
 Book::where('id', $id)->update([
 'first_name' => $request->input('first_name_edit'),
 'last_name' => $request->input('last_name_edit'),
 'mobile_number' => $request->input('mobile_phone_edit'),
-'gender' => $request->input('gender_edit'),
+'gender' => $request->input('gender_edit')==1 ? null : $request->input('gender_edit'),
 'date_from' => $request->input('date_from_edit'),
 'date_to' => $request->input('date_to_edit'),
 'country' => $request->input('country_edit'),
@@ -279,6 +382,12 @@ $notification = array(
 'message'=>"Booking Successfully Updated..!!!",
 'alert-type'=>'success',
 );
+}else{
+$notification = array(
+'message'=>"Failed To Update Booking..!!!",
+'alert-type'=>'success',
+);
+}
 return back()->with($notification,compact('title','breadCrumbs'));
 }
 
@@ -307,24 +416,12 @@ return view('pages.bookings.checked_out_confirmed', compact('title','breadCrumbs
 }
 
 
-// corporate_group_type
-// corporate_type_existing
-// corporate_main_name
-// corporate_mobile_phone
-// corporate_date_from
-// corporate_date_to
-// corporate_country
-// corporate_city
-// corporate_room_type
-// corporate_room
-// corporate_address
-// room_confirmation
-
-
 public function save_booking_corporate(Request $request){
 $title = 'Booking';
 $breadCrumbs = 'Booking';
-$validated = $request->validate(['corporate_group_type' => 'required'],['corporate_group_type.required' => 'Please Select Corporate Visit Category']);
+$validated = $request->validate(
+['corporate_group_type' => 'required'],
+['corporate_group_type.required' => 'Please Select Category']);
 $typex = $request->corporate_group_type;
 if ($typex==1) {
 $validated = $request->validate([
@@ -335,10 +432,10 @@ $validated = $request->validate([
 'corporate_room_type' => 'required',
 'corporate_room' => 'required'
 ], [
-'corporate_main_name.required' => 'Please enter corporate or company name.',
+'corporate_main_name.required' => 'Please enter name of Oganization',
 'corporate_mobile_phone.required' => 'Please enter phone number',
 'corporate_date_from.required' => 'Select date from',
-'corporate_date_to.required' => 'Select date to',
+'corporate_date_to.required' => 'Select date',
 'corporate_room_type.required' => 'Select room type',
 'corporate_room.required' => 'Select room'
 ]);
@@ -361,9 +458,16 @@ $validated = $request->validate([
 $firstname = $cdata->first_name;
 $mobilephone = $cdata->phone_number;
 }
-
+$mdate_from = Carbon::parse($request->input('corporate_date_from'));
+$mdate_to = Carbon::parse($request->input('corporate_date_to'));
+$today = Carbon::today();
+if (
+$mdate_from->lessThanOrEqualTo($today) &&
+$mdate_to->greaterThan($mdate_from)
+) {
 $reservation = new Book();
 $reservation->first_name = $firstname;
+$reservation->category = 2;
 $reservation->mobile_number = $mobilephone;
 $reservation->date_from = $request->input('corporate_date_from');
 $reservation->date_to = $request->input('corporate_date_to');
@@ -374,17 +478,24 @@ $reservation->room_id = $request->input('corporate_room');
 $reservation->address = $request->input('corporate_address');
 $reservation->entered_by = Auth::guard('logindetails')->user()->email;
 $reservation->status = 1;
-$reservation->confirm_chexedin = $request->input('room_confirmation');
 $reservation->save();
-Room::findOrFail($request->input('room'))->update([
-"availability"=>1
+$last_id = $reservation->id;
+Room::findOrFail($request->input('corporate_room'))->update([
+"availability"=>1,
+"present_or_future"=>1,
+"booking_code"=>$last_id
 ]);
 $notification = array(
-'message'=>"Booking Successfully Saved..!!!",
+'message'=>"Booking Successful..!!!",
 'alert-type'=>'success',
 );
+}else{
+$notification = array(
+'message'=>"Failed Check Date..!!!",
+'alert-type'=>'error',
+);
+}
 return back()->with($notification);
-
 }
 
 
@@ -400,13 +511,11 @@ $validated = $request->validate([
 'last_name' => 'required|string|max:255',
 'mobile_phone' => 'required|max:25',
 'gender' => 'required|max:25',
-'date_from' => 'required',
-'date_to' => 'required',
+'date_from' => 'required|date|before_or_equal:date_to',
+'date_to' => 'required|date',
 'country' => 'required',
-'city' => 'required',
 'room_type' => 'required',
-'room' => 'required',
-'address' => 'required',
+'room' => 'required'
 ], [
 'first_name.required' => 'Please enter first name.',
 'last_name.required' => 'Please enter last name',
@@ -415,10 +524,8 @@ $validated = $request->validate([
 'date_from.required' => 'Select date from',
 'date_to.required' => 'Select date to',
 'country.required' => 'Select country',
-'city.required' => 'Enter city',
 'room_type.required' => 'Select room type',
-'room.required' => 'Select room',
-'address.required' => 'Enter address',
+'room.required' => 'Select room'
 ]);
 $firstname = $request->input('first_name');
 $lastname = $request->input('last_name');
@@ -428,21 +535,17 @@ $ugender = $request->input('gender');
 $uid = $request->customer_type_existing;
 $cdata = Customer::findOrFail($uid);
 $validated = $request->validate([
-'date_from' => 'required',
-'date_to' => 'required',
+'date_from' => 'required|date|before_or_equal:date_to',
+'date_to' => 'required|date',
 'country' => 'required',
-'city' => 'required',
 'room_type' => 'required',
-'room' => 'required',
-'address' => 'required',
+'room' => 'required'
 ], [
 'date_from.required' => 'Select date from',
 'date_to.required' => 'Select date to',
 'country.required' => 'Select country',
-'city.required' => 'Enter city',
 'room_type.required' => 'Select room type',
-'room.required' => 'Select room',
-'address.required' => 'Enter address',
+'room.required' => 'Select room'
 ]);
 $firstname = $cdata->first_name;
 $lastname = $cdata->last_names;
@@ -450,9 +553,18 @@ $mobilephone = $cdata->phone_number;
 $ugender = $cdata->gender;
 }
 
+$mdate_from = Carbon::parse($request->input('date_from'));
+$mdate_to = Carbon::parse($request->input('date_to'));
+$today = Carbon::today();
+
+if (
+$mdate_from->lessThanOrEqualTo($today) &&
+$mdate_to->greaterThan($mdate_from)
+) {
 $reservation = new Book();
 $reservation->first_name = $firstname;
 $reservation->last_name = $lastname;
+$reservation->category = 1;
 $reservation->mobile_number = $mobilephone;
 $reservation->gender = strtolower($ugender);
 $reservation->date_from = $request->input('date_from');
@@ -462,25 +574,35 @@ $reservation->city = $request->input('city');
 $reservation->room_type_id = $request->input('room_type');
 $reservation->room_id = $request->input('room');
 $reservation->address = $request->input('address');
-$reservation->entered_by = session('user_name');
+$reservation->entered_by = Auth::guard('logindetails')->user()->email;
 $reservation->status = 1;
 $reservation->save();
+$last_id = $reservation->id;
 Room::findOrFail($request->input('room'))->update([
-"availability"=>1
+"availability"=>1,
+"present_or_future"=>1,
+"booking_code"=>$last_id
 ]);
 $notification = array(
-'message'=>"Booking Successfully Saved..!!!",
+'message'=>"Booking Successful..!!!",
 'alert-type'=>'success',
 );
-return back()->with($notification);
-
+}else{
+$notification = array(
+'message'=>"Failed Check Date..!!!",
+'alert-type'=>'error',
+);
 }
+return back()->with($notification);
+}
+
 
 public function save_reservation(Request $request){
 $title = 'Reservation';
 $breadCrumbs = 'Reservation';
 $validated = $request->validate(['customer_type' => 'required'],['customer_type.required' => 'Please Select Customer Type']);
 $typex = $request->customer_type;
+$flexCheckChecked = $request->flexCheckChecked;
 
 if ($typex==1) {
 $validated = $request->validate([
@@ -491,10 +613,8 @@ $validated = $request->validate([
 'date_from' => 'required',
 'date_to' => 'required',
 'country' => 'required',
-'city' => 'required',
 'room_type' => 'required',
-'room' => 'required',
-'address' => 'required',
+'room' => 'required'
 ], [
 'first_name.required' => 'Please enter first name.',
 'last_name.required' => 'Please enter last name',
@@ -503,10 +623,8 @@ $validated = $request->validate([
 'date_from.required' => 'Select date from',
 'date_to.required' => 'Select date to',
 'country.required' => 'Select country',
-'city.required' => 'Enter city',
 'room_type.required' => 'Select room type',
-'room.required' => 'Select room',
-'address.required' => 'Enter address',
+'room.required' => 'Select room'
 ]);
 
 $firstname = $request->input('first_name');
@@ -520,32 +638,34 @@ $validated = $request->validate([
 'date_from' => 'required',
 'date_to' => 'required',
 'country' => 'required',
-'city' => 'required',
 'room_type' => 'required',
 'room' => 'required',
-'address' => 'required',
 ], [
 'date_from.required' => 'Select date from',
 'date_to.required' => 'Select date to',
 'country.required' => 'Select country',
-'city.required' => 'Enter city',
 'room_type.required' => 'Select room type',
-'room.required' => 'Select room',
-'address.required' => 'Enter address',
+'room.required' => 'Select room'
 ]);
-
-
 $firstname = $cdata->first_name;
 $lastname = $cdata->last_names;
 $mobilephone = $cdata->phone_number;
 $ugender = $cdata->gender;
 }
 
+$mdate_from = Carbon::parse($request->input('date_from'));
+$mdate_to = Carbon::parse($request->input('date_to'));
+$today = Carbon::today();
 
-
+if (
+$mdate_from->greaterThanOrEqualTo($today) &&
+$mdate_to->greaterThan($mdate_from) &&
+$mdate_to->greaterThan($today)
+) {
 $reservation = new Book();
 $reservation->first_name = $firstname;
 $reservation->last_name = $lastname;
+$reservation->category = 1;
 $reservation->mobile_number = $mobilephone;
 $reservation->gender = strtolower($ugender);
 $reservation->date_from = $request->input('date_from');
@@ -555,15 +675,117 @@ $reservation->city = $request->input('city');
 $reservation->room_type_id = $request->input('room_type');
 $reservation->room_id = $request->input('room');
 $reservation->address = $request->input('address');
-$reservation->entered_by = session('user_name');
-$reservation->save();
+$reservation->entered_by = Auth::guard('logindetails')->user()->email;
+$reservation->status = 0 ;
 
+if($flexCheckChecked != ''){
+$amount = $request->payAmount;
+$reservation->res_payment = $request->payAmount;
+}
+$reservation->save();
 $notification = array(
-'message'=>"Reservation Successfully Saved..!!!",
+'message'=>"Reservation Successful  !!!",
 'alert-type'=>'success',
 );
+}else{
+$notification = array(
+'message'=>"Reservation Failed..!!!",
+'alert-type'=>'error',
+);
+}
 return back()->with($notification);
 }
+
+
+
+
+public function save_reservation_corporate(Request $request){
+$title = 'Booking';
+$breadCrumbs = 'Booking';
+$validated = $request->validate(
+['corporate_group_type' => 'required'],
+['corporate_group_type.required' => 'Please Select Category']);
+$typex = $request->corporate_group_type;
+$flexCheckChecked = $request->flexCheckChecked;
+if ($typex==1) {
+$validated = $request->validate([
+'corporate_main_name' => 'required|string|max:255',
+'corporate_mobile_phone' => 'required|max:25',
+'corporate_date_from' => 'required',
+'corporate_date_to' => 'required',
+'corporate_room_type' => 'required',
+'corporate_room' => 'required'
+], [
+'corporate_main_name.required' => 'Please enter name of Oganization',
+'corporate_mobile_phone.required' => 'Please enter phone number',
+'corporate_date_from.required' => 'Select date from',
+'corporate_date_to.required' => 'Select date',
+'corporate_room_type.required' => 'Select room type',
+'corporate_room.required' => 'Select room'
+]);
+$firstname = $request->input('corporate_main_name');
+$mobilephone = $request->input('corporate_mobile_phone');
+} else {
+$uid = $request->corporate_type_existing;
+$cdata = Customer::findOrFail($uid);
+$validated = $request->validate([
+'corporate_date_from' => 'required',
+'corporate_date_to' => 'required',
+'corporate_room_type' => 'required',
+'corporate_room' => 'required'
+], [
+'corporate_date_from.required' => 'Select date from',
+'corporate_date_to.required' => 'Select date to',
+'corporate_room_type.required' => 'Select room type',
+'corporate_room.required' => 'Select room'
+]);
+$firstname = $cdata->first_name;
+$mobilephone = $cdata->phone_number;
+}
+$mdate_from = Carbon::parse($request->input('corporate_date_from'));
+$mdate_to = Carbon::parse($request->input('corporate_date_to'));
+$today = Carbon::today();
+if (
+$mdate_from->greaterThanOrEqualTo($today) &&
+$mdate_to->greaterThan($mdate_from) &&
+$mdate_to->greaterThan($today)
+) {
+$reservation = new Book();
+$reservation->first_name = $firstname;
+$reservation->category = 2;
+$reservation->mobile_number = $mobilephone;
+$reservation->date_from = $request->input('corporate_date_from');
+$reservation->date_to = $request->input('corporate_date_to');
+$reservation->country = $request->input('corporate_country');
+$reservation->city = $request->input('corporate_city');
+$reservation->room_type_id = $request->input('corporate_room_type');
+$reservation->room_id = $request->input('corporate_room');
+$reservation->address = $request->input('corporate_address');
+$reservation->entered_by = Auth::guard('logindetails')->user()->email;
+$reservation->status = 0;
+
+if($flexCheckChecked != ''){
+$amount = $request->payAmount;
+$reservation->res_payment = $request->payAmount;
+}
+$reservation->save();
+$notification = array(
+'message'=>"Booking Successful..!!!",
+'alert-type'=>'success',
+);
+}else{
+$notification = array(
+'message'=>"Failed Check Date..!!!",
+'alert-type'=>'error',
+);
+}
+return back()->with($notification);
+}
+
+
+
+
+
 
 public function update_booking(){
 $title = 'Customers';

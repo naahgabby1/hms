@@ -1,14 +1,14 @@
 <section>
-<div class="modal fade" id="corporateModal" tabindex="-1" aria-labelledby="corporateModalLabel"
+<div class="modal fade" id="corporateReservationModal" tabindex="-1" aria-labelledby="corporateModalLabel"
 aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog modal-xl">
 <div class="modal-content">
-<form action="{{ route('save.booking.corporate') }}" method="post">
+<form action="{{ route('save.reservation.corporate') }}" method="post">
 @csrf
 @method('POST')
 <div class="modal-header">
 <h4 class="modal-title" id="corporateModalLabel">
-Corporate Booking & Check-ins
+Corporate Reservation
 </h4>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
@@ -16,11 +16,11 @@ Corporate Booking & Check-ins
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="bg-light rounded-2 px-3 py-2 mb-3">
-<h6 class="m-0">Complete The Form For Corporate Booking</h6>
+<h6 class="m-0">Complete The Form For Corporate Reservation</h6>
 </div>
 </div>
 <div class="col-xxl-3 col-lg-3 col-sm-12 mb-3">
-<label class="form-label" for="corporate_group_type">Corporate Visit Category<span class="text-danger">*</span></label>
+<label class="form-label" for="corporate_group_type">Visitation Category<span class="text-danger">*</span></label>
 <select class="form-select" id="corporate_group_type" name="corporate_group_type">
 <option value="1">New Organization</option>
 <option value="2">Existing Organization</option>
@@ -126,13 +126,25 @@ name="corporate_address" placeholder="Corporate Address">
 <div class="col-xxl-3 col-lg-3 col-sm-12">
 <div class="mb-3 mt-3" style="padding-top: 20px">
 <div class="form-check">
-<input class="form-check-input" type="checkbox" value="1" name="flexCheckChecked" id="flexCheckChecked" checked="checked" disabled>
-<label class="form-check-label" for="flexCheckChecked">Organization Checked In</label>
+<input class="form-check-input" type="checkbox" value="1"
+name="flexCheckChecked" id="flexCheckChecked2">
+<label class="form-check-label" for="flexCheckChecked2">MAKE PAYMENT</label>
 </div>
 </div>
 </div>
 
 </div>
+
+<div class="row gx-3" id="hidePayment2" style="display: none">
+<div class="col-xxl-9 col-lg-9 col-sm-12">
+<label class="form-label" for="address">Enter Payment Amount <span class="text-danger"></span></label>
+<input type="number" class="form-control"
+name="payAmount" id="payAmount" style="text-align: right">
+</div>
+</div>
+
+
+
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

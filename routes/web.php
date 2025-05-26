@@ -32,20 +32,27 @@ Route::get('payments-and-checkouts/{id}', [BookController::class, 'check_out'])-
 Route::post('confirm-checkout', [BookController::class, 'save_checkout'])->name('checkout.save');
 Route::get('confirmation', [BookController::class, 'confirmation_alert'])->name('confirmation');
 Route::delete('delete-booking/{id}', [BookController::class, 'booking_delete'])->name('booking.destroy');
+
 Route::put('update-booking/{xid}', [BookController::class, 'booking_editted'])->name('edit.booking');
+Route::put('update-corporate-reservation/{xid}', [BookController::class, 'corporate_reservation_editted'])->name('edit.corporate.reservation');
+
+
+
 Route::put('update-reservation/{id}', [BookController::class, 'reservation_editted'])->name('edit.reservation');
 Route::delete('delete-reservation/{id}', [BookController::class, 'reservation_deleted'])->name('delete.reservation');
 Route::put('cancelled-cus-reservation/{id}', [BookController::class, 'reservation_cancelled'])->name('cancel.reservation');
 Route::put('confirm-reservation/{id}', [BookController::class, 'confirm_reservation'])->name('confirm.reservation');
 
 Route::get('filter-list/{id}', [RoomController::class, 'getRooms'])->name('get.rooms');
+Route::get('filter-list-reservation/{id}', [RoomController::class, 'getRooms_reservation'])->name('get.rooms.reservation');
 Route::post('print-receipt', [BookController::class, 'display_receipt'])->name('receipt.show');
 Route::post('save_booking_customer', [BookController::class, 'save_booking_customer'])->name('save.booking.customer');
-Route::post('save_booking_corporate', [BookController::class, 'save_booking_corporate'])->name('save.booking.corporate');
+Route::post('save-booking-corporate', [BookController::class, 'save_booking_corporate'])->name('save.booking.corporate');
 
 
 
 
+Route::post('save_reservation_corporate', [BookController::class, 'save_reservation_corporate'])->name('save.reservation.corporate');
 Route::post('save_reservation', [BookController::class, 'save_reservation'])->name('save.reservation');
 
 Route::put('update_booking', [BookController::class, 'update_booking'])->name('update.booking');

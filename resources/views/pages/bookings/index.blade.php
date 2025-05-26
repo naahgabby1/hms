@@ -100,7 +100,7 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ number_format($Booked_thisday,2) }}</h2>
-<p class="m-0">Bookings Revenue Today</p>
+<p class="m-0">Checked-out Revenue Today</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -127,7 +127,7 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ number_format($Booked_thisyear,2) }}</h2>
-<p class="m-0">Bookings Revenue Thisyear</p>
+<p class="m-0">Bookings Revenue {{date('Y')}}</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -153,11 +153,11 @@
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#personalModal">
-New Personal Booking
+Customer Booking
 </button>
 <button type="button" class="btn btn-warning" data-bs-toggle="modal"
 data-bs-target="#corporateModal">
-New Corporate Booking
+Corporate Booking
 </button>
 </div>
 </div>
@@ -178,6 +178,7 @@ New Corporate Booking
 <th>Phone number</th>
 <th>Duration</th>
 <th>Days</th>
+<th>Amount Due</th>
 <th>Room</th>
 <th>Booking Date</th>
 <th>Action</th>
@@ -186,6 +187,7 @@ New Corporate Booking
 <tbody>
 @php
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 $nx=1;
 $duration=0;
 @endphp
@@ -206,22 +208,32 @@ $duration = $duration+1;
 @endphp
 <td>{{ Carbon::parse($book->date_from)->format('d-M-Y') }} -to- {{ Carbon::parse($book->date_to)->format('d-M-Y') }}</td>
 <td>{{ $duration }}</td>
+<td>{{ number_format(($duration * $book->fees),2) }}</td>
 <td><span class="badge bg-success">{{ $book->room }} - Booked</span></td>
-<td>{{ Carbon::parse($book->date_entered)->format('d-M-Y') }}</td>
+<td>{{ Carbon::parse($book->date_from)->format('d-M-Y') }}</td>
 <td>
 <form action="{{ route('booking.destroy', $book->id) }}" method="POST">
 @csrf
 @method('DELETE')
+@if($book->category==1)
 <button type="button" class="btn btn-info" data-bs-toggle="modal"
 data-bs-target="#resModalUpdates{{$book->id}}">
 <i class="ri-edit-line"></i>
 </button>
+@else
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#companyBookingUpdates{{$book->id}}">
+<i class="ri-edit-line"></i>
+</button>
+@endif
 <a href="{{ route('check.out', $book->id) }}" class="btn btn-success">
 <i class="fs-6 text-warning">₵</i>
 </a>
+@if(Auth::guard('logindetails')->user()->user_role == 1)
 <button type="button" id="delClicked" class="btn btn-danger">
 <i class="ri-delete-bin-line"></i>
 </button>
+@endif
 </form>
 </td>
 </tr>
@@ -229,6 +241,7 @@ data-bs-target="#resModalUpdates{{$book->id}}">
 $nx++;
 @endphp
 @include('pages.modals.modal_booking_edits')
+@include('pages.modals.modal_corporate_booking_edits')
 @endforeach
 </tbody>
 </table>
