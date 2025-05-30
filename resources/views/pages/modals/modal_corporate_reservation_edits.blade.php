@@ -132,23 +132,11 @@ name="corporate_address_edit" placeholder="Corporate Address">
 </div>
 
 <div class="col-xxl-3 col-lg-3 col-sm-12">
-<div class="mb-3 mt-3" style="padding-top: 20px">
-<div class="form-check">
-<input class="form-check-input" type="checkbox" value="1"
-name="flexCheckChecked_edit" id="flexCheckChecked2_edit">
-<label class="form-check-label" for="flexCheckChecked2Editted">MAKE PAYMENT</label>
+<div class="mb-3">
+<label class="form-label" for="address">Reservation Payment <span class="text-danger"></span></label>
+<input type="number" class="form-control" value="{{ $reservation->advanced_payment }}"
+id="corporate_part_payments" name="corporate_part_payments" placeholder="Enter Amount" style="text-align: end">
 </div>
-</div>
-</div>
-
-</div>
-
-<div class="row gx-3" id="hidePayment2Editted_edit" style="display: none">
-<div class="col-xxl-9 col-lg-9 col-sm-12">
-<label class="form-label" for="address">Enter Payment Amount <span class="text-danger"></span></label>
-<input type="number" class="form-control"
-name="payAmount_edit" id="payAmount_edit" value="{{ $reservation->advanced_payment }}"
-style="text-align: right">
 </div>
 </div>
 </div>

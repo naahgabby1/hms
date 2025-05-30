@@ -221,7 +221,7 @@ $duration = $duration+1;
 <td>{{ Carbon::parse($reservation->date_entered)->format('d-M-Y') }}</td>
 <td>
 <button type="button" class="btn btn-success" data-bs-toggle="modal"
-data-bs-target="#confrimModalMasterUpdate{{$reservation->id}}">
+data-bs-target="#confirmationModal{{$reservation->id}}">
 <i class="ri-thumb-up-line"></i>
 </button>
 
@@ -253,7 +253,7 @@ $nx++;
 @include('pages.modals.modal_personal_reservation_edits')
 @include('pages.modals.modal_corporate_reservation_edits')
 @include('pages.modals.modal_personal_reservation_confimation')
-@include('pages.modals.modal_corporate_reservation_confimation')
+@include('pages.modals.modal_confirm_reservation')
 @endforeach
 </tbody>
 </table>
@@ -280,18 +280,6 @@ $('#hidePayment').hide();
 });
 
 
-$('#flexCheckChecked2_edit').on('change', function () {
-if ($(this).is(':checked')) {
-$('#hidePayment2Editted_edit').show();
-} else {
-$('#hidePayment2Editted_edit').hide();
-}
-});
-
-
-
-
-
 $('#flexCheckChecked2').on('change', function () {
 if ($(this).is(':checked')) {
 $('#hidePayment2').show();
@@ -299,6 +287,12 @@ $('#hidePayment2').show();
 $('#hidePayment2').hide();
 }
 });
+
+
+
+
+
+
 
 
 

@@ -259,7 +259,7 @@ Book::where('id', $rid)->update([
 'date_to' => $request->input('corporate_date_to_edit'),
 'country' => $request->input('corporate_country_edit'),
 'city' => $request->input('corporate_city_edit'),
-'res_payment' => $request->input('payAmount_edit')
+'res_payment' => $request->input('corporate_part_payments')
 ]);
 
 $notification = array(
@@ -285,7 +285,7 @@ return back()->with($notification,compact('title','breadCrumbs'));
 
 
 
-public function reservation_editted(Request $request, $rid){
+public function personal_reservation_editted(Request $request, $rid){
 $title = 'Reservation';
 $breadCrumbs = 'Reservation Update';
 $validated = $request->validate([
@@ -293,27 +293,25 @@ $validated = $request->validate([
 'last_name_edits' => 'required|string|max:255',
 'mobile_phone_edits' => 'required|max:25',
 'gender_edits' => 'required|max:25',
-'date_from_edits' => 'required',
 'date_to_edits' => 'required',
 'country_edits' => 'required',
-'city_edits' => 'required',
-'room_type_edits' => 'required',
-'room_edits' => 'required',
-'address_edits' => 'required',
+'city_edits' => 'required'
 ], [
 'first_name_edits.required' => 'Please enter first name.',
 'last_name_edits.required' => 'Please enter last name',
 'mobile_phone_edits.required' => 'Please enter phone number',
 'gender_edits.required' => 'Please select gender',
-'date_from_edits.required' => 'Select date from',
 'date_to_edits.required' => 'Select date to',
 'country_edits.required' => 'Select country',
-'city_edits.required' => 'Enter city',
-'room_type_edits.required' => 'Select room type',
-'room_edits.required' => 'Select room',
-'address_edits.required' => 'Enter address',
+'city_edits.required' => 'Enter city'
 ]);
 
+$mdate_from = Carbon::parse($request->input('date_from_edits'));
+$mdate_to = Carbon::parse($request->input('date_to_edits'));
+
+if (
+$mdate_to->greaterThan($mdate_from)
+) {
 Book::where('id', $rid)->update([
 'first_name' => $request->input('first_name_edits'),
 'last_name' => $request->input('last_name_edits'),
@@ -332,6 +330,12 @@ $notification = array(
 'message'=>"Reservation Successfully Updated..!!!",
 'alert-type'=>'success',
 );
+}else{
+$notification = array(
+'message'=>"Failed To Update..!!!",
+'alert-type'=>'error',
+);
+}
 return back()->with($notification,compact('title','breadCrumbs'));
 }
 
@@ -784,6 +788,10 @@ return back()->with($notification);
 
 
 
+public function confirm_reservation_into_booked(){
+$title = 'Customers';
+
+}
 
 
 

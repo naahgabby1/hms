@@ -35,6 +35,11 @@ Route::delete('delete-booking/{id}', [BookController::class, 'booking_delete'])-
 
 Route::put('update-booking/{xid}', [BookController::class, 'booking_editted'])->name('edit.booking');
 Route::put('update-corporate-reservation/{xid}', [BookController::class, 'corporate_reservation_editted'])->name('edit.corporate.reservation');
+Route::put('update-personal-reservation/{xid}', [BookController::class, 'personal_reservation_editted'])->name('update.personal.reservation');
+
+
+
+Route::put('confirm-reservation-as-booked/{xid}', [BookController::class, 'confirm_reservation_into_booked'])->name('confirmation.reservation');
 
 
 

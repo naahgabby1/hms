@@ -3,7 +3,7 @@
 aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog modal-xl">
 <div class="modal-content">
-<form action="{{ route('save.reservation', $reservation->id) }}" method="post">
+<form action="{{ route('update.personal.reservation', $reservation->id) }}" method="post">
 @csrf
 @method('PUT')
 <div class="modal-header">
@@ -55,26 +55,30 @@ class="text-danger">*</span></label>
 <div class="m-0">
 <div class="form-check form-check-inline">
 <input class="form-check-input" type="radio" name="gender_edits" id="gender_edits"
-value="male">
+value="male" {{ $reservation->gender === 'male' ? 'checked' : '' }}>
 <label class="form-check-label" for="gender">Male</label>
 </div>
 <div class="form-check form-check-inline">
-<input class="form-check-input" type="radio" name="gender_edits" id="gender_edits"
-value="female">
+<input class="form-check-input" type="radio" name="gender_edit" id="gender_edit"
+value="female" {{ $reservation->gender === 'female' ? 'checked' : '' }}>
 <label class="form-check-label" for="gender">Female</label>
 </div>
 </div>
-@error('gender_edits')<small class="text-danger">{{ $message }}</small>@enderror
+@error('gender')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
+
+
+
 </div>
 
 <div class="row gx-3">
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
+<input type="hidden" value="{{ $reservation->date_from }}" name="date_from_edits">
 <label class="form-label" for="date_from">Date From <span class="text-danger">*</span></label>
 <input type="date" class="form-control" value="{{ $reservation->date_from }}"
-id="date_from_edits" name="date_from_edits" placeholder="Enter Date From">
+disabled>
 @error('date_from_edits')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
@@ -108,9 +112,10 @@ id="city_edits" name="city_edits" placeholder="Enter City">
 </div>
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
+<input type="hidden" name="room_type_edits" value="{{ $reservation->room_type_id }}">
 <label class="form-label" for="room_type">Room Type <span class="text-danger">*</span></label>
-<select class="form-select" id="room_type_edits" name="room_type_edits">
-<option value="{{ $reservation->room_type_id }}">{{ $reservation->room_t}}</option>
+<select class="form-select" disabled>
+<option value="{{ $reservation->room_type_id }}">{{ $reservation->description}}</option>
 @foreach($RoomType as $roomtype)
 <option value="{{ $roomtype->id }}">{{ $roomtype->description.' ('.strtoupper($roomtype->alias).')' }}</option>
 @endforeach
@@ -120,9 +125,10 @@ id="city_edits" name="city_edits" placeholder="Enter City">
 </div>
 <div class="col-xxl-3 col-lg-4 col-sm-6">
 <div class="mb-3">
+<input type="hidden" name="room_edits" value="{{ $reservation->room_id }}">
 <label class="form-label" for="room">Room <span class="text-danger">*</span></label>
-<select class="form-select" id="room_edits" name="room_edits">
-<option value="">Select Available Room</option>
+<select class="form-select" disabled>
+<option value="{{ $reservation->room_id}}">{{ $reservation->room }}</option>
 </select>
 @error('room_edits')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
@@ -130,29 +136,20 @@ id="city_edits" name="city_edits" placeholder="Enter City">
 <div class="col-xxl-3 col-lg-3 col-sm-12">
 <div class="mb-3">
 <label class="form-label" for="address">Address <span class="text-danger"></span></label>
-<input type="text" class="form-control" id="address_edits" name="address_edits" placeholder="Enter Customer Address">
+<input type="text" class="form-control" value="{{ $reservation->address }}"
+id="address_edits" name="address_edits" placeholder="Enter Customer Address">
 @error('address_edits')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 
 <div class="col-xxl-3 col-lg-3 col-sm-12">
-<div class="mb-3 mt-3" style="padding-top: 20px">
-<div class="form-check">
-<input class="form-check-input" type="checkbox" value="1"
-name="flexCheckChecked_edits" id="flexCheckChecked_edits">
-<label class="form-check-label" for="flexCheckChecked_edits">MAKE PAYMENT</label>
+<div class="mb-3">
+<label class="form-label" for="address">Reservation Payment <span class="text-danger"></span></label>
+<input type="number" class="form-control" value="{{ $reservation->advanced_payment }}"
+id="personal_part_payments" name="personal_part_payments" placeholder="Enter Amount" style="text-align: end">
 </div>
 </div>
 </div>
-</div>
-<div class="row gx-3" id="hidePayment" style="display: none">
-<div class="col-xxl-9 col-lg-9 col-sm-12">
-<label class="form-label" for="address">Enter Payment Amount <span class="text-danger"></span></label>
-<input type="number" class="form-control"
-name="payAmount_edits" id="payAmount_edits" style="text-align: right">
-</div>
-</div>
-
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

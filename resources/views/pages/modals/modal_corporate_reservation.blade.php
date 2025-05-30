@@ -151,7 +151,7 @@ name="payAmount" id="payAmount" style="text-align: right">
 Cancel
 </button>
 <button type="submit" class="btn btn-primary">
-Save Booking & Check-in
+Save Reservation
 </button>
 </div>
 </form>
