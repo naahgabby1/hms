@@ -14,4 +14,8 @@ class Viewbooking extends Model
         public function rooms(){
           return $this->belongsTo(Room::class, 'room_id', 'id');
         }
+
+        public function multiple_customers_fromview(){
+          return $this->hasMany(Bookmultipleview::class, 'booking_id', 'id');
+        }
 }

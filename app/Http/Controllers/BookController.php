@@ -9,9 +9,11 @@ use App\Models\Roomtype;
 use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\Viewbooking;
+use App\Models\Bookmultiple;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\CustomClass\Userroles;
 use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
@@ -49,6 +51,9 @@ return redirect()->back()->with('success', 'Item deleted successfully.');
 public function bookings(){
 $title = 'Booking';
 $breadCrumbs = 'Booking';
+$Rolex = new Userroles;
+$Delete = $Rolex->isEither([1,2]);
+
 $Countries = Countries::orderByRaw("CASE WHEN name = 'Ghana' THEN 0 ELSE 1 END")
                       ->orderBy('name')
                       ->get();
@@ -58,7 +63,8 @@ $customers = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate
 $corporates = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate', 2)->get();
 if ($this->user_role < 3) {
 $Booked_thisyear = DB::table('payments')->where('void_status', 0)->whereYear('date_time', Carbon::now()->year)->sum('amount');
-$Booked_data = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->get();
+// $Booked_data = DB::table('vw_reservationbooking')->where('status', 1)->where('out_status', 0)->get();
+$Booked_data = Viewbooking::with('multiple_customers_fromview')->where('status', 1)->where('out_status', 0)->get();
 $Booked_thisday = DB::table('payments')->where('void_status', 0)->whereDate('date_time', Carbon::today())->sum('amount');
 $Booked_data_today = DB::table('vw_reservationbooking')->whereDate('date_entered', Carbon::today())->where('status', 1)->where('out_status', 0)->get();
 } else {
@@ -83,7 +89,15 @@ $Booked_data_today = DB::table('vw_reservationbooking')
 ->where('entered_by', $this->user)
 ->where('out_status', 0)->get();
 }
-return view('pages.bookings.index', compact('title','breadCrumbs','Countries','RoomType','Room','Booked_data','Booked_data_today','Booked_thisyear','Booked_thisday','customers','corporates'));
+
+return view('pages.bookings.index', compact(
+    'title','breadCrumbs',
+    'Countries','RoomType',
+    'Room','Booked_data',
+    'Booked_data_today','Booked_thisyear',
+    'Booked_thisday','customers',
+    'corporates','Delete'
+));
 }
 
 
@@ -93,7 +107,10 @@ $breadCrumbs = 'Print Receipt';
 $printing_data = DB::table('vw_reservationbooking')->where('id', $request->mid)->first();
 $printing_paid_data = DB::table('payments')->where('resbooking_id', $request->mid)->first();
 $hotel_details = DB::table('company_details')->first();
-return view('pages.bookings.receipt', compact('title','breadCrumbs','printing_data','printing_paid_data','hotel_details'));
+return view('pages.bookings.receipt',
+compact('title','breadCrumbs',
+'printing_data','printing_paid_data',
+'hotel_details'));
 }
 
 
@@ -101,13 +118,15 @@ return view('pages.bookings.receipt', compact('title','breadCrumbs','printing_da
 public function confirmation_alert(){
 $title = 'Confirmation';
 $breadCrumbs = 'Confirmed Check-out';
-return view('pages.bookings.checked_out_confirmed', compact('title','breadCrumbs'));
+return view('pages.bookings.checked_out_confirmed',
+compact('title','breadCrumbs'));
 }
 
 public function cancelledbooking(){
 $title = 'Booking';
 $breadCrumbs = 'Cancelled Booking';
-return view('pages.bookings.cancelled', compact('title','breadCrumbs'));
+return view('pages.bookings.cancelled',
+compact('title','breadCrumbs'));
 }
 
 public function reservations(){
@@ -130,6 +149,35 @@ compact('title','breadCrumbs','Countries',
 'Booked_data_today','customers',
 'Booked_data_pending','corporates'));
 }
+
+
+
+
+public function save_extracustomer(Request $request){
+$customersJson = $request->input('multiple_customers');
+$customers = json_decode($customersJson, true);
+if (!is_array($customers)) {
+return back()->with('error', 'Invalid customer data. Please try again.');
+}
+foreach ($customers as $cust) {
+Bookmultiple::create([
+'booking_id'   => $request['booking_id'],
+'first_name'   => $cust['first_name'],
+'last_names'   => $cust['last_name'],
+'gender'       => $cust['gender'],
+'phone_number' => $cust['phone'],
+'room_type'    => $cust['room_type'],
+'room'         => $cust['room_id'],
+]);
+Room::where('id', $cust['room_id'])->update(['availability' => 1]);
+}
+return redirect()->back()->with('success', 'Customers and bookings saved successfully.');
+}
+
+
+
+
+
 
 
 public function check_out($id){

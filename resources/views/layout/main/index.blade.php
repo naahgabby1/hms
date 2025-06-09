@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/dataTables.bs5.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/dataTables.bs5-custom.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/buttons/dataTables.bs5-custom.css')}}">
-
+@stack('styles')
 
 </head>
 <body>

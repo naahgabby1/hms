@@ -9,6 +9,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\SystemuserController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\LostandfoundController;
 
 // Authentications
 Route::get('login', [LoginController::class, 'index'])->name('login');
@@ -39,6 +40,13 @@ Route::put('update-personal-reservation/{xid}', [BookController::class, 'persona
 
 
 
+// Lost & Found
+Route::get('lost-and-found',[LostandfoundController::class, 'index'])->name('lost.and.found.page');
+Route::post('save-lost-and-found',[LostandfoundController::class, 'lost_and_found_save'])->name('lost.and.found.save');
+Route::put('update-lost-and-found/{id}',[LostandfoundController::class, 'lost_and_found_update'])->name('lost.and.found.update');
+Route::delete('delete-lost-and-found/{id}',[LostandfoundController::class, 'lost_and_found_destroy'])->name('lost.and.found.destroy');
+
+
 Route::put('confirm-reservation-as-booked/{xid}', [BookController::class, 'confirm_reservation_into_booked'])->name('confirmation.reservation');
 
 
@@ -54,6 +62,7 @@ Route::post('print-receipt', [BookController::class, 'display_receipt'])->name('
 Route::post('save_booking_customer', [BookController::class, 'save_booking_customer'])->name('save.booking.customer');
 Route::post('save-booking-corporate', [BookController::class, 'save_booking_corporate'])->name('save.booking.corporate');
 
+Route::post('save-extra-customer', [BookController::class, 'save_extracustomer'])->name('save.extra.customer');
 
 
 

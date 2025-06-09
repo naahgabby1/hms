@@ -1,5 +1,16 @@
 @extends('layout.main.index')
 
+@push('styles')
+<style>
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+</style>
+@endpush
+
+
 @push('breadcrumbs')
 <ol class="breadcrumb">
 <li class="breadcrumb-item">
@@ -166,14 +177,12 @@ Corporate Booking
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
-<div class="card-header">
-</div>
 <div class="card-body">
 <div class="table-responsive">
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
-<th>#</th>
+{{-- <th>#</th> --}}
 <th>Name</th>
 <th>Phone number</th>
 <th>Duration</th>
@@ -190,25 +199,41 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 $nx=1;
 $duration=0;
+$countz = 0;
 @endphp
 @foreach ($Booked_data as $book)
 <tr>
-<td>{{ $nx }}</td>
-<td>{{ $book->name }}</td>
-<td>{{ $book->mobile_number }}</td>
 @php
 $duration = Carbon::parse($book->date_from)->diffInDays(Carbon::parse($book->date_to));
 $dateToCheck = Carbon::parse($book->date_to);
+$extra_days = 0;
 $today = Carbon::today();
 if ($dateToCheck->isSameDay($today)) {
 if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
 $duration = $duration+1;
 }
 }
+if ($today->gt($dateToCheck->addDays(1))) {
+$extra_days = $dateToCheck->diffInDays($today);
+}
+$actual_duration = $duration + $extra_days;
+$dtotalz = 0;
+if (!empty($book->multiple_customers_fromview)) {
+$countz = count($book->multiple_customers_fromview);
+$dtotalz =
+($actual_duration * $book->fees) +
+$actual_duration * $book->multiple_customers_fromview->sum('fee');
+}
 @endphp
+<td><a href="#" class="text-decoration-underline"
+data-bs-toggle="modal"
+data-bs-target="#detailCustomerClicked{{$book->id}}">
+{{ $book->name }}[{{$countz}}]
+</a></td>
+<td>{{ $book->mobile_number }}</td>
 <td>{{ Carbon::parse($book->date_from)->format('d-M-Y') }} -to- {{ Carbon::parse($book->date_to)->format('d-M-Y') }}</td>
-<td>{{ $duration }}</td>
-<td>{{ number_format(($duration * $book->fees),2) }}</td>
+<td>{{ $actual_duration }}</td>
+<td>{{ number_format($dtotalz,2) }}</td>
 <td><span class="badge bg-success">{{ $book->room }} - Booked</span></td>
 <td>{{ Carbon::parse($book->date_from)->format('d-M-Y') }}</td>
 <td>
@@ -229,7 +254,17 @@ data-bs-target="#companyBookingUpdates{{$book->id}}">
 <a href="{{ route('check.out', $book->id) }}" class="btn btn-success">
 <i class="fs-6 text-warning">₵</i>
 </a>
-@if(Auth::guard('logindetails')->user()->user_role == 1)
+
+@if($Delete)
+
+<button type="button" class="btn btn-warning"
+data-bs-toggle="modal"
+data-bs-target="#addCustomerClicked{{$book->id}}">
+<i class="ri-group-line"></i>
+</button>
+@endif
+
+@if($Delete)
 <button type="button" id="delClicked" class="btn btn-danger">
 <i class="ri-delete-bin-line"></i>
 </button>
@@ -242,6 +277,8 @@ $nx++;
 @endphp
 @include('pages.modals.modal_booking_edits')
 @include('pages.modals.modal_corporate_booking_edits')
+@include('pages.modals.modal_addcustomergroup')
+@include('pages.modals.modal_addcustomergroup_details')
 @endforeach
 </tbody>
 </table>
@@ -255,6 +292,67 @@ $nx++;
 @push('customed_js')
 <script type="text/javascript">
 $(document).ready(function(){
+
+$('.btnAddMultiple').on('click', function () {
+const bookId = $(this).data('book-id');
+
+const firstName = $(`#addCustomerClicked${bookId} .first_name_multiple`).val().trim();
+const lastName = $(`#addCustomerClicked${bookId} .last_names_multiple`).val().trim();
+const phone = $(`#addCustomerClicked${bookId} .phone_number_multiple`).val().trim();
+const gender = $(`#addCustomerClicked${bookId} .gender_multiple:checked`).val();
+const room_type = $(`#addCustomerClicked${bookId} .room_type_multiple`).val().trim();
+const roomx = $(`#addCustomerClicked${bookId} .room_multiple`).val().trim();
+const booking_code = $(`#addCustomerClicked${bookId} .booking_id`).val().trim();
+
+var parts = roomx.split('|');
+var parts_id = parts[0];
+var parts_name = parts[1];
+
+if (!firstName || !lastName || !phone || !gender || !room_type || !roomx) {
+Swal.fire({
+title: "Failed",
+text: "Complete the form before submission",
+icon: "error",
+draggable: true
+});
+return;
+}
+
+const customer = {
+first_name: firstName,
+last_name: lastName,
+gender: gender,
+phone: phone,
+room_type: room_type,
+room_id: parts_id,
+room_name: parts_name
+};
+
+// Get and update hidden input value
+const $hiddenInput = $(`#multiple_customers${bookId}`);
+let customerList = JSON.parse($hiddenInput.val() || '[]');
+customerList.push(customer);
+$hiddenInput.val(JSON.stringify(customerList));
+
+// Add to preview list
+$(`#customerList${bookId}`).append(`
+<li class="list-group-item d-flex justify-content-between align-items-center">
+${customer.first_name} ${customer.last_name} ( ${customer.phone} ) - (${customer.room_name})
+<span class="badge bg-success">✔</span>
+</li>
+`);
+
+// Clear form
+$(`#addCustomerClicked${bookId} .first_name_multiple`).val('');
+$(`#addCustomerClicked${bookId} .last_names_multiple`).val('');
+$(`#addCustomerClicked${bookId} .phone_number_multiple`).val('');
+$(`#addCustomerClicked${bookId} .room_multiple`).val('');
+$(`#addCustomerClicked${bookId} .room_type_multiple`).val('');
+$(`#addCustomerClicked${bookId} .gender_multiple`).prop('checked', false);
+});
+
+
+
 $('#hideShowOld').hide();
 $('#hideShowOldCorporate').hide();
 
@@ -278,6 +376,32 @@ select.empty();
 select.append('<option value="">Select Available Room</option>');
 $.each(responses.data, function (index, room) {
 select.append('<option value="' + room.id + '">' + room.description + '</option>');
+});
+});
+});
+
+
+
+$(document).on('change', '.room_type_multiple', function () {
+var selected = $(this).val();
+var modal = $(this).closest('.modal');
+var roomSelect = modal.find('.room_multiple');
+$.get("filter-list/" + selected, function (responses) {
+roomSelect.empty();
+roomSelect.append('<option value="">Select Available Room</option>');
+if (responses.data && responses.data.length > 0) {
+$.each(responses.data, function (index, room) {
+roomSelect.append('<option value="' + room.id + '|' + room.description + '">' + room.description + '</option>');
+});
+} else {
+roomSelect.append('<option value="">No rooms available</option>');
+}
+}).fail(function () {
+Swal.fire({
+title: "Failed",
+text: "Error fetching room data",
+icon: "error",
+draggable: true
 });
 });
 });
@@ -322,7 +446,12 @@ roomSelect.append('<option value="' + room.id + '">' + room.description + '</opt
 roomSelect.append('<option value="">No rooms available</option>');
 }
 }).fail(function () {
-alert("Error fetching room data.");
+Swal.fire({
+title: "Failed",
+text: "Error fetching room data",
+icon: "error",
+draggable: true
+});
 });
 });
 

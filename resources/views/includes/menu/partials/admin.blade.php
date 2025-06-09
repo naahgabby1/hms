@@ -23,15 +23,6 @@
 <li>
 <a href="{{ route('booking')}}">Bookings</a>
 </li>
-<li>
-<a href="{{ route('cancelled.booking')}}">Cancelled Booking</a>
-</li>
-{{-- <li>
-<a href="{{ route('reservation')}}">Reservations</a>
-</li> --}}
-{{-- <li>
-<a href="{{ route('cancelled.reservation')}}">Cancelled Reservations</a>
-</li> --}}
 </ul>
 </li>
 <li class="treeview">
@@ -95,6 +86,20 @@
 </li>
 </ul>
 </li>
+
+<li class="treeview">
+<a href="#!">
+<i class="ri-group-2-line"></i>
+<span class="menu-text">Lost & Found</span>
+</a>
+<ul class="treeview-menu">
+<li>
+<a href="{{ route('lost.and.found.page')}}">Lost and found</a>
+</li>
+</ul>
+</li>
+
+
 <li class="treeview">
 <a href="#!">
 <i class="ri-group-2-line"></i>
