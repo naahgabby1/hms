@@ -35,6 +35,8 @@
 
 @endpush
 @php
+$sub2=0;
+$sub1=0;
 use Carbon\Carbon;
 $duration=0;
 $duration = Carbon::parse($checkoutdata->date_from)->diffInDays(Carbon::parse($checkoutdata->date_to));
@@ -110,13 +112,28 @@ Charges for nights spent in our Hotel/Guest house for a period of days
 </p>
 </td>
 <td>
-<h6>{{ $checkoutdata->fees }}</h6>
+<h6>
+{{ $checkoutdata->fees }}<br>
+{{-- @foreach ($checkoutdata as $xcustom) --}}
+@foreach ($checkoutdata->multiple_customers_fromview as $customer)
+{{ $customer->fee }}<br>
+@endforeach
+{{-- @endforeach --}}
+</h6>
 </td>
 <td>
-<h6>{{ $duration }}</h6>
+<h6>{{ $duration }}<br>
+@foreach ($checkoutdata->multiple_customers_fromview as $customer)
+{{ $duration }}<br>
+@endforeach
+</h6>
 </td>
 <td>
-<h6>{{ $duration*$checkoutdata->fees }}</h6>
+<h6>{{ $duration*$checkoutdata->fees }}<br>
+@foreach ($checkoutdata->multiple_customers_fromview as $customer)
+{{ $duration*$customer->fee }}<br>
+@endforeach
+</h6>
 </td>
 </tr>
 <tr>
@@ -128,16 +145,20 @@ Charges for nights spent in our Hotel/Guest house for a period of days
 <h5 class="mt-4 text-primary">Total GHS</h5>
 </td>
 <td>
+{{-- @foreach ($checkoutdata->multiple_customers_fromview as $customer) --}}
+@php $sub2 = $duration * $checkoutdata->multiple_customers_fromview->sum('fee'); @endphp
+{{-- @endforeach --}}
 @php
-$subtotal = $duration*$checkoutdata->fees;
-$discount = 0.00;
-$vat = 0.00;
-$final_amount = $subtotal + $discount + $vat;
+$sub1 = $duration * $checkoutdata->fees;
+$subtotal = $sub1 + $sub2;
+$discount = $vat_discounted->discount_amount;
+$vat = $vat_discounted->vat_amount * $subtotal;
+$final_amount = $subtotal - $discount - $vat;
 @endphp
-<p>{{ $subtotal }}</p>
-<p>{{ $discount }}</p>
-<p>{{ $vat }}</p>
-<h5 class="mt-4 text-primary">{{ $final_amount }}</h5>
+<p>{{ number_format($subtotal,2) }}</p>
+<p>{{ number_format($discount,2) }}</p>
+<p>{{ number_format($vat,2) }}</p>
+<h5 class="mt-4 text-primary">{{ number_format($final_amount,2) }}</h5>
 </td>
 </tr>
 <tr>
@@ -171,6 +192,9 @@ $cat = 1;
 @csrf
 <input type="hidden" name="code" value="{{ $CodeChex }}">
 <input type="hidden" name="payment_cat" value="{{ $cat }}">
+<input type="hidden" name="mdays" value="{{ $duration }}">
+<input type="hidden" name="vat" value="{{ $vat }}">
+<input type="hidden" name="discount" value="{{ $discount }}">
 <input type="hidden" name="description" value="{{ $dex }}">
 <input type="hidden" name="amount" value="{{ $final_amount }}">
 <input type="hidden" name="transaction_code" value="{{ $checkoutdata->id }}">

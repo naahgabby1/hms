@@ -38,50 +38,66 @@ use Carbon\Carbon;
 <table id="simpletable" class="table table-striped table-bordered nowrap" style="border: 1px solid black">
 <thead style="border: 1px solid black">
 <tr style="border: 1px solid black;width:500px; height: 30px; text-align: left;">
-<th style="border: 1px solid black;width:700px; height: 30px; text-align: left;padding-left: 10px;"><em>Description</em></th>
-<th style="border: 1px solid black;width:500px; height: 30px; text-align: center;"><em>Rate (GH¢)</em></th>
+<th style="border: 1px solid black;width:700px; height: 30px; text-align: left;padding-left: 10px;"><em>Hotel/Guest House Payment</em></th>
+<th style="border: 1px solid black;width:500px; height: 30px; text-align: center;"><em>Room Details</em></th>
+<th style="border: 1px solid black;width:500px; height: 30px; text-align: center;"><em>Days @ Rate (GH¢)</em></th>
 <th style="border: 1px solid black;width:300px; height: 30px; text-align: right;padding-right: 10px;"><em>Duration (Days)</em></th>
-<th style="border: 1px solid black;width:300px; height: 30px; text-align: right;padding-right: 10px;"><em>Total(GH¢)</em></th>
 </tr>
 </thead>
 <tbody style="border: 1px solid black">
 <tr style="border: 1px solid black">
-<td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px">{{ $printing_paid_data->description }}</td>
-<td style="border: 1px solid black;width:500px;text-align: center;height: 30px">{{ $printing_data->fees }}</td>
-<td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">{{ ($printing_paid_data->amount)/($printing_data->fees) }}</td>
-<td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">{{ $printing_paid_data->amount }}</td>
+<td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px">{{ ucwords(strtolower($printing_data->name)) }}</td>
+<td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px;text-align: center;">{{ ucwords(strtolower($printing_data->room)) }}</td>
+<td style="border: 1px solid black;width:500px;text-align: center;height: 30px;text-align: center;">{{ $printing_paid_data->days }} @ {{ $printing_data->fees }}</td>
+<td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">{{ $printing_paid_data->days * $printing_data->fees}}</td>
 </tr>
+@foreach ($printing_data->multiple_customers_fromview as $xcustom)
+
+<tr style="border: 1px solid black">
+<td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px">
+{{ ucwords(strtolower($xcustom->first_name)) }} {{ ucwords(strtolower($xcustom->last_names)) }}
+</td>
+<td style="border: 1px solid black;width:500px;text-align: center;height: 30px;padding-left: 10px;">
+{{ $xcustom->room_description }}
+</td>
+<td style="border: 1px solid black;width:500px;text-align: center;height: 30px">
+{{ $printing_paid_data->days }} @ {{ $xcustom->fee }}
+</td>
+<td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">
+{{ $printing_paid_data->days * $xcustom->fee }}</td>
+</tr>
+@endforeach
 </tbody>
 </table>
+@php
+$discount = $printing_paid_data->discount;
+$vat = $printing_paid_data->vat;
+$xsubtotal = $printing_paid_data->amount + $discount + $vat ;
+@endphp
 <br><div style="border-bottom:2px dashed; #000; width:100%;"></div><br>
 <table id="simpletable" class="table table-striped table-bordered nowrap">
 <thead style="border: 1px solid black">
 <tr>
 <th style="width:500px;"><em></em></th>
 <th style="width:500px;text-align: right;">Sub Total</th>
-<th style="width:500px; text-align: right;">{{ number_format($printing_paid_data->amount,2) }}</th>
+<th style="width:500px; text-align: right;">{{ number_format($xsubtotal,2) }}</th>
 </tr>
 </thead>
 <tbody style="border: 1px solid black">
 <tr>
 <td style="width:500px;"></td>
-@php
-$discounted = 0.00;
-$tax = 0.00;
-$final_total = $printing_paid_data->amount + $discounted + $tax;
-@endphp
 <td style="width:500px;text-align: right;"><b>Discount</b></td>
-<td style="width:500px;text-align: right;"><b>{{ number_format($discounted,2) }}</b></td>
+<td style="width:500px;text-align: right;"><b>{{ number_format($discount,2) }}</b></td>
 </tr>
 <tr>
 <td style="width:500px;"></td>
 <td style="width:500px;text-align: right;"><b>Tax</b></td>
-<td style="width:500px;text-align: right;"><b>{{ number_format($tax,2) }}</b></td>
+<td style="width:500px;text-align: right;"><b>{{ number_format($vat,2) }}</b></td>
 </tr>
 <tr>
 <td style="width:500px;"></td>
 <td style="width:500px;text-align: right;"><b>Receipt Total</b></td>
-<td style="width:500px;text-align: right;"><b>{{ number_format($final_total,2) }}</b></td>
+<td style="width:500px;text-align: right;"><b>{{ number_format($printing_paid_data->amount,2) }}</b></td>
 </tr>
 </tbody>
 </table>

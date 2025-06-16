@@ -14,12 +14,14 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\CustomClass\Userroles;
+use App\CustomClass\Userdetails;
 use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
 protected $user;
 protected $user_role;
+
 
 public function __construct()
 {
@@ -104,13 +106,16 @@ return view('pages.bookings.index', compact(
 public function display_receipt(Request $request){
 $title = 'Receipt';
 $breadCrumbs = 'Print Receipt';
-$printing_data = DB::table('vw_reservationbooking')->where('id', $request->mid)->first();
+$vat_discounted = DB::table('vat_discount')->first();
+$printing_data = Viewbooking::with('multiple_customers_fromview')
+->where('id', $request->mid)->first();
+// $printing_data = DB::table('vw_reservationbooking')->where('id', $request->mid)->first();
 $printing_paid_data = DB::table('payments')->where('resbooking_id', $request->mid)->first();
 $hotel_details = DB::table('company_details')->first();
 return view('pages.bookings.receipt',
 compact('title','breadCrumbs',
 'printing_data','printing_paid_data',
-'hotel_details'));
+'hotel_details','vat_discounted'));
 }
 
 
@@ -181,12 +186,31 @@ return redirect()->back()->with('success', 'Customers and bookings saved success
 
 
 public function check_out($id){
+$Loggedinuser = new Userdetails;
+$Roles = new Userroles;
 $title = 'Check-outs';
 $breadCrumbs = 'Payments & Check-outs';
 $CodeChex = $this->genCode();
 $chex = 1;
-$checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
-return view('pages.bookings.checkout_and_payments', compact('title','breadCrumbs','checkoutdata','CodeChex','chex'));
+if ($Roles->isEither([1,2])) {
+// $checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
+$checkoutdata = Viewbooking::with('multiple_customers_fromview')
+->where('id', $id)->first();
+} else {
+$checkoutdata = Viewbooking::with('multiple_customers_fromview')
+->where('id', $id)
+->where('entered_by',$Loggedinuser->username())
+->first();
+}
+
+
+
+$vat_discounted = DB::table('vat_discount')->first();
+
+// $checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
+return view('pages.bookings.checkout_and_payments',
+compact('title','breadCrumbs',
+'checkoutdata','CodeChex','chex','vat_discounted'));
 }
 
 
@@ -448,17 +472,30 @@ return back()->with($notification,compact('title','breadCrumbs'));
 public function save_checkout(Request $request){
 $title = 'Printout';
 $breadCrumbs = 'Printout';
+$Loggedinuser = new Userdetails;
 $confirmation = new Payment();
 $confirmation->resbooking_id = $request->input('transaction_code');
+$confirmation->days = $request->input('mdays');
 $confirmation->payment_category = $request->input('payment_cat');
 $confirmation->description = $request->input('description');
 $confirmation->amount = $request->input('amount');
-$confirmation->entered_by = session('user_name');
+$confirmation->entered_by = $Loggedinuser->username();
+$confirmation->vat = $request->input('vat');
+$confirmation->discount = $request->input('discount');
 $confirmation->code = $request->input('code');
 $confirmation->save();
 $mid = $request->input('transaction_code');
 
+$roomtocancel = DB::table('vw_booking_multiple')
+    ->where('booking_id', $mid)
+    ->pluck('room_id');
+// dd($roomtocancel);
+foreach ($roomtocancel as $croom) {
+Room::where('id', $croom)->update(['availability' => 0]);
+}
+
 Book::where('id', $request->input('transaction_code'))->update(['status' => 2]);
+
 
 $notification = array(
 'message'=>"Successfully Checkout",
