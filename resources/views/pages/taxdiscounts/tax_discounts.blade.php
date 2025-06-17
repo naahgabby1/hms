@@ -47,8 +47,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
-<p class="m-0">Registered Users</p>
+<h2 class="lh-1">{{ $Tax_discounts->vat_amount }}</h2>
+<p class="m-0">VAT Rate</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -56,7 +56,7 @@
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">Registered Users</p>
+<p class="mb-0 text-success">Registered VAT</p>
 <span class="badge bg-danger-subtle text-danger small">As at now</span>
 </div>
 </div>
@@ -73,8 +73,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
-<p class="m-0">Registered User Group</p>
+<h2 class="lh-1">{{ $Tax_discounts->discount_amount }}</h2>
+<p class="m-0">Discounts</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -82,7 +82,7 @@
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">User Group Category</p>
+<p class="mb-0 text-success">Registered Discount</p>
 <span class="badge bg-warning-subtle text-warning small">As at now</span>
 </div>
 </div>
@@ -97,13 +97,12 @@
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#cusModal">
-New User
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ratesModal">
+Update Rates
 </button>
 </div>
 </div>
-@include('pages.modals.modal_users')
+@include('pages.modals.modal_ratediscount_changed')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -114,15 +113,25 @@ New User
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
-<th>#</th>
-<th>Name</th>
-<th>Phone number</th>
-<th>Date Resgistered</th>
-<th>Action</th>
+<th>Business Name</th>
+<th>VAT Rate</th>
+<th>Discount</th>
+<th>As At Today</th>
 </tr>
 </thead>
 <tbody>
-
+@php
+use Carbon\Carbon;
+@endphp
+<tr>
+<td>{{ $Business_name->name }}</td>
+<td>{{ $Tax_discounts->vat_amount }}</td>
+<td>{{ $Tax_discounts->discount_amount }}</td>
+@php
+$today = Carbon::today();
+@endphp
+<td>{{ Carbon::parse($today)->format('d-M-Y') }}</td>
+</tr>
 </tbody>
 </table>
 </div>

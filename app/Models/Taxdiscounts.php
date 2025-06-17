@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Roomtype extends Model
+class Taxdiscounts extends Model
 {
     public $timestamps = false;
-    protected $table = 'room_type';
+    protected $table = 'vat_discount';
     protected $fillable = [
-        'alias',
-        'description'
+        'vat_amount',
+        'discount_amount'
     ];
 }

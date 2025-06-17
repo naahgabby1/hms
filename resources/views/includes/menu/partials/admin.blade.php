@@ -118,26 +118,13 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('room.type')}}">Room Types</a>
-</li>
-
-<li>
 <a href="{{ route('rooms')}}">Hotel Rooms</a>
 </li>
 <li>
 <a href="{{ route('expenses.category')}}">Expenses Type</a>
 </li>
 <li>
-<a href="{{ route('tax.rates')}}">Tax Rates</a>
-</li>
-<li>
-<a href="{{ route('sms.settings')}}">SMS Settings</a>
-</li>
-<li>
-<a href="{{ route('general.settings')}}">General Settings</a>
-</li>
-<li>
-<a href="{{ route('currency.settings')}}">Currency Settings</a>
+<a href="{{ route('tax.rates.dicounts')}}">Tax & DiscountsRates</a>
 </li>
 </ul>
 </li>

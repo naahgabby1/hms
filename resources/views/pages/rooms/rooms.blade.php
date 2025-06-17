@@ -47,8 +47,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
-<p class="m-0">Registered Users</p>
+<h2 class="lh-1">{{ $Selected_room->count(); }}</h2>
+<p class="m-0">Rooms</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -56,8 +56,8 @@
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">Registered Users</p>
-<span class="badge bg-danger-subtle text-danger small">As at now</span>
+<p class="mb-0 text-success">Registered Rooms </p>
+<span class="badge bg-danger-subtle text-danger small">Counts</span>
 </div>
 </div>
 </div>
@@ -73,8 +73,8 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
-<p class="m-0">Registered User Group</p>
+<h2 class="lh-1">{{ $RoomType->count(); }}</h2>
+<p class="m-0">Room Types</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -82,8 +82,8 @@
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">User Group Category</p>
-<span class="badge bg-warning-subtle text-warning small">As at now</span>
+<p class="mb-0 text-success">Registered Room Types</p>
+<span class="badge bg-warning-subtle text-warning small">Count</span>
 </div>
 </div>
 </div>
@@ -97,13 +97,12 @@
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#cusModal">
-New User
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#roomsModal">
+New Room Entry
 </button>
 </div>
 </div>
-@include('pages.modals.modal_users')
+@include('pages.modals.modal_rooms')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -114,15 +113,31 @@ New User
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
-<th>#</th>
-<th>Name</th>
-<th>Phone number</th>
-<th>Date Resgistered</th>
-<th>Action</th>
+<th>Room Description</th>
+<th>Room Type</th>
+<th>Rate - Single</th>
+<th>Rate - Double</th>
+<th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>
-
+@foreach ($Selected_room as $rooms)
+<tr>
+<td>{{ $rooms->description }}</td>
+<td>{{ $rooms->rooms_type_name->description }}</td>
+<td>{{ $rooms->fee }}</td>
+<td>{{ $rooms->fee_double }}</td>
+<td>
+<center>
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#roomsEditedModal{{$rooms->id}}">
+<i class="ri-edit-line"></i>
+</button>
+</center>
+</td>
+</tr>
+@include('pages.modals.modal_rooms_edited')
+@endforeach
 </tbody>
 </table>
 </div>

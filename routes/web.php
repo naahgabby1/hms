@@ -9,6 +9,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\SystemuserController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\SetupsController;
 use App\Http\Controllers\LostandfoundController;
 
 // Authentications
@@ -95,6 +96,9 @@ Route::get('expenses-categories', [ExpenseController::class, 'index_exptypes'])-
 Route::get('users', [SystemuserController::class, 'index'])->name('index.users');
 Route::put('update-users/{id}', [SystemuserController::class, 'update_users'])->name('update.users');
 Route::delete('delete-users/{id}', [SystemuserController::class, 'destroy_users'])->name('delete.users');
+Route::post('register-user', [SystemuserController::class, 'save_new_user'])->name('save.new.user');
+
+
 
 // payments
 Route::get('payments', [PaymentController::class, 'index'])->name('index.payments');
@@ -120,19 +124,17 @@ Route::get('invoice', [DashboardController::class, 'index'])->name('invoice');
 Route::get('payments', [DashboardController::class, 'index'])->name('payments');
 Route::get('old-customers', [DashboardController::class, 'index'])->name('old.customers');
 Route::get('recent-customers', [DashboardController::class, 'index'])->name('recent.customers');
-// Route::get('expenses-list', [DashboardController::class, 'index'])->name('expenses.list');
-// Route::get('expenses-category', [DashboardController::class, 'index'])->name('expenses.category');
 Route::get('other-activities', [DashboardController::class, 'index'])->name('other.activities');
 Route::get('staff-list', [DashboardController::class, 'index'])->name('staff.list');
 Route::get('user-list', [DashboardController::class, 'index'])->name('user.list');
-Route::get('room-type', [DashboardController::class, 'index'])->name('room.type');
-Route::get('rooms', [DashboardController::class, 'index'])->name('rooms');
-Route::get('tax-rates', [DashboardController::class, 'index'])->name('tax.rates');
-Route::get('sms-settings', [DashboardController::class, 'index'])->name('sms.settings');
-Route::get('general-settings', [DashboardController::class, 'index'])->name('general.settings');
-Route::get('currency-settings', [DashboardController::class, 'index'])->name('currency.settings');
+
+
+// Setups
+Route::get('room-types', [SetupsController::class, 'index_room_types'])->name('room.types');
+Route::post('save-room', [SetupsController::class, 'save_room'])->name('save.room.entry');
+Route::put('update-room/{id}', [SetupsController::class, 'update_room'])->name('update.room.entry');
+Route::post('save-rates-discount', [SetupsController::class, 'save_rates'])->name('save.vat.discount');
+Route::get('rooms', [SetupsController::class, 'index_rooms'])->name('rooms');
+Route::get('tax-and-discounts', [SetupsController::class, 'index_tax_discounts'])->name('tax.rates.dicounts');
 });
 });
-
-// Dashboard
-

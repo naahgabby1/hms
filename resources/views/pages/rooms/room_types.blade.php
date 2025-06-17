@@ -47,17 +47,18 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
-<p class="m-0">Registered Users</p>
+<h2 class="lh-1">{{ number_format($olderThanSixMonths) }}</h2>
+<p class="m-0">Old Customers</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-danger" href="javascript:void(0);">
+<span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">Registered Users</p>
-<span class="badge bg-danger-subtle text-danger small">As at now</span>
+<p class="mb-0 text-danger">+60%</p>
+<span class="badge bg-danger-subtle text-danger small">as at now</span>
 </div>
 </div>
 </div>
@@ -73,17 +74,18 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
-<p class="m-0">Registered User Group</p>
+<h2 class="lh-1">{{ number_format($withinSixMonths) }}</h2>
+<p class="m-0">New Customers</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-warning" href="javascript:void(0);">
+<span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">User Group Category</p>
-<span class="badge bg-warning-subtle text-warning small">As at now</span>
+<p class="mb-0 text-warning">+20%</p>
+<span class="badge bg-warning-subtle text-warning small">as at now</span>
 </div>
 </div>
 </div>
@@ -99,11 +101,11 @@
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#cusModal">
-New User
+New Booking
 </button>
 </div>
 </div>
-@include('pages.modals.modal_users')
+@include('pages.modals.modal_customer')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -122,7 +124,39 @@ New User
 </tr>
 </thead>
 <tbody>
-
+@php
+use Carbon\Carbon;
+$nx=1;
+$duration=0;
+@endphp
+@foreach ($Customers_data as $customer)
+<tr>
+<td>{{ $nx }}</td>
+<td>{{ $customer->first_name }} {{$customer->last_names }}</td>
+<td>{{ $customer->phone_number }}</td>
+@php
+$today = Carbon::today();
+@endphp
+<td>{{ Carbon::parse($customer->date_time)->format('d-M-Y') }}</td>
+<td>
+<form action="{{ route('delete.customer', $customer->id) }}" method="POST">
+@csrf
+@method('DELETE')
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#cusEditModal{{$customer->id}}">
+<i class="ri-edit-line"></i>
+</button>
+<button type="button" id="delClicked" class="btn btn-danger">
+<i class="ri-delete-bin-line"></i>
+</button>
+</form>
+</td>
+</tr>
+@php
+$nx++;
+@endphp
+@include('pages.modals.modal_customer_edits')
+@endforeach
 </tbody>
 </table>
 </div>

@@ -15,14 +15,23 @@ class SystemuserController extends Controller
    public function index(){
 $title = 'Users';
 $breadCrumbs = 'System Users';
-$Customers_data = Customer::all();
-$Countries = Countries::orderBy('name')->get();
-$sixMonthsAgo = Carbon::now()->subMonths(6);
-$olderThanSixMonths = Customer::where('date_time', '<', $sixMonthsAgo)->count();
-$withinSixMonths = Customer::where('date_time', '>=', $sixMonthsAgo)->count();
 
-return view('pages.staff.index', compact('title','breadCrumbs','Customers_data','olderThanSixMonths','withinSixMonths','Countries'));
+
+return view('pages.users.index', compact('title','breadCrumbs'));
 }
+
+
+
+   public function save_new_user(){
+$title = 'Users';
+$breadCrumbs = 'System Users';
+
+
+return view('pages.users.index', compact('title','breadCrumbs'));
+}
+
+
+
 
 public function save_customers(Request $request){
 $title = 'Users';
