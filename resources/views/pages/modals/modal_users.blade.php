@@ -1,5 +1,5 @@
 <section>
-<div class="modal fade" id="roomsModal" tabindex="-1" aria-labelledby="personalModalLabel"
+<div class="modal fade" id="usersModal" tabindex="-1" aria-labelledby="personalModalLabel"
 aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog modal-lg">
 <div class="modal-content">
@@ -31,17 +31,17 @@ Register New User
 </div>
 <div class="col-xxl-4 col-lg-4 col-sm-12 mb-3">
 <label class="form-label" for="a1">First Name<span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter Room Description">
+<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter Firstname">
 @error('first_name')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 <div class="col-xxl-4 col-lg-4 col-sm-12 mb-3">
 <label class="form-label" for="a1">Last Names<span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="last_name" name="last_name" placeholder="0.00">
+<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Lastnames">
 @error('last_name')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 <div class="col-xxl-12 col-lg-12 col-sm-12 mb-3">
 <label class="form-label" for="a1">Enter Email<span class="text-danger">*</span></label>
-<input type="text" class="form-control" id="user_email" name="user_email" placeholder="0.00">
+<input type="text" class="form-control" id="user_email" name="user_email" placeholder="Enter email">
 @error('user_email')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>

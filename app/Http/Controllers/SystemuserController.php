@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Countries;
+use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -15,19 +16,20 @@ class SystemuserController extends Controller
    public function index(){
 $title = 'Users';
 $breadCrumbs = 'System Users';
+$RoleType = Role::get();
 
 
-return view('pages.users.index', compact('title','breadCrumbs'));
+return view('pages.users.index', compact('title','breadCrumbs','RoleType'));
 }
 
 
 
-   public function save_new_user(){
+public function save_new_user(){
 $title = 'Users';
 $breadCrumbs = 'System Users';
-
-
-return view('pages.users.index', compact('title','breadCrumbs'));
+$RoleType = Role::get();
+dd($RoleType);
+return view('pages.users.index', compact('title','breadCrumbs','RoleType'));
 }
 
 

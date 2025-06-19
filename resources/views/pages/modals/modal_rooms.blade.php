@@ -51,7 +51,7 @@ Room Registration Entry
 Cancel
 </button>
 <button type="submit" class="btn btn-primary">
-Save Rates
+Save Room Entry
 </button>
 </div>
 </form>

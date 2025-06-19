@@ -98,7 +98,7 @@
 <div class="row mb-2">
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#cusModal">
+data-bs-target="#usersModal">
 New User
 </button>
 </div>
@@ -118,7 +118,7 @@ New User
 <th>Name</th>
 <th>Phone number</th>
 <th>Date Resgistered</th>
-<th>Action</th>
+<th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>

@@ -113,20 +113,33 @@ New Room Entry
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
+<th>#</th>
 <th>Room Description</th>
 <th>Room Type</th>
 <th>Rate - Single</th>
 <th>Rate - Double</th>
+<th><center>Status</center></th>
 <th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>
+@php
+$num=1;
+@endphp
 @foreach ($Selected_room as $rooms)
 <tr>
+<td>{{ $num }}</td>
 <td>{{ $rooms->description }}</td>
 <td>{{ $rooms->rooms_type_name->description }}</td>
 <td>{{ $rooms->fee }}</td>
 <td>{{ $rooms->fee_double }}</td>
+<td>
+@if ($rooms->availability==1)
+<center><span class="badge bg-danger">Room occupied</span></center>
+@else
+<center><span class="badge bg-success">Room available</span></center>
+@endif
+</td>
 <td>
 <center>
 <button type="button" class="btn btn-info" data-bs-toggle="modal"
@@ -136,6 +149,9 @@ data-bs-target="#roomsEditedModal{{$rooms->id}}">
 </center>
 </td>
 </tr>
+@php
+$num++;
+@endphp
 @include('pages.modals.modal_rooms_edited')
 @endforeach
 </tbody>

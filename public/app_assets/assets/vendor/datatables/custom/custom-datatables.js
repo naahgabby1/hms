@@ -79,8 +79,8 @@ $(function () {
 $(function () {
   $("#customButtons").DataTable({
     lengthMenu: [
-      [10, 25, 50],
-      [10, 25, 50, "All"],
+      [3, 10, 50],
+      [3, 10, 50, "All"],
     ],
     dom: "Bfrtip",
     buttons: ["copy", "csv", "excel", "pdf", "print"],
