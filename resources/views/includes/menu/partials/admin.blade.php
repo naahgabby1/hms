@@ -2,8 +2,8 @@
 <div class="sidebar-profile">
 <img src="{{asset('app_assets/assets/images/user6.png')}}" class="img-shadow img-3x me-3 rounded-5" alt="Hospital Admin Templates">
 <div class="m-0">
-<h5 class="mb-1 profile-name text-nowrap text-truncate">{{ session('user_name') }}</h5>
-<p class="m-0 small profile-name text-nowrap text-truncate">{{ session('user_role_description') }}</p>
+<h5 class="mb-1 profile-name text-nowrap text-truncate">{{ Auth::guard('logindetails')->user()->first_name }}</h5>
+<p class="m-0 small profile-name text-nowrap text-truncate">{{ Auth::guard('logindetails')->user()->role_description }}</p>
 </div>
 </div>
 <div class="sidebarMenuScroll">
@@ -16,7 +16,7 @@
 </li>
 <li class="treeview">
 <a href="#!">
-<i class="ri-stethoscope-line"></i>
+<i class="ri-calendar-check-line"></i>
 <span class="menu-text">Booking</span>
 </a>
 <ul class="treeview-menu">
@@ -27,7 +27,7 @@
 </li>
 <li class="treeview">
 <a href="#!">
-<i class="ri-heart-pulse-line"></i>
+<i class="ri-calendar-line"></i>
 <span class="menu-text">Reservation</span>
 </a>
 <ul class="treeview-menu">
@@ -102,7 +102,7 @@
 
 <li class="treeview">
 <a href="#!">
-<i class="ri-group-2-line"></i>
+<i class="ri-group-line"></i>
 <span class="menu-text">User Management</span>
 </a>
 <ul class="treeview-menu">
@@ -113,7 +113,7 @@
 </li>
 <li class="treeview">
 <a href="#!">
-<i class="ri-money-dollar-circle-line"></i>
+<i class="ri-settings-fill"></i>
 <span class="menu-text">Settings</span>
 </a>
 <ul class="treeview-menu">

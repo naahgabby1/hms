@@ -41,13 +41,13 @@
 <div class="card mb-3">
 <div class="card-body">
 <div class="d-flex align-items-center">
-<div class="p-2 border border-danger rounded-circle me-3">
+<div class="p-2 border border-success rounded-circle me-3">
 <div class="icon-box md bg-danger-subtle rounded-5">
-<i class="ri-microscope-line fs-4 text-danger"></i>
+<i class="ri-user-star-line fs-4 text-info"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
+<h2 class="lh-1">{{ $Allusers->count() }}</h2>
 <p class="m-0">Registered Users</p>
 </div>
 </div>
@@ -67,13 +67,13 @@
 <div class="card mb-3">
 <div class="card-body">
 <div class="d-flex align-items-center">
-<div class="p-2 border border-warning rounded-circle me-3">
+<div class="p-2 border border-success rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
+<i class="ri-group-line fs-4 text-warning"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1"></h2>
+<h2 class="lh-1">{{ $RoleType->count() }}</h2>
 <p class="m-0">Registered User Group</p>
 </div>
 </div>
@@ -116,13 +116,55 @@ New User
 <tr>
 <th>#</th>
 <th>Name</th>
-<th>Phone number</th>
+<th>Role</th>
 <th>Date Resgistered</th>
+<th><center>Status</center></th>
 <th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>
+@php
+$num=1;
+@endphp
+@foreach ($Allusers as $users)
+<tr>
+<td>{{ $num }}</td>
+<td>{{ $users->user_name }}</td>
+<td>{{ $users->role_description }}</td>
+<td>{{ $users->created_at }}</td>
+<td>
+<center>
+@if ($users->status==0)
+<span class="badge bg-success">Active user</span>
+@else
+<span class="badge bg-danger">Blocked user</span>
+@endif
+</center>
+</td>
+<td>
+<center>
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#usersEditModal{{$users->id}}">
+<i class="ri-edit-line"></i>
+</button>
+@if ($delete_permission==1)
+<button class="btn btn-danger userDeletes"
+data-id="{{ $users->id }}"
+data-url="{{ route('delete.users', $users->id) }}"
+data-name="{{ $users->first_name }}">
+<i class="ri-delete-bin-line"></i>
+</button>
+@endif
 
+
+</center>
+</td>
+</tr>
+@php
+$num++;
+@endphp
+@include('pages.modals.modal_users_edits')
+@endforeach
 </tbody>
 </table>
 </div>
@@ -136,27 +178,40 @@ New User
 <script type="text/javascript">
 $(document).ready(function(){
 
-
-$(document).on('click','#delClicked',function(){
-const form = this.closest('form');
-_alert('This Customer',form);
+$(document).on('click','.userDeletes',function(){
+const url = $(this).data('url');
+const name = $(this).data('name');
+_deleteAlert(name,url);
 });
 
 
 
-function _alert(mheader,form){
+
+function _deleteAlert(name,url){
 Swal.fire({
-title: `Delete `+mheader+` ?`,
+title: `Delete ${name}?`,
 text: "This action cannot be undone!",
 icon: 'warning',
 showCancelButton: true,
 confirmButtonColor: '#d33',
 cancelButtonColor: '#3085d6',
-confirmButtonText: 'Yes, delete it!',
+confirmButtonText: 'Confirm Delete',
 reverseButtons: true
 }).then((result) => {
 if (result.isConfirmed) {
-form.submit();
+$.ajax({
+url: url,
+type: 'DELETE',
+data: {
+_token: '{{ csrf_token() }}'
+},
+success: function (response) {
+Swal.fire('Deleted!', response.message , 'success');
+setTimeout(function () {
+location.reload();
+}, 3000);
+}
+});
 }
 });
 }

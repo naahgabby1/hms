@@ -1,5 +1,5 @@
 @php
-    $roleId = session('user_role');
+    $roleId = Auth::guard('logindetails')->user()->user_role;
 @endphp
 
 @switch($roleId)

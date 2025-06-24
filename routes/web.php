@@ -18,7 +18,15 @@ Route::post('login', [LoginController::class, 'auth_login'])->name('login.authen
 Route::get('forget-password', [LoginController::class, 'showforgotpassform'])->name('forgetpassword');
 Route::post('forgetpassword-save', [LoginController::class, 'password'])->name('forgetpassword.submit');
 Route::get('register-user', [LoginController::class, 'showregisterform'])->name('register');
+Route::get('default-user-page', [LoginController::class, 'showdefaultuserform'])->name('default.user.form');
 Route::post('register-save', [LoginController::class, 'register'])->name('register.submit');
+Route::post('save-default-password', [LoginController::class, 'change_default_password'])->name('login.changedefault.submit');
+
+
+
+
+
+
 
 Route::middleware('auth:logindetails')->group(function(){
 Route::prefix('admin')->group( function (){

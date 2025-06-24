@@ -45,18 +45,18 @@ Hello
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ count($LostData)}}</h2>
+<h2 class="lh-1">{{ number_format($LostData->count()); }}</h2>
 <p class="m-0">Lost & Found Counts</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-success" href="{{route('booking')}}">
-<span>View All</span>
+<a class="text-success" href="#">
+{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">+40%</p>
-<span class="badge bg-success-subtle text-success small">as at now</span>
+<p class="mb-0 text-success">Registered Lost Items</p>
+<span class="badge bg-success-subtle text-success small">As At Now</span>
 </div>
 </div>
 </div>
@@ -77,13 +77,13 @@ Hello
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-primary" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-primary" href="#">
+{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-primary">+30%</p>
-<span class="badge bg-primary-subtle text-primary small">as at now</span>
+<p class="mb-0 text-primary">Lost Items Retrieved</p>
+<span class="badge bg-primary-subtle text-primary small">As At Now</span>
 </div>
 </div>
 </div>
@@ -99,50 +99,23 @@ Hello
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ count($LostData) }}</h2>
-<p class="m-0">Pending Retrivals</p>
+<h2 class="lh-1">{{ $LostData->count(); }}</h2>
+<p class="m-0">Pending Retrievals</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-danger" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-danger" href="#">
+{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">+60%</p>
-<span class="badge bg-danger-subtle text-danger small">as at now</span>
+<p class="mb-0 text-danger">Lost Items Retrieved</p>
+<span class="badge bg-danger-subtle text-danger small">As At Now</span>
 </div>
 </div>
 </div>
 </div>
 </div>
-{{-- <div class="col-xl-3 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex align-items-center">
-<div class="p-2 border border-warning rounded-circle me-3">
-<div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
-</div>
-</div>
-<div class="d-flex flex-column">
-<h2 class="lh-1">{{ count($LostData) }}</h2>
-<p class="m-0">Bookings Revenue {{date('Y')}}</p>
-</div>
-</div>
-<div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-warning" href="javascript:void(0);">
-<span>View All</span>
-<i class="ri-arrow-right-line ms-1"></i>
-</a>
-<div class="text-end">
-<p class="mb-0 text-warning">+20%</p>
-<span class="badge bg-warning-subtle text-warning small">as at now</span>
-</div>
-</div>
-</div>
-</div>
-</div> --}}
 </div>
 @endpush
 
@@ -153,12 +126,11 @@ Hello
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#lostandfoundModal">
-Enter Lost Item
+<span><strong>LOST ITEM ENTRY</strong></span>
 </button>
 </div>
 </div>
 @include('pages.modals.modal_lostandfound')
-{{-- @include('pages.modals.modal_corporate_booking') --}}
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -170,18 +142,58 @@ Enter Lost Item
 <thead>
 <tr>
 <th>#</th>
-<th>Name</th>
-<th>Phone number</th>
-<th>Duration</th>
-<th>Days</th>
-<th>Amount Due</th>
-<th>Room</th>
-<th>Booking Date</th>
+<th>Found Area</th>
+<th>Location Of Found Item</th>
+<th>Quantity</th>
+<th>Status</th>
+<th>Date</th>
 <th>Action</th>
 </tr>
 </thead>
 <tbody>
+@php
+$num=1;
+@endphp
+@foreach ($LostData as $lost_data)
+<tr>
+<td>{{ $num }}</td>
+<td>{{ $lost_data->lostarea }}</td>
+<td>{{ $lost_data->area_room_found }}</td>
+<td>{{ $lost_data->itemqty }}</td>
+<td>
+<center>
+@if ($lost_data->status==0)
+<span class="badge bg-success">Pending Retrieval</span>
+@else
+<span class="badge bg-danger">Delivered to User</span>
+@endif
+</center>
+</td>
+<td>{{ $lost_data->date_time }}</td>
+<td>
+<center>
+<button type="button" class="btn btn-info" data-bs-toggle="modal"
+data-bs-target="#usersEditModal{{$lost_data->id}}">
+<i class="ri-edit-line"></i>
+</button>
+@if ($delete_permission==1)
+<button class="btn btn-danger userDeletes"
+data-id="{{ $lost_data->id }}"
+data-url="{{ route('delete.users', $lost_data->id) }}"
+data-name="{{ $lost_data->first_name }}">
+<i class="ri-delete-bin-line"></i>
+</button>
+@endif
 
+
+</center>
+</td>
+</tr>
+@php
+$num++;
+@endphp
+{{-- @include('pages.modals.modal_users_edits') --}}
+@endforeach
 </tbody>
 </table>
 </div>

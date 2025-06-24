@@ -4,99 +4,114 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\Systemuser;
 use App\Models\Countries;
+use App\CustomClass\Userdetails;
+use App\CustomClass\Userroles;
 use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Symfony\Component\Console\Input\Input;
 
 class SystemuserController extends Controller
 {
-   public function index(){
-$title = 'Users';
-$breadCrumbs = 'System Users';
-$RoleType = Role::get();
 
-
-return view('pages.users.index', compact('title','breadCrumbs','RoleType'));
+protected $userDetails;
+protected $userRoles;
+public function __construct(Userdetails $userDetails, Userroles $userRoles)
+{
+$this->userDetails = $userDetails;
+$this->userRoles = $userRoles;
 }
 
 
 
-public function save_new_user(){
+public function index(){
+$delete_permission = 0;
 $title = 'Users';
 $breadCrumbs = 'System Users';
 $RoleType = Role::get();
-dd($RoleType);
-return view('pages.users.index', compact('title','breadCrumbs','RoleType'));
+$Allusers = DB::table('login_details')->get();
+
+if ($this->userRoles->isAdmin()) {
+$delete_permission = 1;
+}
+
+return view('pages.users.index',
+compact('title','breadCrumbs','RoleType','Allusers','delete_permission'));
 }
 
 
 
-
-public function save_customers(Request $request){
+public function save_new_user(Request $request){
 $title = 'Users';
 $breadCrumbs = 'System Users';
+$default = '12345';
+$RoleType = Role::get();
 $validated = $request->validate([
+'role_type' => 'required',
 'first_name' => 'required|string|max:255',
-'last_names' => 'required|string|max:255',
-'phone_number' => 'required|max:25',
-'gender' => 'required'
-], [
-'first_name.required' => 'Please enter first name.',
-'last_names.required' => 'Please enter last name',
-'phone_number.required' => 'Please enter phone number',
-'gender.required' => 'Please select gender'
+'last_name' => 'required|string|max:255',
+'user_email' => 'required'
 ]);
 
-$Customer = new Customer();
-$Customer->first_name = $request->input('first_name');
-$Customer->last_names = $request->input('last_names');
-$Customer->phone_number = $request->input('phone_number');
-$Customer->gender = $request->input('gender');
-$Customer->country = $request->input('country');
-$Customer->address = $request->input('address');
-$Customer->save();
-
+$existingUser = Systemuser::where('email', $request->input('user_email'))->first();
+if (!$existingUser) {
+Systemuser::create([
+'first_name' => $request->input('first_name'),
+'last_names' => $request->input('last_name'),
+'user_role' => $request->input('role_type'),
+'email' => $request->input('user_email'),
+'password' => Hash::make($default)
+]);
+}
 $notification = array(
-'message'=>"Reservation Successfully Updated..!!!",
-'alert-type'=>'success',
+'message'=>"User Successfully Registered",
+'type' => 'success',
+'notification' => 'SUCCESS',
 );
-return back()->with($notification,compact('title','breadCrumbs'));
+return back()->with($notification);
 }
 
 
 
-public function update_customers(Request $request, $id){
-$title = 'Staff';
-$breadCrumbs = 'Human Resources';
-Customer::findOrFail($id)->update([
+
+
+public function update_users(Request $request, $id){
+$title = 'Users';
+$breadCrumbs = 'System Users';
+
+$validated = $request->validate([
+'role_type_edits' => 'required',
+'first_name_edits' => 'required|string|max:255',
+'last_name_edits' => 'required|string|max:255',
+'user_email_edits' => 'required'
+]);
+
+
+Systemuser::findOrFail($id)->update([
 'first_name'=>$request->input('first_name_edits'),
-'last_names'=>$request->input('last_names_edits'),
-'phone_number'=>$request->input('phone_number_edits'),
-'gender'=>$request->input('gender_edits'),
-'country'=>$request->input('country_edits'),
-'address'=>$request->input('address_edits')
+'last_names'=>$request->input('last_name_edits'),
+'user_role'=>$request->input('role_type_edits'),
+'email'=>$request->input('user_email_edits')
 ]);
 $notification = array(
-'message'=>"Customer Successfully Updated..!!!",
-'alert-type'=>'success',
+'message'=>"User Successfully Updated",
+'type' => 'success',
+'notification' => 'SUCCESS',
 );
-return back()->with($notification,compact('title','breadCrumbs'));
-
+return back()->with($notification);
 }
 
 
 
-public function destroy_customers($id){
-$title = 'Staff';
-$breadCrumbs = 'Human Resources';
-Customer::findOrFail($id)->delete();
-$notification = array(
-'message'=>"Customer Successfully Deleted..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+public function destroy_users($id){
+$title = 'Users';
+$breadCrumbs = 'System Users';
+Systemuser::findOrFail($id)->delete();
+return response()->json(['message' => 'User deleted successfully.']);
 }
 }

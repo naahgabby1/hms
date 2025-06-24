@@ -22,5 +22,8 @@ public function userrole() {
 return $this->user?->role_description;
 }
 
+public function user_role() {
+return $this->user?->user_role;
+}
 
 }
