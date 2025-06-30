@@ -15,13 +15,15 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
+{{-- <button class="btn btn-sm">7d</button>
 <button class="btn btn-sm">2w</button>
 <button class="btn btn-sm">1m</button>
 <button class="btn btn-sm">3m</button>
 <button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush
@@ -41,9 +43,9 @@
 <div class="card mb-3">
 <div class="card-body">
 <div class="d-flex align-items-center">
-<div class="p-2 border border-danger rounded-circle me-3">
+<div class="p-2 border border-primary rounded-circle me-3">
 <div class="icon-box md bg-danger-subtle rounded-5">
-<i class="ri-microscope-line fs-4 text-danger"></i>
+<i class="ri-home-line fs-4 text-primary"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -56,8 +58,8 @@
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">Registered Rooms </p>
-<span class="badge bg-danger-subtle text-danger small">Counts</span>
+{{-- <p class="mb-0 text-success">Registered Rooms </p> --}}
+<span class="badge bg-danger-subtle text-danger small">Registered Rooms</span>
 </div>
 </div>
 </div>
@@ -67,9 +69,9 @@
 <div class="card mb-3">
 <div class="card-body">
 <div class="d-flex align-items-center">
-<div class="p-2 border border-warning rounded-circle me-3">
+<div class="p-2 border border-primary rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
+<i class="ri-home-line fs-4 text-primary"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -82,8 +84,8 @@
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">Registered Room Types</p>
-<span class="badge bg-warning-subtle text-warning small">Count</span>
+{{-- <p class="mb-0 text-success">Registered Room Types</p> --}}
+<span class="badge bg-warning-subtle text-warning small">Registered Room Types</span>
 </div>
 </div>
 </div>
@@ -142,7 +144,7 @@ $num=1;
 </td>
 <td>
 <center>
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-block btn-sm" data-bs-toggle="modal"
 data-bs-target="#roomsEditedModal{{$rooms->id}}">
 <i class="ri-edit-line"></i>
 </button>

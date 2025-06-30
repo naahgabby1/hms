@@ -15,13 +15,15 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
+{{-- <button class="btn btn-sm">7d</button>
 <button class="btn btn-sm">2w</button>
 <button class="btn btn-sm">1m</button>
 <button class="btn btn-sm">3m</button>
 <button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush
@@ -52,12 +54,12 @@
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-danger" href="javascript:void(0);">
+<a class="text-danger" href="#">
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">Registered VAT</p>
-<span class="badge bg-danger-subtle text-danger small">As at now</span>
+{{-- <p class="mb-0 text-success">Registered VAT</p> --}}
+<span class="badge bg-danger-subtle text-danger small">Registered VAT Rate</span>
 </div>
 </div>
 </div>
@@ -78,12 +80,12 @@
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-warning" href="javascript:void(0);">
+<a class="text-warning" href="#">
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">Registered Discount</p>
-<span class="badge bg-warning-subtle text-warning small">As at now</span>
+{{-- <p class="mb-0 text-success">Registered Discount</p> --}}
+<span class="badge bg-warning-subtle text-warning small">Registered Discount Rate</span>
 </div>
 </div>
 </div>

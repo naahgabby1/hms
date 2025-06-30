@@ -10,6 +10,8 @@ use App\Http\Controllers\SystemuserController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SetupsController;
+use App\Http\Controllers\HallController;
+use App\Http\Controllers\GymController;
 use App\Http\Controllers\LostandfoundController;
 
 // Authentications
@@ -53,7 +55,9 @@ Route::put('update-personal-reservation/{xid}', [BookController::class, 'persona
 Route::get('lost-and-found',[LostandfoundController::class, 'index'])->name('lost.and.found.page');
 Route::post('save-lost-and-found',[LostandfoundController::class, 'lost_and_found_save'])->name('lost.and.found.save');
 Route::put('update-lost-and-found/{id}',[LostandfoundController::class, 'lost_and_found_update'])->name('lost.and.found.update');
+Route::put('save-lost-and-found-retrieval/{id}',[LostandfoundController::class, 'lost_and_found_retrieval'])->name('save.retrieval.entry');
 Route::delete('delete-lost-and-found/{id}',[LostandfoundController::class, 'lost_and_found_destroy'])->name('lost.and.found.destroy');
+
 
 
 Route::put('confirm-reservation-as-booked/{xid}', [BookController::class, 'confirm_reservation_into_booked'])->name('confirmation.reservation');
@@ -104,7 +108,9 @@ Route::get('expenses-categories', [ExpenseController::class, 'index_exptypes'])-
 Route::get('users', [SystemuserController::class, 'index'])->name('index.users');
 Route::put('update-users/{id}', [SystemuserController::class, 'update_users'])->name('update.users');
 Route::delete('delete-users/{id}', [SystemuserController::class, 'destroy_users'])->name('delete.users');
+Route::put('reset-user-password/{id}', [SystemuserController::class, 'reset_user_password'])->name('reset.user.password');
 Route::post('register-user', [SystemuserController::class, 'save_new_user'])->name('save.new.user');
+
 
 
 
@@ -114,6 +120,20 @@ Route::put('update-payment/{id}', [PaymentController::class, 'update_payments'])
 Route::post('save-payment', [PaymentController::class, 'save_payments'])->name('save.payments');
 Route::delete('delete-payment/{id}', [PaymentController::class, 'destroy_payments'])->name('delete.payments');
 Route::post('open-payment/{id}', [StaffController::class, 'open_payments'])->name('open.payment.schedule');
+
+
+// Gym
+Route::get('gym-activities', [GymController::class, 'index'])->name('gym.activities.list');
+Route::put('update-gym-activities', [GymController::class, 'index_update'])->name('update.gym.entry');
+Route::delete('delete-gym-activities', [GymController::class, 'index_destroy'])->name('delete.gym.entry');
+
+
+// Hall
+Route::get('hall-activities', [HallController::class, 'index'])->name('hall.activities.list');
+Route::put('update-hall-activities', [HallController::class, 'index_update'])->name('update.hall.entry');
+Route::delete('delete-hall-activities', [HallController::class, 'index_destroy'])->name('delete.hall.entry');
+
+
 
 
 

@@ -15,13 +15,15 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
+{{-- <button class="btn btn-sm">7d</button>
 <button class="btn btn-sm">2w</button>
 <button class="btn btn-sm">1m</button>
 <button class="btn btn-sm">3m</button>
 <button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush
@@ -48,7 +50,7 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ $Allusers->count() }}</h2>
-<p class="m-0">Registered Users</p>
+<p class="m-0">Users</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
@@ -56,8 +58,8 @@
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">Registered Users</p>
-<span class="badge bg-danger-subtle text-danger small">As at now</span>
+{{-- <p class="mb-0 text-danger">Registered Users</p> --}}
+<span class="badge bg-danger-subtle text-danger small">Registered Users</span>
 </div>
 </div>
 </div>
@@ -74,16 +76,16 @@
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ $RoleType->count() }}</h2>
-<p class="m-0">Registered User Group</p>
+<p class="m-0">User Group</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-warning" href="javascript:void(0);">
+<a class="text-warning" href="#">
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">User Group Category</p>
-<span class="badge bg-warning-subtle text-warning small">As at now</span>
+{{-- <p class="mb-0 text-warning">User Group Category</p> --}}
+<span class="badge bg-warning-subtle text-warning small">User Group Category</span>
 </div>
 </div>
 </div>
@@ -99,7 +101,7 @@
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#usersModal">
-New User
+Register New User
 </button>
 </div>
 </div>
@@ -143,19 +145,24 @@ $num=1;
 </td>
 <td>
 <center>
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
 data-bs-target="#usersEditModal{{$users->id}}">
 <i class="ri-edit-line"></i>
 </button>
 @if ($delete_permission==1)
-<button class="btn btn-danger userDeletes"
+<button class="btn btn-danger btn-sm userDeletes"
 data-id="{{ $users->id }}"
 data-url="{{ route('delete.users', $users->id) }}"
 data-name="{{ $users->first_name }}">
 <i class="ri-delete-bin-line"></i>
 </button>
 @endif
-
+<button class="btn btn-success btn-sm useResets"
+data-id="{{ $users->id }}"
+data-url="{{ route('reset.user.password', $users->id) }}"
+data-name="{{ $users->first_name }}">
+<i class="ri-lock-line"></i>
+</button>
 
 </center>
 </td>
@@ -183,6 +190,45 @@ const url = $(this).data('url');
 const name = $(this).data('name');
 _deleteAlert(name,url);
 });
+
+$(document).on('click','.useResets',function(){
+const url = $(this).data('url');
+const name = $(this).data('name');
+_resetAlert(name,url);
+});
+
+
+
+function _resetAlert(name,url){
+Swal.fire({
+title: `Reset Password For ${name}?`,
+text: "This action cannot be undone!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#d33',
+cancelButtonColor: '#3085d6',
+confirmButtonText: 'Confirm Reset',
+reverseButtons: true
+}).then((result) => {
+if (result.isConfirmed) {
+$.ajax({
+url: url,
+type: 'PUT',
+data: {
+_token: '{{ csrf_token() }}'
+},
+success: function (response) { 
+Swal.fire('Reset!', response.message , 'success');
+setTimeout(function () {
+location.reload();
+}, 3000);
+}
+});
+}
+});
+}
+
+
 
 
 

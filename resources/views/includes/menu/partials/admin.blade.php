@@ -68,7 +68,10 @@
 </a>
 <ul class="treeview-menu">
 <li>
-<a href="{{ route('other.activities')}}">Side Activities</a>
+<a href="{{ route('gym.activities.list')}}">GYM Activity</a>
+</li>
+<li>
+<a href="{{ route('hall.activities.list')}}">Hall Bookings</a>
 </li>
 </ul>
 </li>

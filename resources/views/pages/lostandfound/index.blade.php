@@ -15,19 +15,21 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
+{{-- <button class="btn btn-sm">7d</button>
 <button class="btn btn-sm">2w</button>
 <button class="btn btn-sm">1m</button>
 <button class="btn btn-sm">3m</button>
 <button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush
 
 @push('page_head')
-Hello
+
 @endpush
 
 
@@ -35,13 +37,14 @@ Hello
 
 @push('page_head2')
 <div class="row gx-3">
+<div class="col-xl-3 col-sm-6 col-12"></div>
 <div class="col-xl-3 col-sm-6 col-12">
 <div class="card mb-3">
 <div class="card-body">
 <div class="d-flex align-items-center">
 <div class="p-2 border border-success rounded-circle me-3">
 <div class="icon-box md bg-success-subtle rounded-5">
-<i class="ri-surgical-mask-line fs-4 text-success"></i>
+<i class="ri-star-smile-line fs-4 text-success"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -55,8 +58,8 @@ Hello
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">Registered Lost Items</p>
-<span class="badge bg-success-subtle text-success small">As At Now</span>
+{{-- <p class="mb-0 text-success">Registered Lost Items</p> --}}
+<span class="badge bg-success-subtle text-success small">Registered Lost Items</span>
 </div>
 </div>
 </div>
@@ -68,7 +71,7 @@ Hello
 <div class="d-flex align-items-center">
 <div class="p-2 border border-primary rounded-circle me-3">
 <div class="icon-box md bg-primary-subtle rounded-5">
-<i class="ri-lungs-line fs-4 text-primary"></i>
+<i class="ri-star-smile-line fs-4 text-primary"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -82,8 +85,8 @@ Hello
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-primary">Lost Items Retrieved</p>
-<span class="badge bg-primary-subtle text-primary small">As At Now</span>
+{{-- <p class="mb-0 text-primary">Lost Items Retrieved</p> --}}
+<span class="badge bg-primary-subtle text-primary small">Lost Items Retrieved</span>
 </div>
 </div>
 </div>
@@ -95,7 +98,7 @@ Hello
 <div class="d-flex align-items-center">
 <div class="p-2 border border-danger rounded-circle me-3">
 <div class="icon-box md bg-danger-subtle rounded-5">
-<i class="ri-microscope-line fs-4 text-danger"></i>
+<i class="ri-star-smile-line fs-4 text-danger"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -109,8 +112,8 @@ Hello
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">Lost Items Retrieved</p>
-<span class="badge bg-danger-subtle text-danger small">As At Now</span>
+{{-- <p class="mb-0 text-danger">Lost Items Retrieved</p> --}}
+<span class="badge bg-danger-subtle text-danger small">Lost Items Retrieved</span>
 </div>
 </div>
 </div>
@@ -126,7 +129,7 @@ Hello
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#lostandfoundModal">
-<span><strong>LOST ITEM ENTRY</strong></span>
+<span>Lost Item Entry</span>
 </button>
 </div>
 </div>
@@ -147,7 +150,7 @@ data-bs-target="#lostandfoundModal">
 <th>Quantity</th>
 <th>Status</th>
 <th>Date</th>
-<th>Action</th>
+<th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>
@@ -172,12 +175,12 @@ $num=1;
 <td>{{ $lost_data->date_time }}</td>
 <td>
 <center>
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
-data-bs-target="#usersEditModal{{$lost_data->id}}">
-<i class="ri-edit-line"></i>
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+data-bs-target="#RetrievalModal{{$lost_data->id}}">
+<i class="ri-secure-payment-line"></i>
 </button>
 @if ($delete_permission==1)
-<button class="btn btn-danger userDeletes"
+<button class="btn btn-danger btn-sm userDeletes"
 data-id="{{ $lost_data->id }}"
 data-url="{{ route('delete.users', $lost_data->id) }}"
 data-name="{{ $lost_data->first_name }}">
@@ -192,7 +195,7 @@ data-name="{{ $lost_data->first_name }}">
 @php
 $num++;
 @endphp
-{{-- @include('pages.modals.modal_users_edits') --}}
+@include('pages.modals.modal_retrievals')
 @endforeach
 </tbody>
 </table>

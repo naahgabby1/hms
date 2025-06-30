@@ -15,15 +15,13 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary" style="font-family: monospace;">
-Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
-</button>
-{{-- <button class="btn btn-sm">7d</button>
+<button class="btn btn-sm btn-primary">Today</button>
+<button class="btn btn-sm">7d</button>
 <button class="btn btn-sm">2w</button>
 <button class="btn btn-sm">1m</button>
 <button class="btn btn-sm">3m</button>
 <button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button> --}}
+<button class="btn btn-sm">1y</button>
 </div>
 </div>
 @endpush
@@ -49,18 +47,18 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format(count($expenses_type)) }}</h2>
-<p class="m-0">Expenses Categories</p>
+<h2 class="lh-1">{{ number_format($GymCustomers->count()) }}</h2>
+<p class="m-0">Gym Customers</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-danger" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-danger" href="#">
+{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">+60%</p>
-<span class="badge bg-danger-subtle text-danger small">as at now</span>
+<p class="mb-0 text-danger">Registered Customers</p>
+<span class="badge bg-danger-subtle text-danger small">As At Now</span>
 </div>
 </div>
 </div>
@@ -76,18 +74,18 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format($expenses_captured) }}</h2>
-<p class="m-0">Expenses Captured</p>
+<h2 class="lh-1">{{ number_format($GymTransactions->sum('amount')) }}</h2>
+<p class="m-0">Gym Revenue</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-warning" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-warning" href="#">
+{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">+20%</p>
-<span class="badge bg-warning-subtle text-warning small">as at now</span>
+<p class="mb-0 text-warning">Gym Revenue</p>
+<span class="badge bg-warning-subtle text-warning small">As At Now</span>
 </div>
 </div>
 </div>
@@ -102,12 +100,16 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 <div class="row mb-2">
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#enterExpenseModal">
-New Expenses
+data-bs-target="#cusModal">
+Register A Customer
+</button>
+<button type="button" class="btn btn-success" data-bs-toggle="modal"
+data-bs-target="#cusModal">
+Register A Transaction
 </button>
 </div>
 </div>
-@include('pages.modals.modal_expensescapture')
+{{-- @include('pages.modals.modal_customer') --}}
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -119,46 +121,14 @@ New Expenses
 <thead>
 <tr>
 <th>#</th>
-<th>Expenses</th>
-<th>Amount</th>
-<th>Date Captured</th>
+<th>Name</th>
+<th>Phone number</th>
+<th>Date Resgistered</th>
 <th>Action</th>
 </tr>
 </thead>
 <tbody>
-@php
-use Carbon\Carbon;
-$nx=1;
-$duration=0;
-@endphp
-@foreach ($expenses_data as $expenses)
-<tr>
-<td>{{ $nx }}</td>
-<td>{{ $expenses->expenses_type }}</td>
-<td>{{ $expenses->amount }}</td>
-@php
-$today = Carbon::today();
-@endphp
-<td>{{ Carbon::parse($expenses->date_time)->format('d-M-Y') }}</td>
-<td>
-<form action="{{ route('delete.expenses', $expenses->id) }}" method="POST">
-@csrf
-@method('DELETE')
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
-data-bs-target="#expensesEditModal{{$expenses->id}}">
-<i class="ri-edit-line"></i>
-</button>
-<button type="button" id="delClicked" class="btn btn-danger">
-<i class="ri-delete-bin-line"></i>
-</button>
-</form>
-</td>
-</tr>
-@php
-$nx++;
-@endphp
-@include('pages.modals.modal_expensescapture_edit')
-@endforeach
+
 </tbody>
 </table>
 </div>
@@ -175,7 +145,7 @@ $(document).ready(function(){
 
 $(document).on('click','#delClicked',function(){
 const form = this.closest('form');
-_alert('This Expenses',form);
+_alert('This Customer',form);
 });
 
 

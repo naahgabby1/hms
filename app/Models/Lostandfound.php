@@ -16,6 +16,9 @@ class Lostandfound extends Model
         'found_by',
         'summary',
         'comments',
+        'status',
+        'delivered_by',
+        'remarks_on_delivery',
         'date_delivered',
     ];
 }

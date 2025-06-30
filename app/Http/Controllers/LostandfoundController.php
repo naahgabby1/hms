@@ -103,6 +103,26 @@ return back()->with($notification);
 }
 
 
+public function lost_and_found_retrieval(Request $request, $id){
+$title = 'Lost and Found';
+$breadCrumbs = 'Lost & Found';
+Lostandfound::findOrFail($id)->update([
+'status'=>1,
+'delivered_by'=>$this->userDetails->username(),
+'remarks_on_delivery'=>$request->input('remarks'),
+'date_delivered'=>$request->input('retrieval_date')
+]);
+$notification = array(
+'message'=>"Customer Successfully Updated..!!!",
+'alert-type'=>'success',
+);
+return back()->with($notification,compact('title','breadCrumbs'));
+
+}
+
+
+
+
 public function lost_and_found_update(Request $request, $id){
 $title = 'Lost and Found';
 $breadCrumbs = 'Lost & Found';

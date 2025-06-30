@@ -15,13 +15,15 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
+{{-- <button class="btn btn-sm">7d</button>
 <button class="btn btn-sm">2w</button>
 <button class="btn btn-sm">1m</button>
 <button class="btn btn-sm">3m</button>
 <button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush
@@ -43,22 +45,22 @@
 <div class="d-flex align-items-center">
 <div class="p-2 border border-danger rounded-circle me-3">
 <div class="icon-box md bg-danger-subtle rounded-5">
-<i class="ri-microscope-line fs-4 text-danger"></i>
+<i class="ri-shape-fill fs-4 text-muted"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ number_format($ExpensesCount) }}</h2>
-<p class="m-0">Expenses Categories</p>
+<p class="m-0">Categories</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-danger" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-danger" href="#">
+{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">+60%</p>
-<span class="badge bg-danger-subtle text-danger small">as at now</span>
+{{-- <p class="mb-0 text-danger">+60%</p> --}}
+<span class="badge bg-danger-subtle text-danger small">Expenses Category</span>
 </div>
 </div>
 </div>
@@ -70,22 +72,22 @@
 <div class="d-flex align-items-center">
 <div class="p-2 border border-warning rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
+<i class="ri-cash-line fs-4 text-warning"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
 <h2 class="lh-1">{{ number_format($ExpensesCaptured) }}</h2>
-<p class="m-0">Expenses Captured</p>
+<p class="m-0">Expenses</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-warning" href="javascript:void(0);">
-<span>View All</span>
+{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">+20%</p>
-<span class="badge bg-warning-subtle text-warning small">as at now</span>
+{{-- <p class="mb-0 text-warning">+20%</p> --}}
+<span class="badge bg-warning-subtle text-warning small">Captured Expenses</span>
 </div>
 </div>
 </div>
@@ -101,7 +103,7 @@
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
 data-bs-target="#cusModal">
-New Category
+New Expenses Category
 </button>
 </div>
 </div>
@@ -119,7 +121,7 @@ New Category
 <th>#</th>
 <th>Expenses Description</th>
 <th>Date Captured</th>
-<th>Action</th>
+<th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>
@@ -136,19 +138,19 @@ $duration=0;
 $today = Carbon::today();
 @endphp
 <td>{{ Carbon::parse($type->date_time)->format('d-M-Y') }}</td>
-<td>
+<td><center>
 <form action="{{ route('delete.expensescategory', $type->id) }}" method="POST">
 @csrf
 @method('DELETE')
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
 data-bs-target="#expensesEditModal{{$type->id}}">
 <i class="ri-edit-line"></i>
 </button>
-<button type="button" id="delClicked" class="btn btn-danger">
+<button type="button" id="delClicked" class="btn btn-danger btn-sm">
 <i class="ri-delete-bin-line"></i>
 </button>
 </form>
-</td>
+</center></td>
 </tr>
 @php
 $nx++;

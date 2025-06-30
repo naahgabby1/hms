@@ -215,3 +215,14 @@ $date_code = Date('Y')
 @stack('customed_js')
 </body>
 </html>
+<script>
+function updateClock() {
+const now = new Date();
+const time = now.toLocaleTimeString();
+document.getElementById('clock').textContent = time;
+}
+
+// Update clock immediately and every second
+updateClock();
+setInterval(updateClock, 1000);
+</script>

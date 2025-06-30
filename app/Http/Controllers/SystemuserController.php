@@ -108,6 +108,18 @@ return back()->with($notification);
 
 
 
+public function reset_user_password(Request $request, $id){
+$title = 'Users';
+$breadCrumbs = 'System Users';
+Systemuser::findOrFail($id)->update([
+'password'=>Hash::make('12345')
+]);
+return response()->json(['message' => 'User Password Reset successful']);
+}
+
+
+
+
 public function destroy_users($id){
 $title = 'Users';
 $breadCrumbs = 'System Users';
