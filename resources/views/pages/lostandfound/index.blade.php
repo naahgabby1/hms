@@ -145,6 +145,7 @@ data-bs-target="#lostandfoundModal">
 <thead>
 <tr>
 <th>#</th>
+<th>Lost Item Description</th>
 <th>Found Area</th>
 <th>Location Of Found Item</th>
 <th>Quantity</th>
@@ -160,6 +161,7 @@ $num=1;
 @foreach ($LostData as $lost_data)
 <tr>
 <td>{{ $num }}</td>
+<td>{{ $lost_data->item_description }}</td>
 <td>{{ $lost_data->lostarea }}</td>
 <td>{{ $lost_data->area_room_found }}</td>
 <td>{{ $lost_data->itemqty }}</td>
@@ -182,8 +184,7 @@ data-bs-target="#RetrievalModal{{$lost_data->id}}">
 @if ($delete_permission==1)
 <button class="btn btn-danger btn-sm userDeletes"
 data-id="{{ $lost_data->id }}"
-data-url="{{ route('delete.users', $lost_data->id) }}"
-data-name="{{ $lost_data->first_name }}">
+data-url="{{ route('lost.and.found.destroy', $lost_data->id) }}">
 <i class="ri-delete-bin-line"></i>
 </button>
 @endif
@@ -212,20 +213,6 @@ $(document).ready(function(){
 $('#hideShowOld').show();
 $('#hideShowOld_compound').hide();
 
-
-
-
-
-
-
-
-$(document).on('click','#delClicked',function(){
-const form = this.closest('form');
-_alert('This Booking',form);
-});
-
-
-
 $('#customer_type').change(function() {
 var selected = $(this).val();
 if (selected === '1') {
@@ -237,57 +224,40 @@ $('#hideShowOld_compound').hide();
 }
 });
 
-
-
-$(document).on('change', '.room_type_edits', function () {
-var selected = $(this).val();
-var row = $(this).closest('.modal');
-var roomSelect = row.find('.room_edit');
-$.get("filter-list/"+ selected, function(responses){
-roomSelect.empty();
-roomSelect.append('<option value="">Select Available Room</option>');
-if (responses.data && responses.data.length > 0) {
-$.each(responses.data, function (index, room) {
-roomSelect.append('<option value="' + room.id + '">' + room.description + '</option>');
-});
-} else {
-roomSelect.append('<option value="">No rooms available</option>');
-}
-}).fail(function () {
-alert("Error fetching room data.");
-});
+$(document).on('click','.userDeletes',function(){
+const url = $(this).data('url');
+_deleteAlert(url);
 });
 
 
 
 
-$('#room_type').change(function() {
-var selected = $(this).val();
-$.get("filter-list/"+ selected, function(responses){
-let select = $('#room');
-select.empty();
-select.append('<option value="">Select Available Room</option>');
-$.each(responses.data, function (index, room) {
-select.append('<option value="' + room.id + '">' + room.description + '</option>');
-});
-});
-});
 
-
-
-function _alert(mheader,form){
+function _deleteAlert(url){
 Swal.fire({
-title: `Delete `+mheader+` ?`,
+title: `Delete this lost & found Entry ?`,
 text: "This action cannot be undone!",
 icon: 'warning',
 showCancelButton: true,
 confirmButtonColor: '#d33',
 cancelButtonColor: '#3085d6',
-confirmButtonText: 'Yes, delete it!',
+confirmButtonText: 'Confirm Delete',
 reverseButtons: true
 }).then((result) => {
 if (result.isConfirmed) {
-form.submit();
+$.ajax({
+url: url,
+type: 'DELETE',
+data: {
+_token: '{{ csrf_token() }}'
+},
+success: function (response) {
+Swal.fire('Deleted!', response.message , 'success');
+setTimeout(function () {
+location.reload();
+}, 3000);
+}
+});
 }
 });
 }

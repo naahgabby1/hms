@@ -145,14 +145,8 @@ return back()->with($notification,compact('title','breadCrumbs'));
 
 
 public function lost_and_found_destroy($id){
-$title = 'Lost and Found';
-$breadCrumbs = 'Lost & Found';
 Lostandfound::findOrFail($id)->delete();
-$notification = array(
-'message'=>"Customer Successfully Deleted..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+return response()->json(['message' => 'Lost & Found Data Deleted Successfully.']);
 }
 
 

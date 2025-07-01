@@ -121,8 +121,6 @@ return response()->json(['message' => 'User Password Reset successful']);
 
 
 public function destroy_users($id){
-$title = 'Users';
-$breadCrumbs = 'System Users';
 Systemuser::findOrFail($id)->delete();
 return response()->json(['message' => 'User deleted successfully.']);
 }
