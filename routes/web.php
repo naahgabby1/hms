@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
@@ -13,6 +14,10 @@ use App\Http\Controllers\SetupsController;
 use App\Http\Controllers\HallController;
 use App\Http\Controllers\GymController;
 use App\Http\Controllers\LostandfoundController;
+use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\HomeController;
+
+
 
 // Authentications
 Route::get('login', [LoginController::class, 'index'])->name('login');
@@ -33,6 +38,32 @@ Route::post('save-default-password', [LoginController::class, 'change_default_pa
 Route::middleware('auth:logindetails')->group(function(){
 Route::prefix('admin')->group( function (){
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+// Finance section
+Route::prefix('financials')->group( function (){
+Route::get('dashboard', [FinanceController::class, 'index'])->name('finance.dashboard');
+});
+
+// House keeping section
+Route::prefix('housekeeping')->group( function (){
+Route::get('dashboard', [HomeController::class, 'index'])->name('house.keepings.dashboard');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Booking & Reservations
 Route::get('booking', [BookController::class, 'bookings'])->name('booking');
@@ -132,8 +163,10 @@ Route::delete('delete-gym-activities', [GymController::class, 'index_destroy'])-
 Route::get('hall-activities', [HallController::class, 'index'])->name('hall.activities.list');
 Route::put('update-hall-activities', [HallController::class, 'index_update'])->name('update.hall.entry');
 Route::delete('delete-hall-activities', [HallController::class, 'index_destroy'])->name('delete.hall.entry');
-
-
+Route::post('hall-booking', [HallController::class, 'save_hall_bookings'])->name('save.customer.hall');
+Route::post('hall-payments/{id}', [HallController::class, 'hall_payments'])->name('save.hall.payments');
+Route::put('hall-booking-update/{id}', [HallController::class, 'update_customers_booking'])->name('update.customer.hall');
+Route::delete('delete-hall-booking/{id}',[HallController::class, 'hbook_destroy'])->name('hall.entry.destroy');
 
 
 

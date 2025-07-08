@@ -82,7 +82,7 @@ Customer Update
 Cancel
 </button>
 <button type="submit" class="btn btn-primary">
-Update
+Update Customer
 </button>
 </div>
 </form>

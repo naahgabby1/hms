@@ -15,13 +15,9 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
 </div>
 </div>
 @endpush
@@ -36,28 +32,25 @@
 @push('page_head2')
 <div class="row gx-3">
 <div class="col-xl-3 col-sm-6 col-12"></div>
+<div class="col-xl-3 col-sm-6 col-12"></div>
 <div class="col-xl-3 col-sm-6 col-12">
 <div class="card mb-3">
 <div class="card-body">
 <div class="d-flex align-items-center">
 <div class="p-2 border border-success rounded-circle me-3">
 <div class="icon-box md bg-success-subtle rounded-5">
-<i class="ri-surgical-mask-line fs-4 text-success"></i>
+<i class="ri-user-line fs-4 text-primary"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format(12)}}</h2>
+<h2 class="lh-1">{{ number_format($Staff_data->count())}}</h2>
 <p class="m-0">Active Staff Count</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-success" href="{{route('booking')}}">
-<span>View All</span>
 <i class="ri-arrow-right-line text-success ms-1"></i>
-</a>
 <div class="text-end">
-<p class="mb-0 text-success">+40%</p>
-<span class="badge bg-success-subtle text-success small">as at now</span>
+<span class="badge bg-success-subtle text-success small">Registered Active Staff</span>
 </div>
 </div>
 </div>
@@ -73,45 +66,16 @@
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format(12) }}</h2>
+<h2 class="lh-1">{{ number_format($Staff_archived) }}</h2>
 <p class="m-0">Archive Staff Count</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-danger" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-danger" href="#">
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">+60%</p>
-<span class="badge bg-danger-subtle text-danger small">as at now</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-3 col-sm-6 col-12">
-<div class="card mb-3">
-<div class="card-body">
-<div class="d-flex align-items-center">
-<div class="p-2 border border-warning rounded-circle me-3">
-<div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
-</div>
-</div>
-<div class="d-flex flex-column">
-<h2 class="lh-1">{{ number_format(1002) }}</h2>
-<p class="m-0">Total Paid Salaries</p>
-</div>
-</div>
-<div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-warning" href="javascript:void(0);">
-<span>View All</span>
-<i class="ri-arrow-right-line ms-1"></i>
-</a>
-<div class="text-end">
-<p class="mb-0 text-warning">+20%</p>
-<span class="badge bg-warning-subtle text-warning small">as at now</span>
+<span class="badge bg-danger-subtle text-danger small">Registered Staff Archived</span>
 </div>
 </div>
 </div>
@@ -125,11 +89,9 @@
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#staffModal">
-New Staff Entry
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staffModal">
+Register New Staff
 </button>
-<a href="{{ route('salary.staff') }}" class="btn btn-warning"> Staff Salary </a>
 </div>
 </div>
 @include('pages.modals.modal_staff')
@@ -144,9 +106,10 @@ New Staff Entry
 <thead>
 <tr>
 <th>#</th>
-<th>Name</th>
+<th>Staff Name</th>
 <th>Phone number</th>
-<th>Emergency Contact Person</th>
+<th>Contact Person</th>
+<th>Contact Person Number</th>
 <th>Action</th>
 </tr>
 </thead>
@@ -162,16 +125,17 @@ $duration=0;
 <td>{{ $staff->first_name }} {{$staff->last_name }}</td>
 <td>{{ $staff->phone_number }}</td>
 
-<td>{{ $staff->phone_number }}</td>
+<td>{{ $staff->emergency_contact_name }}</td>
+<td>{{ $staff->emergency_contact_number }}</td>
 <td>
 <form action="{{ route('delete.staff', $staff->id) }}" method="POST">
 @csrf
 @method('DELETE')
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
 data-bs-target="#staffEditModal{{$staff->id}}">
 <i class="ri-edit-line"></i>
 </button>
-<button type="button" id="delClicked" class="btn btn-danger">
+<button type="button" data-mastername="{{$staff->first_name.' '.$staff->last_name}}" id="delClicked" class="btn btn-danger btn-sm">
 <i class="ri-delete-bin-line"></i>
 </button>
 </form>
@@ -198,7 +162,8 @@ $(document).ready(function(){
 
 $(document).on('click','#delClicked',function(){
 const form = this.closest('form');
-_alert('This Staff',form);
+let mastername = $(this).data('mastername');
+_alert(mastername,form);
 });
 
 

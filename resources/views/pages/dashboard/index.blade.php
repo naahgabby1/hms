@@ -29,13 +29,12 @@
 @push('page_head')
 <div class="row gx-3">
 <div class="col-xxl-12 col-sm-12">
-{{-- <div class="card mb-3 bg-2"> --}}
-<div class="card mb-3" style="background: #108185">
+<div class="card mb-3" style="background-image: url('{{ asset('app_assets/assets/images/customed/hotel.png') }}'); background-size:cover;background-position:right">
 <div class="card-body">
 <div class="py-4 px-3 text-white">
-<h6>Good Morning,</h6>
-<h2>Gabriel Duon-naah</h2>
-<!-- <h5>Your schedule today.</h5> -->
+<h6>{{ $Greetings }},</h6>
+<h2>{{ Auth::guard('logindetails')->user()->user_name; }}</h2>
+<h5>{{ $section_title }}</h5>
 <div class="mt-4 d-flex gap-3">
 <div class="d-flex align-items-center">
 <div class="icon-box lg bg-arctic rounded-3 me-3">
@@ -273,113 +272,16 @@
 <div class="col-xxl-12 col-sm-12">
 <div class="card mb-3">
 <div class="card-header">
-{{-- <h5 class="card-title">Available Beds</h5> --}}
+
 </div>
 <div class="card-body">
 <div id="availableBeds"></div>
 </div>
 </div>
 </div>
-{{-- <div class="col-xxl-6 col-sm-12">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Patients</h5>
-</div>
-<div class="card-body">
-<div id="patients"></div>
-</div>
-</div>
-</div> --}}
-{{-- <div class="col-xxl-6 col-sm-12">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Treatment Type</h5>
-</div>
-<div class="card-body">
-<div id="treatment"></div>
-</div>
-</div>
-</div> --}}
-{{-- <div class="col-xxl-6 col-sm-12">
-<div class="card mb-3">
-<div class="card-header">
-<h5 class="card-title">Hospital Earnings</h5>
-</div>
-<div class="card-body">
 
-<!-- Row start -->
-<div class="row g-3">
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline1"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<h4 class="m-0 fw-bold">$4900</h4>
-<div class="ms-2 text-primary d-flex">
-<small>20%</small> <i class="ri-arrow-right-up-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small>Online Consultation</small>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline2"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<div class="fs-4 fw-bold">$750</div>
-<div class="ms-2 text-danger d-flex">
-<small>26%</small> <i class="ri-arrow-right-down-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small class="text-dark">Overall Purchases</small>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline3"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<div class="fs-4 fw-bold">$560</div>
-<div class="ms-2 text-primary d-flex">
-<small>28%</small> <i class="ri-arrow-right-up-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small class="text-dark">Pending Invoices</small>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-12">
-<div class="border rounded-2 d-flex align-items-center flex-row p-2">
-<div class="me-2">
-<div id="sparkline4"></div>
-</div>
-<div class="m-0">
-<div class="d-flex align-items-center">
-<div class="fs-4 fw-bold">$390</div>
-<div class="ms-2 text-primary d-flex">
-<small>30%</small> <i class="ri-arrow-right-up-line ms-1 fw-bold"></i>
-</div>
-</div>
-<small class="text-dark">Monthly Billing</small>
-</div>
-</div>
-</div>
-</div>
-<!-- Row ends -->
 
-</div>
-</div>
-</div> --}}
-{{-- <div class="col-xxl-3 col-sm-6">
+<div class="col-xxl-3 col-sm-6">
 <div class="card mb-3">
 <div class="card-header">
 <h5 class="card-title">Insurance Claims</h5>
@@ -388,8 +290,8 @@
 <div id="claims"></div>
 </div>
 </div>
-</div> --}}
-{{-- <div class="col-xxl-3 col-sm-6">
+</div>
+<div class="col-xxl-3 col-sm-6">
 <div class="card mb-3">
 <div class="card-header">
 <h5 class="card-title">Patients by Gender</h5>
@@ -400,6 +302,6 @@
 </div>
 </div>
 </div>
-</div> --}}
+</div>
 </div>
 @endsection

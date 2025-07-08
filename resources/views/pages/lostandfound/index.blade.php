@@ -18,12 +18,6 @@
 <button class="btn btn-sm btn-primary" style="font-family: monospace;">
 Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
 </button>
-{{-- <button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush
@@ -102,7 +96,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 </div>
 </div>
 <div class="d-flex flex-column">
-<h2 class="lh-1">{{ $LostData->count(); }}</h2>
+<h2 class="lh-1">{{ $LostData->where('status', 0)->count(); }}</h2>
 <p class="m-0">Pending Retrievals</p>
 </div>
 </div>
@@ -145,10 +139,11 @@ data-bs-target="#lostandfoundModal">
 <thead>
 <tr>
 <th>#</th>
-<th>Lost Item Description</th>
-<th>Found Area</th>
-<th>Location Of Found Item</th>
+<th>Description</th>
+<th>Area</th>
+<th>Location</th>
 <th>Quantity</th>
+<th>Found By</th>
 <th>Status</th>
 <th>Date</th>
 <th><center>Action</center></th>
@@ -158,13 +153,14 @@ data-bs-target="#lostandfoundModal">
 @php
 $num=1;
 @endphp
-@foreach ($LostData as $lost_data)
+@foreach ($LostData->where('status', 0) as $lost_data)
 <tr>
 <td>{{ $num }}</td>
 <td>{{ $lost_data->item_description }}</td>
 <td>{{ $lost_data->lostarea }}</td>
 <td>{{ $lost_data->area_room_found }}</td>
 <td>{{ $lost_data->itemqty }}</td>
+<td>{{ $lost_data->found_by }}</td>
 <td>
 <center>
 @if ($lost_data->status==0)

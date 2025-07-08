@@ -9,23 +9,42 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\CustomClass\Userdetails;
+use App\CustomClass\Userroles;
 
-
-//  first_name 	last_names 	phone_number 	gender 	date_time
 
 
 class CustomerController extends Controller
 {
+protected $userDetails;
+protected $userRoles;
+public function __construct(Userdetails $userDetails, Userroles $userRoles)
+{
+$this->userDetails = $userDetails;
+$this->userRoles = $userRoles;
+}
 public function index(){
+$delete_permission = 0;
 $title = 'Customers';
 $breadCrumbs = 'Hotel Customers';
 $Customers_data = Customer::all();
-$Countries = Countries::orderBy('name')->get();
+
+$Countries = Countries::orderByRaw("CASE WHEN name = 'Ghana' THEN 0 ELSE 1 END")
+                      ->orderBy('name')
+                      ->get();
 $sixMonthsAgo = Carbon::now()->subMonths(6);
 $olderThanSixMonths = Customer::where('date_time', '<', $sixMonthsAgo)->count();
 $withinSixMonths = Customer::where('date_time', '>=', $sixMonthsAgo)->count();
+if ($this->userRoles->isEither([1,2])) {
+$delete_permission = 1;
+}
 
-return view('pages.customers.index', compact('title','breadCrumbs','Customers_data','olderThanSixMonths','withinSixMonths','Countries'));
+return view('pages.customers.index',
+compact(
+'title','breadCrumbs','Customers_data',
+'olderThanSixMonths','withinSixMonths',
+'Countries','delete_permission'
+));
 }
 
 public function save_customers(Request $request){

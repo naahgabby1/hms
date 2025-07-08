@@ -89,6 +89,23 @@ value="female" {{ $staff->gender === 'female' ? 'checked' : '' }}>
 <img src="{{ asset('storage/'.$staff->pix) }}" alt="Staff Image" style="max-width: 200px;">
 </div>
 </div>
+<div class="col-xxl-4 col-lg-4 col-sm-12">
+<div class="mb-3">
+<label class="form-label" for="date_to">Separation Criteria</label>
+<select class="form-select" id="separation_type" name="separation_type">
+<option value="">Select</option>
+<option value="Resignation">Resignation</option>
+<option value="Termination">Termination</option>
+<option value="Death">Death</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-4 col-lg-4 col-sm-12">
+<div class="mb-3">
+<label class="form-label" for="date_to">Date Of Separation</label>
+<input type="date" class="form-control" name="archived_date">
+</div>
+</div>
 </div>
 </div>
 <div class="modal-footer">

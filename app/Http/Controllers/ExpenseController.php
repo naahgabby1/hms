@@ -12,17 +12,42 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Nette\Schema\Expect;
+use App\CustomClass\Userdetails;
+use App\CustomClass\Userroles;
 
 class ExpenseController extends Controller
 {
-    public function index(){
+protected $userDetails;
+protected $userRoles;
+public function __construct(Userdetails $userDetails, Userroles $userRoles)
+{
+$this->userDetails = $userDetails;
+$this->userRoles = $userRoles;
+}
+
+
+
+public function index(){
+$delete_permission = 0;
 $title = 'Expenses';
 $breadCrumbs = 'Hotel Expenses';
 $expenses_type = Expensetype::all();
+if ($this->userRoles->isEither([1,2])) {
 $expenses_captured = Expense::all()->sum('amount');
 $expenses_data = DB::table('vw_expenses')->get();
-
-return view('pages.expenses.index', compact('title','breadCrumbs','expenses_data','expenses_type','expenses_captured'));
+}else{
+$expenses_captured = Expense::all()
+->where('entered_by',$this->userDetails->username())
+->sum('amount');
+$expenses_data = DB::table('vw_expenses')
+->where('entered_by',$this->userDetails->username())
+->get();
+}
+if ($this->userRoles->isEither([1,2])) {
+$delete_permission = 1;
+}
+return view('pages.expenses.index',
+compact('title','breadCrumbs','expenses_data','expenses_type','expenses_captured','delete_permission'));
 }
 
 

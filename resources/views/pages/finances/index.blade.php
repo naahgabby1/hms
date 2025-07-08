@@ -4,7 +4,7 @@
 <ol class="breadcrumb">
 <li class="breadcrumb-item">
 <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
-<a href="{{route('dashboard')}}">Home</a>
+<a href="{{route('finance.dashboard')}}">Dashboard</a>
 </li>
 <li class="breadcrumb-item text-primary" aria-current="page">
 {{$breadCrumbs}}
@@ -23,19 +23,19 @@
 @push('page_head')
 <div class="row gx-3">
 <div class="col-xxl-12 col-sm-12">
-<div class="card mb-3" style="background-image: url('{{ asset('app_assets/assets/images/customed/hotel.png') }}'); background-size:cover;background-position:right">
+<div class="card mb-3" style="background-image: url('{{ asset('app_assets/assets/images/customed/fin.png') }}'); background-size:cover;background-position:right">
 <div class="card-body">
 <div class="py-4 px-3 text-white">
-<h6>Good Morning,</h6>
-<h2>Gabriel Duon-naah</h2>
-<!-- <h5>Your schedule today.</h5> -->
+<h6>{{ $Greetings }},</h6>
+<h2>{{ Auth::guard('logindetails')->user()->user_name; }}</h2>
+<h5>{{ $section_title }}</h5>
 <div class="mt-4 d-flex gap-3">
 <div class="d-flex align-items-center">
 <div class="icon-box lg bg-arctic rounded-3 me-3">
 <i class="ri-surgical-mask-line fs-4"></i>
 </div>
 <div class="d-flex flex-column">
-<h2 class="m-0 lh-1">9000</h2>
+<h2 class="m-0 lh-1">9</h2>
 <p class="m-0">New Bookings</p>
 </div>
 </div>

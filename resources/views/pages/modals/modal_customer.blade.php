@@ -82,7 +82,7 @@ value="female">
 Cancel
 </button>
 <button type="submit" class="btn btn-primary">
-Save
+Save Customer
 </button>
 </div>
 </form>

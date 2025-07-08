@@ -52,9 +52,9 @@ public function salary_staff(){
 $title = 'Staff';
 $breadCrumbs = 'Human Resources';
 $Staff_data = Staff::where('archived', 0)->get();
-$Open_close = DB::table('payments_openclose')->first();
-$Staff_salaries = Staffpayment::all()->sum('amount');
-$Staff_paylist = Staffpayment::where('status', 0)->get();
+// $Open_close = DB::table('payments_openclose')->first();
+// $Staff_salaries = Staffpayment::all()->sum('amount');
+// $Staff_paylist = Staffpayment::where('status', 0)->get();
 $Staff_archived = Staff::where('archived', 1)->get()->count();
 return view('pages.staff.salaries', compact('title','breadCrumbs','Staff_data','Staff_salaries','Staff_archived','Open_close','Staff_paylist'));
 }
@@ -133,15 +133,6 @@ $validated = $request->validate([
 'contact_number_edit' => 'required',
 'ghana_card_edit' => 'required',
 'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx|max:2048',
-], [
-'first_name_edit.required' => 'Please enter first name.',
-'last_name_edit.required' => 'Please enter last name',
-'phone_number_edit.required' => 'Please enter phone number',
-'gender_edit.required' => 'Please select gender',
-'contact_person_edit.required' => 'Please enter contact person',
-'contact_number_edit.required' => 'Please enter phone number',
-'ghana_card_edit.required' => 'Please enter Ghanacard',
-'file.file|mimes:jpg,jpeg,png,pdf,docx|max:2048' => 'Check your picture',
 ]);
 
 $staff = Staff::findOrFail($id);
@@ -153,6 +144,20 @@ Storage::disk('public')->delete($staff->pix);
 $path = $request->file('file')->store('uploads', 'public');
 $staff->pix = $path;
 }
+
+if ($request->filled('separation_type') && $request->filled('archived_date')) {
+$staff->first_name = $request->input('first_name_edit');
+$staff->last_name = $request->input('last_name_edit');
+$staff->phone_number = $request->input('phone_number_edit');
+$staff->gender = $request->input('gender_edit');
+$staff->emergency_contact_name = $request->input('contact_person_edit');
+$staff->emergency_contact_number = $request->input('contact_number_edit');
+$staff->ghana_card = $request->input('ghana_card_edit');
+$staff->archived = 1;
+$staff->date_archived = $request->input('archived_date');
+$staff->archived_reason = $request->input('separation_type');
+$staff->save();
+} else {
 $staff->first_name = $request->input('first_name_edit');
 $staff->last_name = $request->input('last_name_edit');
 $staff->phone_number = $request->input('phone_number_edit');
@@ -161,6 +166,12 @@ $staff->emergency_contact_name = $request->input('contact_person_edit');
 $staff->emergency_contact_number = $request->input('contact_number_edit');
 $staff->ghana_card = $request->input('ghana_card_edit');
 $staff->save();
+}
+
+
+
+
+
 
 $notification = [
 'message' => "Staff Successfully Updated..!!!",

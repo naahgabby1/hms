@@ -179,10 +179,23 @@ data-bs-toggle="dropdown" aria-expanded="false">
 @yield('main_content_body')
 </div>
 <div class="app-footer bg-white">
-@php
-$date_code = Date('Y')
-@endphp
-<span>© Quabennya Hills Resort {{$date_code}}</span>
+<div class="row">
+<div class="col-xl-6 col-md-6 col-xxl-6 col-sm-12 col-xs-12 text-start" style="padding-top: 10px">
+<span style="padding-top: 20px">© Quabennya Hills Resort {{ Date('Y')}}</span>
+</div>
+<div class="col-xl-6 col-md-6 col-xxl-6 col-sm-12 col-xs-12 text-end">
+<a href="{{ route('dashboard')}}" class="btn btn-outline-primary me-2">Hotel Management</a>
+<a href="{{ route('finance.dashboard')}}" class="btn btn-outline-primary me-2">Financial Management</a>
+<a href="{{ route('house.keepings.dashboard')}}" class="btn btn-outline-primary">House Keeping Management</a>
+</div>
+</div>
+
+
+
+
+
+
+
 </div>
 </div>
 </div>
