@@ -15,13 +15,9 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
 </div>
 </div>
 @endpush
@@ -53,12 +49,10 @@
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-danger" href="#">
-{{-- <span>View All</span> --}}
-<i class="ri-arrow-right-line ms-1"></i>
+<i class="ri-users-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">Registered Customers</p>
-<span class="badge bg-danger-subtle text-danger small">As At Now</span>
+<span class="badge bg-danger-subtle text-danger small">Registered Customers/Clients</span>
 </div>
 </div>
 </div>
@@ -80,12 +74,10 @@
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-warning" href="#">
-{{-- <span>View All</span> --}}
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">Gym Revenue</p>
-<span class="badge bg-warning-subtle text-warning small">As At Now</span>
+<span class="badge bg-warning-subtle text-warning small">Generated Revenue This Year</span>
 </div>
 </div>
 </div>
@@ -100,16 +92,17 @@
 <div class="row mb-2">
 <div class="col-12">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-data-bs-target="#cusModal">
-Register A Customer
+data-bs-target="#GymCustomerModal">
+Register A Gym Customer/Client
 </button>
 <button type="button" class="btn btn-success" data-bs-toggle="modal"
-data-bs-target="#cusModal">
-Register A Transaction
+data-bs-target="#GymTransModal">
+Register Gym Transaction
 </button>
 </div>
 </div>
-{{-- @include('pages.modals.modal_customer') --}}
+@include('pages.modals.modal_gymcustomers')
+@include('pages.modals.modal_gymtransaction')
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -121,10 +114,11 @@ Register A Transaction
 <thead>
 <tr>
 <th>#</th>
-<th>Name</th>
+<th>Customer / Client</th>
 <th>Phone number</th>
-<th>Date Resgistered</th>
-<th>Action</th>
+<th>Date Registered</th>
+<th>Registered Package</th>
+<th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>

@@ -28,14 +28,14 @@ $title = 'Gym Activities';
 $breadCrumbs = 'Gym Activities';
 $user = new Userdetails;
 $GymCustomers = Gym::all();
+$MemType = DB::table('gym_membership_type')->get();
 $GymTransactions = DB::table('gym_transactions')->get();
 
 return view('pages.gym.index',
-compact('title','breadCrumbs','GymCustomers','GymTransactions'));
+compact('title','breadCrumbs','GymCustomers','GymTransactions','MemType'));
 }
 
-
-public function index_update(Request $request, $id){
+public function save_gym_customers(Request $request){
 $title = 'Setups';
 $breadCrumbs = 'Update Rooms';
 $request->validate([
@@ -44,13 +44,27 @@ $request->validate([
 'room_rate_edit' => 'required|numeric',
 'room_rate_double_edit' => 'required|numeric'
 ]);
-$record = Gym::findOrFail($id);
-$record->update([
-'description' => $request->input('room_name_edit'),
-'type_id' => $request->input('room_type_edit'),
-'fee' => $request->input('room_rate_edit'),
-'fee_double' => $request->input('room_rate_double_edit')
+
+
+$notification = array(
+'message'=>"Room Updated Successfully",
+'type' => 'success',
+'notification' => 'SUCCESS',
+);
+return back()->with($notification);
+}
+
+
+public function save_gym_activities(Request $request){
+$title = 'Setups';
+$breadCrumbs = 'Update Rooms';
+$request->validate([
+'room_type_edit' => 'required',
+'room_name_edit' => 'required',
+'room_rate_edit' => 'required|numeric',
+'room_rate_double_edit' => 'required|numeric'
 ]);
+
 
 $notification = array(
 'message'=>"Room Updated Successfully",
