@@ -23,7 +23,7 @@ Gym Members Registration
 </div>
 <div class="col-xxl-3 col-lg-3 col-sm-6">
 <div class="mb-3">
-<label class="form-label" for="organization">Membership Type <span class="text-danger">*</span></label>
+<label class="form-label" for="membership">Membership Type <span class="text-danger">*</span></label>
 <select class="form-select" id="membership" name="membership">
 <option value="">Select Membership</option>
 @foreach($MemType as $dataz)
@@ -40,56 +40,72 @@ Gym Members Registration
 @error('phone_number')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
-<div class="col-xxl-3 col-lg-3 col-sm-6" id="hideShowOrganization2"></div>
 <div class="col-xxl-3 col-lg-3 col-sm-6" id="hideShowOrganization">
 <div class="mb-3">
 <label class="form-label" for="a3">Email Address<span class="text-danger"></span></label>
-<input type="text" class="form-control" id="email" name="email" placeholder="Enter Organization Name">
+<input type="email" class="form-control" id="email" name="email" placeholder="Enter Organization Name">
 @error('email')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-3 col-sm-6">
 <div class="mb-3">
-<label class="form-label" for="event_type">Gender <span class="text-danger">*</span></label>
-
-@error('event_type')<small class="text-danger">{{ $message }}</small>@enderror
+<label class="form-label" for="selectGender1">Gender <span
+class="text-danger">*</span></label>
+<div class="m-0">
+<div class="form-check form-check-inline">
+<input class="form-check-input" type="radio" name="gender" id="gender"
+value="male">
+<label class="form-check-label" for="gender">Male</label>
+</div>
+<div class="form-check form-check-inline">
+<input class="form-check-input" type="radio" name="gender" id="gender"
+value="female">
+<label class="form-check-label" for="gender">Female</label>
+</div>
+</div>
+@error('gender')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-3 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="date_to">Address <span class="text-danger">*</span></label>
-<input type="number" min="1" class="form-control" id="address" name="address" placeholder="Enter Customer Address">
+<input type="text" min="1" class="form-control" id="address" name="address" placeholder="Enter Customer Address">
 @error('address')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-3 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="date_to">Start Date <span class="text-danger">*</span></label>
-<input type="date" class="form-control" id="edate" name="edate">
-@error('edate')<small class="text-danger">{{ $message }}</small>@enderror
+<input type="date" class="form-control" id="start_date" name="start_date">
+@error('start_date')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 <div class="col-xxl-3 col-lg-3 col-sm-6">
 <div class="mb-3">
 <label class="form-label" for="date_to">Emergency Contact Number <span class="text-danger">*</span></label>
-
-@error('catering_type')<small class="text-danger">{{ $message }}</small>@enderror
+<input type="text" class="form-control" id="emergency_contact" name="emergency_contact">
+@error('emergency_contact')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 
 <div class="col-xxl-3 col-lg-3 col-sm-6">
 <div class="mb-3">
-<label class="form-label" for="date_to">Start Date <span class="text-danger">*</span></label>
-<input type="date" class="form-control" id="startdate" name="startdate">
-@error('startdate')<small class="text-danger">{{ $message }}</small>@enderror
+<label class="form-label" for="date_to">Gym Trainer <span class="text-danger">*</span></label>
+<select class="form-select" id="gym_trainer" name="gym_trainer">
+<option value="">Select</option>
+@foreach($GymTrainers as $train)
+<option value="{{ $train->id }}">{{ $train->name }}</option>
+@endforeach
+</select>
+@error('gym_trainer')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 
 <div class="col-xxl-3 col-lg-3 col-sm-6">
 <div class="mb-3">
-<label class="form-label" for="date_to">End Date <span class="text-danger">*</span></label>
-<input type="date" class="form-control" id="enddate" name="enddate" placeholder="Enter Customer Address">
-@error('enddate')<small class="text-danger">{{ $message }}</small>@enderror
+<label class="form-label" for="date_to">Discount % <span class="text-danger">*</span></label>
+<input type="number" class="form-control" id="discounts" name="discounts" placeholder="Enter Customer Address">
+@error('discounts')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 
@@ -101,7 +117,7 @@ Gym Members Registration
 Cancel
 </button>
 <button type="submit" class="btn btn-primary">
-Save Hall Booking
+Save Gym Registration
 </button>
 </div>
 </form>

@@ -95,12 +95,8 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 data-bs-target="#GymCustomerModal">
 Register Gym Client
 </button>
-<button type="button" class="btn btn-success" data-bs-toggle="modal"
-data-bs-target="#GymTransModal">
+<a href="{{ route('gym.activities.list')}}" class="btn btn-info">
 Register Gym Transaction
-</button>
-<a href="{{ route('gym.clients.list')}}" class="btn btn-info">
-Registered Gym Clients
 </a>
 </div>
 </div>

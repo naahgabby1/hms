@@ -155,11 +155,12 @@ Route::post('open-payment/{id}', [StaffController::class, 'open_payments'])->nam
 
 // Gym
 Route::get('gym-activities', [GymController::class, 'index'])->name('gym.activities.list');
+Route::get('gym-clients', [GymController::class, 'index_clients'])->name('gym.clients.list');
 Route::put('update-gym-activities', [GymController::class, 'index_update'])->name('update.gym.entry');
 Route::delete('delete-gym-activities', [GymController::class, 'index_destroy'])->name('delete.gym.entry');
 Route::post('save-gym-customers', [GymController::class, 'save_gym_customers'])->name('save.gym.customers');
 Route::post('save-gym-activities', [GymController::class, 'save_gym_activities'])->name('save.gym.activities');
-
+Route::get('filter-customer-phones/{id}', [GymController::class, 'getCustomer_numbers'])->name('get.custmoer.numbers');
 
 
 
