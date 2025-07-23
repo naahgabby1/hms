@@ -9,7 +9,7 @@ class Book extends Model
     public $timestamps = false;
     protected $table = 'booking_reservation';
     protected $fillable = [
-        'first_name', 'last_name', 'mobile_number', 'gender',
+        'occupancy','first_name', 'last_name', 'mobile_number', 'gender',
         'date_from', 'date_to', 'country', 'city',
         'room_type_id', 'room_id', 'address', 'entered_by',
         'status','cancelled','cancelled_by','out_status'

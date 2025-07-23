@@ -40,6 +40,7 @@ Gym Transaction Entries
 <label class="form-label" for="a3">Client Phone Number<span class="text-danger">*</span></label>
 <input type="text" class="form-control" id="membership_registered_phone" name="membership_registered_phone">
 <input type="hidden" class="form-control" id="membership_registered_phone_hidden" name="membership_registered_phone_hidden">
+<input type="hidden" class="form-control" id="membership_registered_id_hidden" name="membership_registered_id_hidden">
 @error('membership_registered_phone')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>

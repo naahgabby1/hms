@@ -85,6 +85,14 @@ $(function () {
     dom: "Bfrtip",
     buttons: ["copy", "csv", "excel", "pdf", "print"],
   });
+  $("#customButtons2").DataTable({
+    lengthMenu: [
+      [3, 10, 50],
+      [3, 10, 50, "All"],
+    ],
+    dom: "Bfrtip",
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
+  });
 });
 
 // Toggle Buttons

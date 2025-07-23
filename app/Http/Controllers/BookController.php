@@ -54,11 +54,11 @@ public function bookings(){
 $title = 'Booking';
 $breadCrumbs = 'Booking';
 $Rolex = new Userroles;
-$Delete = $Rolex->isEither([1,2]);
-
-$Countries = Countries::orderByRaw("CASE WHEN name = 'Ghana' THEN 0 ELSE 1 END")
-                      ->orderBy('name')
-                      ->get();
+$delete_permission = 0;
+if ($Rolex->isEither([1,2])) {
+$delete_permission = 1;
+}
+$Countries = Countries::orderByRaw("CASE WHEN name = 'Ghana' THEN 0 ELSE 1 END")->orderBy('name')->get();
 $RoomType = Roomtype::orderBy('id', 'asc')->get();
 $Room = Room::orderBy('description')->get();
 $customers = Customer::orderBy('first_name', 'asc')->where('personal_or_coporate', 1)->get();
@@ -93,12 +93,12 @@ $Booked_data_today = DB::table('vw_reservationbooking')
 }
 
 return view('pages.bookings.index', compact(
-    'title','breadCrumbs',
-    'Countries','RoomType',
-    'Room','Booked_data',
-    'Booked_data_today','Booked_thisyear',
-    'Booked_thisday','customers',
-    'corporates','Delete'
+'title','breadCrumbs',
+'Countries','RoomType',
+'Room','Booked_data',
+'Booked_data_today','Booked_thisyear',
+'Booked_thisday','customers',
+'corporates','delete_permission'
 ));
 }
 
@@ -166,6 +166,7 @@ return back()->with('error', 'Invalid customer data. Please try again.');
 }
 foreach ($customers as $cust) {
 Bookmultiple::create([
+'occupancy'   => $request['occupancy'],
 'booking_id'   => $request['booking_id'],
 'first_name'   => $cust['first_name'],
 'last_names'   => $cust['last_name'],
@@ -590,10 +591,11 @@ return back()->with($notification);
 
 
 public function save_booking_customer(Request $request){
-$title = 'Booking';
-$breadCrumbs = 'Booking';
-$validated = $request->validate(['customer_type' => 'required'],['customer_type.required' => 'Please Select Customer Type']);
+$validated = $request->validate(
+['customer_type' => 'required'],
+['customer_type.required' => 'Please Select Customer Type']);
 $typex = $request->customer_type;
+
 if ($typex==1) {
 $validated = $request->validate([
 'first_name' => 'required|string|max:255',
@@ -605,21 +607,15 @@ $validated = $request->validate([
 'country' => 'required',
 'room_type' => 'required',
 'room' => 'required'
-], [
-'first_name.required' => 'Please enter first name.',
-'last_name.required' => 'Please enter last name',
-'mobile_phone.required' => 'Please enter phone number',
-'gender.required' => 'Please select gender',
-'date_from.required' => 'Select date from',
-'date_to.required' => 'Select date to',
-'country.required' => 'Select country',
-'room_type.required' => 'Select room type',
-'room.required' => 'Select room'
 ]);
+
 $firstname = $request->input('first_name');
 $lastname = $request->input('last_name');
 $mobilephone = $request->input('mobile_phone');
 $ugender = $request->input('gender');
+
+
+
 } else {
 $uid = $request->customer_type_existing;
 $cdata = Customer::findOrFail($uid);
@@ -629,12 +625,6 @@ $validated = $request->validate([
 'country' => 'required',
 'room_type' => 'required',
 'room' => 'required'
-], [
-'date_from.required' => 'Select date from',
-'date_to.required' => 'Select date to',
-'country.required' => 'Select country',
-'room_type.required' => 'Select room type',
-'room.required' => 'Select room'
 ]);
 $firstname = $cdata->first_name;
 $lastname = $cdata->last_names;
@@ -646,11 +636,10 @@ $mdate_from = Carbon::parse($request->input('date_from'));
 $mdate_to = Carbon::parse($request->input('date_to'));
 $today = Carbon::today();
 
-if (
-$mdate_from->lessThanOrEqualTo($today) &&
-$mdate_to->greaterThan($mdate_from)
-) {
+if ($mdate_from->lessThanOrEqualTo($today) && $mdate_to->greaterThan($mdate_from)) {
+    // dd('Gabriel');
 $reservation = new Book();
+$reservation->occupancy = $request->input('occupancy');
 $reservation->first_name = $firstname;
 $reservation->last_name = $lastname;
 $reservation->category = 1;

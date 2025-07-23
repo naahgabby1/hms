@@ -18,12 +18,6 @@
 <button class="btn btn-sm btn-primary" style="font-family: monospace;">
 Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
 </button>
-{{-- <button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush

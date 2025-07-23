@@ -3,9 +3,15 @@
 aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog modal-lg">
 <div class="modal-content shadow-lg border-0">
-<form action="{{ route('save.hall.payments', $gymx_data->id) }}" method="post">
+<form action="{{ route('save.gym.payments') }}" method="post">
 @csrf
 @method('POST')
+@if ($gymx_data->gym_client_group==1)
+<input type="hidden" name="id" value="{{ $gymx_data->gym_client_id }}">
+@else
+<input type="hidden" name="id" value="{{ $gymx_data->id }}">
+<input type="hidden" name="idmastername" value="{{ $gymx_data->gym_client }}">
+@endif
 <div class="modal-header bg-primary text-white">
 <h5 class="modal-title" id="cusModalLabel">Booked Hall Payments</h5>
 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -27,6 +33,8 @@ aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="col-xxl-4 col-xl-4 col-md-4 col-sm-12 col-xs-12">
 <label class="form-label" for="a3">Payment Amount Entry<span class="text-danger">*</span></label>
 <input type="number" class="form-control" id="paid_amounts" name="paid_amounts" placeholder="Enter Payment Amount">
+<input type="hidden" class="form-control" id="paid_amounts_hidden" name="paid_amounts_hidden" value="{{ $gymx_data->gym_client_group }}">
+<input type="hidden" class="form-control" id="paid_idcode_hidden" name="paid_idcode_hidden" value="{{ $gymx_data->gym_client_id }}">
 @error('paid_amounts')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>

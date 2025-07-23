@@ -157,10 +157,18 @@ Route::post('open-payment/{id}', [StaffController::class, 'open_payments'])->nam
 Route::get('gym-activities', [GymController::class, 'index'])->name('gym.activities.list');
 Route::get('gym-clients', [GymController::class, 'index_clients'])->name('gym.clients.list');
 Route::put('update-gym-activities', [GymController::class, 'index_update'])->name('update.gym.entry');
-Route::delete('delete-gym-activities', [GymController::class, 'index_destroy'])->name('delete.gym.entry');
+// Route::delete('delete-gym-activities', [GymController::class, 'index_destroy'])->name('delete.gym.entry');
 Route::post('save-gym-customers', [GymController::class, 'save_gym_customers'])->name('save.gym.customers');
 Route::post('save-gym-activities', [GymController::class, 'save_gym_activities'])->name('save.gym.activities');
+Route::post('save-gym-payments', [GymController::class, 'save_gym_payment'])->name('save.gym.payments');
 Route::get('filter-customer-phones/{id}', [GymController::class, 'getCustomer_numbers'])->name('get.custmoer.numbers');
+
+
+
+Route::put('gym-booked-waiver/{id}',[GymController::class, 'gym_waiver'])->name('gym.entry.waiver');
+
+
+Route::delete('delete-gym-booking/{id}',[GymController::class, 'gym_destroy'])->name('gym.entry.destroy');
 
 
 

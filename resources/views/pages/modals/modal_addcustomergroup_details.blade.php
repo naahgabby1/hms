@@ -28,7 +28,9 @@ aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 <li class="list-group-item d-flex justify-content-between align-items-center">
 <span><span class="badge bg-success">✔</span> {{ $xcustom->first_name }} {{ $xcustom->last_names }} ( {{ $xcustom->phone_number }} )</span>
 <span>
-{{ $actual_duration == 1 ? $actual_duration . ' (day)' : $actual_duration . ' (days)' }} @ {{ $xcustom->fee }}
+{{ $actual_duration == 1 ? $actual_duration . ' (day)' : $actual_duration . ' (days)' }}
+@
+{{ $xcustom->occupancy == 1 ? $xcustom->fee : $xcustom->fee_double }}
 </span>
 <span class="badge bg-success">{{ $xcustom->room_description }}</span>
 {{-- <span class="badge bg-success">✔</span> --}}

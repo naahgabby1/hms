@@ -26,13 +26,9 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
 </div>
 </div>
 @endpush
@@ -62,11 +58,9 @@
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-success" href="{{route('booking')}}">
-<span>View All</span>
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">+40%</p>
 <span class="badge bg-success-subtle text-success small">as at now</span>
 </div>
 </div>
@@ -88,12 +82,10 @@
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-primary" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-primary" href="#">
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-primary">+30%</p>
 <span class="badge bg-primary-subtle text-primary small">as at now</span>
 </div>
 </div>
@@ -115,12 +107,10 @@
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-danger" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-danger" href="#">
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">+60%</p>
 <span class="badge bg-danger-subtle text-danger small">as at now</span>
 </div>
 </div>
@@ -142,12 +132,10 @@
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
-<a class="text-warning" href="javascript:void(0);">
-<span>View All</span>
+<a class="text-warning" href="#">
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">+20%</p>
 <span class="badge bg-warning-subtle text-warning small">as at now</span>
 </div>
 </div>
@@ -182,15 +170,15 @@ Corporate Booking
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
-{{-- <th>#</th> --}}
 <th>Name</th>
-<th>Phone number</th>
+<th>Occupancy</th>
+<th>Phone Number</th>
 <th>Duration</th>
 <th>Days</th>
 <th>Amount Due</th>
 <th>Room</th>
 <th>Booking Date</th>
-<th>Action</th>
+<th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>
@@ -204,6 +192,7 @@ $countz = 0;
 @foreach ($Booked_data as $book)
 <tr>
 @php
+$zvaluz = 0;
 $duration = Carbon::parse($book->date_from)->diffInDays(Carbon::parse($book->date_to));
 $dateToCheck = Carbon::parse($book->date_to);
 $extra_days = 0;
@@ -220,9 +209,31 @@ $actual_duration = $duration + $extra_days;
 $dtotalz = 0;
 if (!empty($book->multiple_customers_fromview)) {
 $countz = count($book->multiple_customers_fromview);
-$dtotalz =
-($actual_duration * $book->fees) +
-$actual_duration * $book->multiple_customers_fromview->sum('fee');
+$array_sumone = array();
+$array_sumtwo = array();
+
+
+if ($book->occupancy == 1) {
+foreach ($book->multiple_customers_fromview as $xcustomerx) {
+if ($xcustomerx->occupancy == 1) {
+$array_sumone[] = $xcustomerx->fee;
+} else {
+$array_sumtwo[] = $xcustomerx->fee_double;
+}
+}
+$master_sum = array_sum($array_sumone) + array_sum($array_sumtwo);
+$dtotalz =$actual_duration * ($master_sum + $book->fees) ;
+} else {
+foreach ($book->multiple_customers_fromview as $xcustomerx) {
+if ($xcustomerx->occupancy == 1) {
+$array_sumone[] = $xcustomerx->fee;
+} else {
+$array_sumtwo[] = $xcustomerx->fee_double;
+}
+}
+$master_sum = array_sum($array_sumone) + array_sum($array_sumtwo);
+$dtotalz =$actual_duration * ($master_sum + $book->fees_double) ;
+}
 }
 @endphp
 <td><a href="#" class="text-decoration-underline"
@@ -230,6 +241,7 @@ data-bs-toggle="modal"
 data-bs-target="#detailCustomerClicked{{$book->id}}">
 {{ $book->name }}[{{$countz}}]
 </a></td>
+<td>{{ $book->occupancy == 1 ? 'Single' : 'Double' }}</td>
 <td>{{ $book->mobile_number }}</td>
 <td>{{ Carbon::parse($book->date_from)->format('d-M-Y') }} -to- {{ Carbon::parse($book->date_to)->format('d-M-Y') }}</td>
 <td>{{ $actual_duration }}</td>
@@ -241,31 +253,32 @@ data-bs-target="#detailCustomerClicked{{$book->id}}">
 @csrf
 @method('DELETE')
 @if($book->category==1)
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
 data-bs-target="#resModalUpdates{{$book->id}}">
 <i class="ri-edit-line"></i>
 </button>
 @else
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
 data-bs-target="#companyBookingUpdates{{$book->id}}">
 <i class="ri-edit-line"></i>
 </button>
 @endif
-<a href="{{ route('check.out', $book->id) }}" class="btn btn-success">
+<a href="{{ route('check.out', $book->id) }}" class="btn btn-success btn-sm">
 <i class="fs-6 text-warning">₵</i>
 </a>
 
-@if($Delete)
 
-<button type="button" class="btn btn-warning"
+{{-- @if($delete_permission==1) --}}
+
+<button type="button" class="btn btn-warning btn-sm"
 data-bs-toggle="modal"
 data-bs-target="#addCustomerClicked{{$book->id}}">
 <i class="ri-group-line"></i>
 </button>
-@endif
+{{-- @endif --}}
 
-@if($Delete)
-<button type="button" id="delClicked" class="btn btn-danger">
+@if($delete_permission==1)
+<button type="button" id="delClicked" class="btn btn-danger btn-sm">
 <i class="ri-delete-bin-line"></i>
 </button>
 @endif

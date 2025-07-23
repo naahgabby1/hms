@@ -63,7 +63,7 @@ aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 </div>
 
 <!-- Phone Number -->
-<div class="col-xxl-3 col-lg-3 col-sm-6">
+<div class="col-xxl-4 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label text-primary">Mobile Number <span class="text-danger">*</span></label>
 <input type="text" class="form-control phone_number_multiple" placeholder="Enter Mobile Number">
@@ -72,7 +72,7 @@ aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 </div>
 
 <!-- Room Type -->
-<div class="col-xxl-3 col-lg-3 col-sm-6">
+<div class="col-xxl-4 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label text-primary">Room Type <span class="text-danger">*</span></label>
 <select class="form-select room_type_multiple" id="room_type_multiple" name="room_type_multiple">
@@ -86,7 +86,7 @@ aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 </div>
 
 <!-- Room -->
-<div class="col-xxl-3 col-lg-3 col-sm-6">
+<div class="col-xxl-4 col-lg-4 col-sm-6">
 <div class="mb-3">
 <label class="form-label text-primary">Select Room <span class="text-danger">*</span></label>
 <select class="form-select room_multiple" id="room_multiple" name="room_multiple">
@@ -97,9 +97,20 @@ aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 </div>
 
 <!-- Add Button -->
-<div class="col-xxl-3 col-lg-3 col-sm-6">
+<div class="col-xxl-8 col-lg-8 col-sm-6">
 <div class="mb-3">
-<label class="form-label text-primary">Click to Add</label>
+<label class="form-label text-primary">Occupancy</label>
+<select class="form-select" id="occupancy" name="occupancy">
+<option value="1">Single</option>
+<option value="2">Double</option>
+</select>
+@error('occupancy')<small class="text-danger">{{ $message }}</small>@enderror
+</div>
+</div>
+
+<div class="col-xxl-4 col-lg-4 col-sm-6">
+<div class="mb-3">
+<label class="form-label text-primary"><center>Click to Add</center></label>
 <button type="button" class="btn btn-success col-12 btnAddMultiple" data-book-id="{{ $book->id }}">
 <i class="ri-user-add-line me-1"></i> ADD
 </button>
