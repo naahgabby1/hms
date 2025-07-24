@@ -15,13 +15,9 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
 </div>
 </div>
 @endpush
@@ -39,6 +35,7 @@ $sub2=0;
 $sub1=0;
 use Carbon\Carbon;
 $duration=0;
+$binary_sum = array();
 $duration = Carbon::parse($checkoutdata->date_from)->diffInDays(Carbon::parse($checkoutdata->date_to));
 $dateToCheck = Carbon::parse($checkoutdata->date_to);
 $today = Carbon::today();
@@ -113,12 +110,10 @@ Charges for nights spent in our Hotel/Guest house for a period of days
 </td>
 <td>
 <h6>
-{{ $checkoutdata->fees }}<br>
-{{-- @foreach ($checkoutdata as $xcustom) --}}
+{{ $checkoutdata->occupancy == 1 ? number_format($checkoutdata->fees,2) : number_format($checkoutdata->fees_double,2) }}<br>
 @foreach ($checkoutdata->multiple_customers_fromview as $customer)
-{{ $customer->fee }}<br>
+{{ $customer->occupancy == 1 ? number_format($customer->fee,2) : number_format($customer->fee_double,2) }}<br>
 @endforeach
-{{-- @endforeach --}}
 </h6>
 </td>
 <td>
@@ -129,9 +124,12 @@ Charges for nights spent in our Hotel/Guest house for a period of days
 </h6>
 </td>
 <td>
-<h6>{{ $duration*$checkoutdata->fees }}<br>
+<h6>{{ number_format($duration*$checkoutdata->fees,2) }}<br>
 @foreach ($checkoutdata->multiple_customers_fromview as $customer)
-{{ $duration*$customer->fee }}<br>
+@php
+$binary_sum[] = $duration*($customer->occupancy == 1 ? $customer->fee : $customer->fee_double);
+@endphp
+{{ number_format($duration*($customer->occupancy == 1 ? $customer->fee : $customer->fee_double),2) }}<br>
 @endforeach
 </h6>
 </td>
@@ -145,15 +143,13 @@ Charges for nights spent in our Hotel/Guest house for a period of days
 <h5 class="mt-4 text-primary">Total GHS</h5>
 </td>
 <td>
-{{-- @foreach ($checkoutdata->multiple_customers_fromview as $customer) --}}
-@php $sub2 = $duration * $checkoutdata->multiple_customers_fromview->sum('fee'); @endphp
-{{-- @endforeach --}}
-@php
-$sub1 = $duration * $checkoutdata->fees;
-$subtotal = $sub1 + $sub2;
-$discount = $vat_discounted->discount_amount;
+@php $sub2 = $duration * $checkoutdata->multiple_customers_fromview->sum('fee');
+$msum = array_sum($binary_sum);
+$sub1 = $checkoutdata->occupancy == 1 ? ($duration * $checkoutdata->fees) : ($duration * $checkoutdata->fees_double);
+$subtotal = $sub1 + $msum;
+$discount = $vat_discounted->discount_amount * $subtotal;
 $vat = $vat_discounted->vat_amount * $subtotal;
-$final_amount = $subtotal - $discount - $vat;
+$final_amount = $subtotal - ($discount + $vat);
 @endphp
 <p>{{ number_format($subtotal,2) }}</p>
 <p>{{ number_format($discount,2) }}</p>
@@ -164,9 +160,22 @@ $final_amount = $subtotal - $discount - $vat;
 <tr>
 <td colspan="4">
 <h6 class="text-danger">NOTICE</h6>
-<p class="small m-0">
+<span class="small m-0 justify-content-start">
 We really appreciate your business with Quabenya Hills Resort. Hope to see you again.
-</p>
+</span>
+<span class="d-flex justify-content-end">
+<form action="{{ route('partpayment.save') }}" method="POST">
+@csrf
+@method('POST')
+<div class="input-group">
+<input type="hidden" value="{{ $checkoutdata->id }}" name="hiddenmastercode">
+<input type="text" class="form-control" id="abc16" placeholder="Enter Payments" name="part_payments">
+<button type="submit" class="btn btn-success btn-sm" type="button">
+Enter Part Payment
+</button>
+</div>
+</form>
+</span>
 </td>
 </tr>
 <tr>
@@ -179,8 +188,16 @@ We really appreciate your business with Quabenya Hills Resort. Hope to see you a
 </div>
 <div class="row">
 <div class="col-sm-12 col-12">
+<div class="d-flex justify-content-start gap-2">
+
+</div>
+
+
+
 <div class="d-flex justify-content-end gap-2">
-<a href="{{ route('booking') }}" class="btn btn-danger">Cancel Payments & Checkout</a>
+
+
+<a href="{{ route('booking') }}" class="btn btn-danger btn-sm">Cancel Payments & Checkout</a>
 @php
 if ($chex==1) {
 $dex = 'Hotel/Gueshouse payments';
@@ -198,7 +215,7 @@ $cat = 1;
 <input type="hidden" name="description" value="{{ $dex }}">
 <input type="hidden" name="amount" value="{{ $final_amount }}">
 <input type="hidden" name="transaction_code" value="{{ $checkoutdata->id }}">
-<button type="submit" class="btn btn-primary">
+<button type="submit" class="btn btn-primary btn-sm">
 Confirm Payment & Checkout
 </button>
 </form>

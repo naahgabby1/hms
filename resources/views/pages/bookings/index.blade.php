@@ -207,34 +207,20 @@ $extra_days = $dateToCheck->diffInDays($today);
 }
 $actual_duration = $duration + $extra_days;
 $dtotalz = 0;
-if (!empty($book->multiple_customers_fromview)) {
-$countz = count($book->multiple_customers_fromview);
-$array_sumone = array();
-$array_sumtwo = array();
+$countz = $book->multiple_customers_fromview->count();
 
+if ($countz > 0) {
+$sumOne = $book->multiple_customers_fromview->where('occupancy', 1)->sum('fee');
 
-if ($book->occupancy == 1) {
-foreach ($book->multiple_customers_fromview as $xcustomerx) {
-if ($xcustomerx->occupancy == 1) {
-$array_sumone[] = $xcustomerx->fee;
-} else {
-$array_sumtwo[] = $xcustomerx->fee_double;
+$sumTwo = $book->multiple_customers_fromview->where('occupancy', '!=', 1)->sum('fee_double');
+
+$masterSum = $sumOne + $sumTwo;
+
+$baseFee = $book->occupancy == 1 ? $book->fees : $book->fees_double;
+
+$dtotalz = $actual_duration * ($masterSum + $baseFee);
 }
-}
-$master_sum = array_sum($array_sumone) + array_sum($array_sumtwo);
-$dtotalz =$actual_duration * ($master_sum + $book->fees) ;
-} else {
-foreach ($book->multiple_customers_fromview as $xcustomerx) {
-if ($xcustomerx->occupancy == 1) {
-$array_sumone[] = $xcustomerx->fee;
-} else {
-$array_sumtwo[] = $xcustomerx->fee_double;
-}
-}
-$master_sum = array_sum($array_sumone) + array_sum($array_sumtwo);
-$dtotalz =$actual_duration * ($master_sum + $book->fees_double) ;
-}
-}
+
 @endphp
 <td><a href="#" class="text-decoration-underline"
 data-bs-toggle="modal"

@@ -194,7 +194,6 @@ $breadCrumbs = 'Payments & Check-outs';
 $CodeChex = $this->genCode();
 $chex = 1;
 if ($Roles->isEither([1,2])) {
-// $checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
 $checkoutdata = Viewbooking::with('multiple_customers_fromview')
 ->where('id', $id)->first();
 } else {
@@ -204,15 +203,41 @@ $checkoutdata = Viewbooking::with('multiple_customers_fromview')
 ->first();
 }
 
-
-
 $vat_discounted = DB::table('vat_discount')->first();
-
-// $checkoutdata = DB::table('vw_reservationbooking')->where('id', $id)->first();
 return view('pages.bookings.checkout_and_payments',
 compact('title','breadCrumbs',
 'checkoutdata','CodeChex','chex','vat_discounted'));
 }
+
+
+
+
+public function save_partpayments($id){
+$Loggedinuser = new Userdetails;
+$Roles = new Userroles;
+$title = 'Check-outs';
+$breadCrumbs = 'Payments & Check-outs';
+$CodeChex = $this->genCode();
+$chex = 1;
+if ($Roles->isEither([1,2])) {
+$checkoutdata = Viewbooking::with('multiple_customers_fromview')
+->where('id', $id)->first();
+} else {
+$checkoutdata = Viewbooking::with('multiple_customers_fromview')
+->where('id', $id)
+->where('entered_by',$Loggedinuser->username())
+->first();
+}
+
+$vat_discounted = DB::table('vat_discount')->first();
+return view('pages.bookings.checkout_and_payments',
+compact('title','breadCrumbs',
+'checkoutdata','CodeChex','chex','vat_discounted'));
+}
+
+
+
+
 
 
 public function activereservation(){

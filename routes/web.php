@@ -75,7 +75,7 @@ Route::get('payments-and-checkouts/{id}', [BookController::class, 'check_out'])-
 Route::post('confirm-checkout', [BookController::class, 'save_checkout'])->name('checkout.save');
 Route::get('confirmation', [BookController::class, 'confirmation_alert'])->name('confirmation');
 Route::delete('delete-booking/{id}', [BookController::class, 'booking_delete'])->name('booking.destroy');
-
+Route::post('part-checkout-payments', [BookController::class, 'save_partpayments'])->name('partpayment.save');
 Route::put('update-booking/{xid}', [BookController::class, 'booking_editted'])->name('edit.booking');
 Route::put('update-corporate-reservation/{xid}', [BookController::class, 'corporate_reservation_editted'])->name('edit.corporate.reservation');
 Route::put('update-personal-reservation/{xid}', [BookController::class, 'personal_reservation_editted'])->name('update.personal.reservation');
