@@ -193,46 +193,39 @@ $title = 'Check-outs';
 $breadCrumbs = 'Payments & Check-outs';
 $CodeChex = $this->genCode();
 $chex = 1;
+$selpart_payments=0;
 if ($Roles->isEither([1,2])) {
 $checkoutdata = Viewbooking::with('multiple_customers_fromview')
 ->where('id', $id)->first();
+$selpart_payments = DB::table('part_payments')->where('booking_id', $id)->sum('amount');
 } else {
 $checkoutdata = Viewbooking::with('multiple_customers_fromview')
 ->where('id', $id)
 ->where('entered_by',$Loggedinuser->username())
 ->first();
+$selpart_payments = DB::table('part_payments')->where('booking_id', $id)->sum('amount');
 }
 
 $vat_discounted = DB::table('vat_discount')->first();
 return view('pages.bookings.checkout_and_payments',
 compact('title','breadCrumbs',
-'checkoutdata','CodeChex','chex','vat_discounted'));
+'checkoutdata','CodeChex','chex','vat_discounted','selpart_payments'));
 }
 
 
 
 
-public function save_partpayments($id){
+public function save_partpayments(Request $request){
 $Loggedinuser = new Userdetails;
 $Roles = new Userroles;
-$title = 'Check-outs';
-$breadCrumbs = 'Payments & Check-outs';
-$CodeChex = $this->genCode();
-$chex = 1;
-if ($Roles->isEither([1,2])) {
-$checkoutdata = Viewbooking::with('multiple_customers_fromview')
-->where('id', $id)->first();
-} else {
-$checkoutdata = Viewbooking::with('multiple_customers_fromview')
-->where('id', $id)
-->where('entered_by',$Loggedinuser->username())
-->first();
-}
+$validated = $request->validate(['hiddenmastercode' => 'required|min:1']);
+DB::table('part_payments')->updateOrInsert(
+    ['booking_id' => $request->input('hiddenmastercode')],
+    ['amount' => $request->input('part_payments')]
+);
 
-$vat_discounted = DB::table('vat_discount')->first();
-return view('pages.bookings.checkout_and_payments',
-compact('title','breadCrumbs',
-'checkoutdata','CodeChex','chex','vat_discounted'));
+
+return back();
 }
 
 

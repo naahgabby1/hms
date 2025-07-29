@@ -167,9 +167,10 @@ We really appreciate your business with Quabenya Hills Resort. Hope to see you a
 <form action="{{ route('partpayment.save') }}" method="POST">
 @csrf
 @method('POST')
+<label for="part_payments">Payments</label>
 <div class="input-group">
 <input type="hidden" value="{{ $checkoutdata->id }}" name="hiddenmastercode">
-<input type="text" class="form-control" id="abc16" placeholder="Enter Payments" name="part_payments">
+<input type="text" class="form-control" id="abc16" placeholder="Enter Payments" name="part_payments" value="{{ $selpart_payments ?? 0}}">
 <button type="submit" class="btn btn-success btn-sm" type="button">
 Enter Part Payment
 </button>
