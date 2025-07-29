@@ -216,15 +216,11 @@ compact('title','breadCrumbs',
 
 
 public function save_partpayments(Request $request){
-$Loggedinuser = new Userdetails;
-$Roles = new Userroles;
 $validated = $request->validate(['hiddenmastercode' => 'required|min:1']);
 DB::table('part_payments')->updateOrInsert(
-    ['booking_id' => $request->input('hiddenmastercode')],
-    ['amount' => $request->input('part_payments')]
+['booking_id' => $request->input('hiddenmastercode')],
+['amount' => $request->input('part_payments')]
 );
-
-
 return back();
 }
 
