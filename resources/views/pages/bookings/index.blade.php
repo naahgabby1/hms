@@ -208,6 +208,7 @@ $extra_days = $dateToCheck->diffInDays($today);
 $actual_duration = $duration + $extra_days;
 $dtotalz = 0;
 $countz = $book->multiple_customers_fromview->count();
+$baseFee = $book->occupancy == 1 ? $book->fees : $book->fees_double;
 
 if ($countz > 0) {
 $sumOne = $book->multiple_customers_fromview->where('occupancy', 1)->sum('fee');
@@ -219,6 +220,8 @@ $masterSum = $sumOne + $sumTwo;
 $baseFee = $book->occupancy == 1 ? $book->fees : $book->fees_double;
 
 $dtotalz = $actual_duration * ($masterSum + $baseFee);
+}else{
+$dtotalz = $actual_duration * $baseFee;
 }
 
 @endphp

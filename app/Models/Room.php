@@ -12,7 +12,10 @@ class Room extends Model
         'description',
         'type_id',
         'fee',
-        'fee_double'
+        'fee_double',
+        'availability',
+        'present_or_future',
+        'booking_code',
     ];
 
      public function rooms_type_name(){

@@ -124,7 +124,18 @@ name="corporate_address" placeholder="Corporate Address">
 </div>
 
 <div class="col-xxl-3 col-lg-3 col-sm-12">
-<div class="mb-3 mt-3" style="padding-top: 20px">
+<div class="mb-3">
+<label class="form-label" for="address">Occupancy <span class="text-danger">*</span></label>
+<select class="form-select" id="occupancy" name="occupancy">
+<option value="1">Single</option>
+<option value="2">Double</option>
+</select>
+@error('occupancy')<small class="text-danger">{{ $message }}</small>@enderror
+</div>
+</div>
+
+<div class="col-xxl-3 col-lg-3 col-sm-12">
+<div class="mb-3">
 <div class="form-check">
 <input class="form-check-input" type="checkbox" value="1" name="flexCheckChecked" id="flexCheckChecked" checked="checked" disabled>
 <label class="form-check-label" for="flexCheckChecked">Organization Checked In</label>

@@ -3,7 +3,6 @@
 use Carbon\Carbon;
 @endphp
 <link rel="icon" href="assets/img/favicon.png" type="image/x-icon">
-
 <style>
 .watermark {
 position: fixed;
@@ -19,28 +18,7 @@ pointer-events: none;
 user-select: none;
 }
 </style>
-
 <div class="watermark">PAID</div>
-@php
-// $sub2=0;
-// $sub1=0;
-// $extra_days = 0;
-// $duration=0;
-// $binary_sum = array();
-// $duration = Carbon::parse($printing_paid_data->date_from)->diffInDays(Carbon::parse($printing_paid_data->date_to));
-// $dateToCheck = Carbon::parse($printing_paid_data->date_to);
-// $today = Carbon::today();
-// if ($dateToCheck->isSameDay($today)) {
-// if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
-// $duration = $duration+1;
-// }
-// }
-// if ($today->gt($dateToCheck->addDays(1))) {
-// $extra_days = $dateToCheck->diffInDays($today);
-// }
-// $actual_duration = $duration + $extra_days;
-@endphp
-
 <section class="content" >
 <div class="container-fluid" style="padding-top: 2px">
 <div class="row">
@@ -69,8 +47,8 @@ user-select: none;
 <div class="row">
 <div class="col-lg-12 col-md-12" style="padding: 10px 20px 0px 20px">
 <p><span><b>Receipt Code</b> : {{ $printing_paid_data->code }}</span></p>
-<p><span><b>Branch</b> : {{ $mbranch }}</span></p>
-<p><span><b>Printed By</b> : {{ $mainname }}</span></p>
+{{-- <p><span><b>Branch</b> : {{'01092'}}</span></p> --}}
+<p><span><b>Printed By</b> : {{ $title }}</span></p>
 <p><span><b>Date</b> : {{ Carbon::parse(now())->format('d-M-Y') }}</span></p>
 <p><span><b>Customer</b> : {{ $printing_data->name }}</span></p>
 <table id="simpletable" class="table table-striped table-bordered nowrap" style="border: 1px solid black">
@@ -86,12 +64,8 @@ user-select: none;
 <tr style="border: 1px solid black">
 <td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px">{{ ucwords(strtolower($printing_data->name)) }}</td>
 <td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px;text-align: center;">{{ ucwords(strtolower($printing_data->room)) }}</td>
-<td style="border: 1px solid black;width:500px;text-align: center;height: 30px;text-align: center;">
-{{ $printing_paid_data->days }} @ {{ $printing_data->fees }}
-</td>
-<td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">
-{{ number_format($printing_paid_data->days * $printing_data->fees,2) }}
-</td>
+<td style="border: 1px solid black;width:500px;text-align: center;height: 30px;text-align: center;">{{ $printing_paid_data->days }} @ {{ $printing_data->fees }}</td>
+<td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">{{ number_format($printing_paid_data->days * $printing_data->fees,2) }}</td>
 </tr>
 @foreach ($printing_data->multiple_customers_fromview as $xcustom)
 
@@ -103,10 +77,10 @@ user-select: none;
 {{ $xcustom->room_description }}
 </td>
 <td style="border: 1px solid black;width:500px;text-align: center;height: 30px">
-{{ $printing_paid_data->days }} @ {{ $xcustom->occupancy == 1 ? $xcustom->fee : $xcustom->fee_double }}
+{{ $printing_paid_data->days }} @ {{ $xcustom->fee }}
 </td>
 <td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">
-{{ number_format(($printing_paid_data->days * ($xcustom->occupancy == 1 ? $xcustom->fee : $xcustom->fee_double)),2) }}</td>
+{{ number_format($printing_paid_data->days * $xcustom->fee,2) }}</td>
 </tr>
 @endforeach
 </tbody>
@@ -150,11 +124,8 @@ $xsubtotal = $printing_paid_data->amount + $discount + $vat ;
 <div class="row" style="padding-top: 5px">
 <div class="col-lg-4 offset-8 col-md-4 offset-8">
 <center><p><b><i>Thank you! Please come again</i></b></p></center>
-<center><p><b><i>Contact : {{ $hotel_details->developer_phone }} For Software Products</i></b></p></center>
+<center><p><b><i>Contact : 0248383212 For Software Products</i></b></p></center>
 </div>
 </div>
 </div>
 </section>
-<script type="text/javascript">
-window.print();
-</script>
