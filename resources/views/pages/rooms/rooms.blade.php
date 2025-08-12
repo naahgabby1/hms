@@ -99,7 +99,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#roomsModal">
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#roomsModal">
 New Room Entry
 </button>
 </div>
@@ -167,32 +167,6 @@ $num++;
 
 @push('customed_js')
 <script type="text/javascript">
-$(document).ready(function(){
 
-
-$(document).on('click','#delClicked',function(){
-const form = this.closest('form');
-_alert('This Customer',form);
-});
-
-
-
-function _alert(mheader,form){
-Swal.fire({
-title: `Delete `+mheader+` ?`,
-text: "This action cannot be undone!",
-icon: 'warning',
-showCancelButton: true,
-confirmButtonColor: '#d33',
-cancelButtonColor: '#3085d6',
-confirmButtonText: 'Yes, delete it!',
-reverseButtons: true
-}).then((result) => {
-if (result.isConfirmed) {
-form.submit();
-}
-});
-}
-});
 </script>
 @endpush

@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="{{asset('app_assets/assets/fonts/remix/remixicon.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/css/main.min.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/overlay-scroll/OverlayScrollbars.min.css')}}">
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/dataTables.bs5.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/dataTables.bs5-custom.css')}}">
 <link rel="stylesheet" href="{{asset('app_assets/assets/vendor/datatables/buttons/dataTables.bs5-custom.css')}}">
@@ -189,13 +189,6 @@ data-bs-toggle="dropdown" aria-expanded="false">
 <a href="{{ route('house.keepings.dashboard')}}" class="btn btn-outline-primary">House Keeping Management</a>
 </div>
 </div>
-
-
-
-
-
-
-
 </div>
 </div>
 </div>
@@ -225,6 +218,36 @@ data-bs-toggle="dropdown" aria-expanded="false">
 <script src="{{asset('app_assets/assets/vendor/datatables/buttons/buttons.colVis.min.js')}}"></script>
 <script src="{{asset('app_assets/assets/js/custom.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+@if(Session::has('success'))
+toastr.success("{{ Session::get('success') }}", 'SUCCESS');
+@endif
+
+@if(Session::has('error'))
+toastr.error("{{ Session::get('error') }}", 'ERROR');
+@endif
+
+@if(Session::has('info'))
+toastr.info("{{ Session::get('info') }}, 'INFO'");
+@endif
+
+@if(Session::has('warning'))
+toastr.warning("{{ Session::get('warning') }}", 'WARNING');
+@endif
+</script>
+
+<script>
+@if ($errors->any())
+@foreach ($errors->all() as $error)
+toastr.error("{{ strtoupper($error) }}", 'ACTION FAILED', {
+closeButton: true,
+progressBar: true,
+timeOut: 5000
+});
+@endforeach
+@endif
+</script>
 @stack('customed_js')
 </body>
 </html>
@@ -234,8 +257,6 @@ const now = new Date();
 const time = now.toLocaleTimeString();
 document.getElementById('clock').textContent = time;
 }
-
-// Update clock immediately and every second
 updateClock();
 setInterval(updateClock, 1000);
 </script>

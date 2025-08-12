@@ -101,7 +101,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+<button type="button" class="btn btn-success" data-bs-toggle="modal"
 data-bs-target="#cusModal">
 New Expenses Category
 </button>

@@ -47,10 +47,7 @@ compact('title','breadCrumbs','RoleType','Allusers','delete_permission'));
 
 
 public function save_new_user(Request $request){
-$title = 'Users';
-$breadCrumbs = 'System Users';
 $default = '12345';
-$RoleType = Role::get();
 $validated = $request->validate([
 'role_type' => 'required',
 'first_name' => 'required|string|max:255',
@@ -68,11 +65,7 @@ Systemuser::create([
 'password' => Hash::make($default)
 ]);
 }
-$notification = array(
-'message'=>"User Successfully Registered",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"User Entry Saved");
 return back()->with($notification);
 }
 
@@ -81,9 +74,6 @@ return back()->with($notification);
 
 
 public function update_users(Request $request, $id){
-$title = 'Users';
-$breadCrumbs = 'System Users';
-
 $validated = $request->validate([
 'role_type_edits' => 'required',
 'first_name_edits' => 'required|string|max:255',
@@ -98,19 +88,13 @@ Systemuser::findOrFail($id)->update([
 'user_role'=>$request->input('role_type_edits'),
 'email'=>$request->input('user_email_edits')
 ]);
-$notification = array(
-'message'=>"User Successfully Updated",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"User Entry Updated");
 return back()->with($notification);
 }
 
 
 
 public function reset_user_password(Request $request, $id){
-$title = 'Users';
-$breadCrumbs = 'System Users';
 Systemuser::findOrFail($id)->update([
 'password'=>Hash::make('12345')
 ]);

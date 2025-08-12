@@ -121,7 +121,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+<button type="button" class="btn btn-success" data-bs-toggle="modal"
 data-bs-target="#lostandfoundModal">
 <span>Lost Item Entry</span>
 </button>
@@ -138,7 +138,6 @@ data-bs-target="#lostandfoundModal">
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
-<th>#</th>
 <th>Description</th>
 <th>Area</th>
 <th>Location</th>
@@ -155,7 +154,6 @@ $num=1;
 @endphp
 @foreach ($LostData->where('status', 0) as $lost_data)
 <tr>
-<td>{{ $num }}</td>
 <td>{{ $lost_data->item_description }}</td>
 <td>{{ $lost_data->lostarea }}</td>
 <td>{{ $lost_data->area_room_found }}</td>

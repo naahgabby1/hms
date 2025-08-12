@@ -68,9 +68,6 @@ $breadCrumbs = 'Hotel Expenses Types / Categories ';
 $validated = $request->validate([
 'expenses_type' => 'required',
 'description' => 'required'
-], [
-'expenses_type.required' => 'Please enter expenses type.',
-'description.required' => 'Please enter expenses description'
 ]);
 
 $Expense = new Expensetype();
@@ -78,11 +75,8 @@ $Expense->expenses_type = $request->input('expenses_type');
 $Expense->description = $request->input('description');
 $Expense->entered_by = Auth::guard('logindetails')->user()->email;
 $Expense->save();
-$notification = array(
-'message'=>"Expenses Successfully Captured..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+$notification = array('success'=>"Expenses Category Saved");
+return back()->with($notification);
 }
 
 
@@ -93,9 +87,6 @@ $breadCrumbs = 'Hotel Expenses';
 $validated = $request->validate([
 'exp_category' => 'required',
 'amount' => 'required'
-], [
-'exp_category.required' => 'Select Expenses Category.',
-'amount.required' => 'Please enter amount'
 ]);
 
 
@@ -105,12 +96,8 @@ $Expen->comments = $request->input('comment');
 $Expen->amount = $request->input('amount');
 $Expen->entered_by = Auth::guard('logindetails')->user()->email;
 $Expen->save();
-
-$notification = array(
-'message'=>"Expenses Successfully Captured..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+$notification = array('success'=>"Expenses Saved");
+return back()->with($notification);
 }
 
 
@@ -121,11 +108,8 @@ Expensetype::findOrFail($id)->update([
 'expenses_type'=>$request->input('expenses_type_edits'),
 'description'=>$request->input('description_edits')
 ]);
-$notification = array(
-'message'=>"Expenses Successfully Updated..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+$notification = array('success'=>"Expenses Updated");
+return back()->with($notification);
 
 }
 
@@ -137,11 +121,8 @@ Expense::findOrFail($id)->update([
 'comments'=>$request->input('comment_edit'),
 'amount'=>$request->input('amount_edit')
 ]);
-$notification = array(
-'message'=>"Expenses Successfully Updated..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+$notification = array('success'=>"Expenses Updated");
+return back()->with($notification);
 
 }
 
@@ -151,11 +132,8 @@ public function destroy_expenses($id){
 $title = 'Expenses';
 $breadCrumbs = 'Hotel Expenses';
 Expense::findOrFail($id)->delete();
-$notification = array(
-'message'=>"Expenses Successfully Deleted..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+$notification = array('success'=>"Expenses Deleted");
+return back()->with($notification);
 }
 
 
@@ -165,10 +143,7 @@ public function destroy_expenses_category($id){
 $title = 'Expenses';
 $breadCrumbs = 'Hotel Expenses Types / Categories ';
 Expensetype::findOrFail($id)->delete();
-$notification = array(
-'message'=>"Expenses Successfully Deleted..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
+$notification = array('success'=>"Expenses Category Deleted");
+return back()->with($notification);
 }
 }

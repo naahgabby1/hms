@@ -38,13 +38,9 @@ compact('title','breadCrumbs','LostData','RoomData','delete_permission'));
 
 
 public function lost_and_found_save(Request $request){
-$title = 'Lost and Found';
-$breadCrumbs = 'Lost & Found';
-
 $validated = $request->validate([
 'customer_type' => 'required'
 ]);
-
 if ($request->input('customer_type')==1) {
 $validated = $request->validate([
 'founded_name_compound' => 'required',
@@ -63,8 +59,6 @@ $validated = $request->validate([
 'item_qty' => 'required'
 ]);
 }
-
-
 if ($request->customer_type==2) {
 $xroomdata = $request->founded_name_room;
 $room_room = $request->room_room;
@@ -74,7 +68,6 @@ $xroomdata = $request->founded_name_compound;
 $room_room = $request->item_location;
 $area = 'Compound Found';
 }
-
 try {
 Lostandfound::create([
 'lostarea' => $area,
@@ -86,38 +79,24 @@ Lostandfound::create([
 'comments' => $request->input('any_comments'),
 'status' => 0
 ]);
-$notification = array(
-'message'=>"Lost & Found Data Captured",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"Lost & Found Entry Captured");
 return back()->with($notification);
 } catch (\Exception $e) {
-$notification = array(
-'message'=>"Failed To Capture Lost & Found",
-'type' => 'error',
-'notification' => 'ERROR',
-);
+$notification = array('error'=>"Failed To Capture Data");
 return back()->with($notification);
 }
 }
 
 
 public function lost_and_found_retrieval(Request $request, $id){
-$title = 'Lost and Found';
-$breadCrumbs = 'Lost & Found';
 Lostandfound::findOrFail($id)->update([
 'status'=>1,
 'delivered_by'=>$this->userDetails->username(),
 'remarks_on_delivery'=>$request->input('remarks'),
 'date_delivered'=>$request->input('retrieval_date')
 ]);
-$notification = array(
-'message'=>"Customer Successfully Updated..!!!",
-'alert-type'=>'success',
-);
-return back()->with($notification,compact('title','breadCrumbs'));
-
+$notification = array('success'=>"Lost & Found Item Retrieved");
+return back()->with($notification);
 }
 
 
@@ -134,12 +113,8 @@ Lostandfound::findOrFail($id)->update([
 'country'=>$request->input('country_edits'),
 'address'=>$request->input('address_edits')
 ]);
-$notification = array(
-'message'=>"Customer Successfully Updated..!!!",
-'alert-type'=>'success',
-);
+$notification = array('success'=>"Lost & Found Updated");
 return back()->with($notification,compact('title','breadCrumbs'));
-
 }
 
 
@@ -148,8 +123,4 @@ public function lost_and_found_destroy($id){
 Lostandfound::findOrFail($id)->delete();
 return response()->json(['message' => 'Lost & Found Data Deleted Successfully.']);
 }
-
-
-
-
 }

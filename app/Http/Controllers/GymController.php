@@ -162,7 +162,6 @@ $request->validate([
 'start_date' => 'required',
 'address' => 'required',
 'gender' => 'required',
-'email' => 'required',
 'phone_number' => 'required',
 'membership' => 'required',
 'client_name' => 'required'
@@ -184,9 +183,8 @@ Gym::create([
 
 
 $notification = array(
-'message'=>"Gym Customer Registered Successfully",
-'type' => 'success',
-'notification' => 'SUCCESS',
+'success'=>"Gym Customer Registered Successfully",
+'message' => 'Gym Customer Registered Successfully'
 );
 return back()->with($notification);
 }

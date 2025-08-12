@@ -21,10 +21,6 @@ public function index_room_types(){
 $title = 'Room Types';
 $breadCrumbs = 'Create Room Types';
 $user = new Userdetails;
-
-
-
-
 return view('pages.rooms.room_types',
 compact('title','breadCrumbs'));
 }
@@ -37,9 +33,6 @@ $Tax_discounts = Taxdiscounts::first();
 $Business_name = DB::table('company_details')->first();
 $RoomType = Roomtype::orderBy('id', 'asc')->get();
 $Selected_room = Room::with('rooms_type_name')->get();
-
-
-
 return view('pages.rooms.rooms',
 compact('title','breadCrumbs','Tax_discounts','Business_name','RoomType','Selected_room'));
 }
@@ -74,12 +67,7 @@ $record->update([
 'fee' => $request->input('room_rate_edit'),
 'fee_double' => $request->input('room_rate_double_edit')
 ]);
-
-$notification = array(
-'message'=>"Room Updated Successfully",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"Room Entry Updated");
 return back()->with($notification);
 }
 
@@ -99,12 +87,7 @@ Room::create([
 'fee' => $request->input('room_rate'),
 'fee_double' => $request->input('room_rate_double')
 ]);
-
-$notification = array(
-'message'=>"Room Save Successfully",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"Room Entry Saved");
 return back()->with($notification);
 }
 
@@ -123,17 +106,7 @@ $record->update([
 'discount_amount' => $request->input('discount')/100
 ]);
 
-$notification = array(
-'message'=>"Rates Save Successfully",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"Rates Entry Save");
 return back()->with($notification);
 }
-
-
-
-
-
-
 }

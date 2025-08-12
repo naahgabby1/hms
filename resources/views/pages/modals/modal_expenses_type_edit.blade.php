@@ -23,7 +23,7 @@ Expenses Categories Update
 </div>
 <div class="col-xxl-6 col-lg-6 col-sm-12">
 <div class="mb-3">
-<label class="form-label" for="a2">Last Name <span class="text-danger">*</span></label>
+<label class="form-label" for="a2">Expenses Description <span class="text-danger">*</span></label>
 <input type="text" value="{{ $type->description }}" class="form-control" id="description_edits" name="description_edits" placeholder="Enter Last Name">
 @error('description_edits')<small class="text-danger">{{ $message }}</small>@enderror
 </div>

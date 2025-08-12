@@ -99,7 +99,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+<button type="button" class="btn btn-success" data-bs-toggle="modal"
 data-bs-target="#usersModal">
 Register New User
 </button>
@@ -116,10 +116,10 @@ Register New User
 <table id="customButtons" class="table m-0 align-middle">
 <thead>
 <tr>
-<th>#</th>
 <th>Name</th>
+<th>Email</th>
 <th>Role</th>
-<th>Date Resgistered</th>
+<th>Date Registered</th>
 <th><center>Status</center></th>
 <th><center>Action</center></th>
 </tr>
@@ -130,8 +130,8 @@ $num=1;
 @endphp
 @foreach ($Allusers as $users)
 <tr>
-<td>{{ $num }}</td>
 <td>{{ $users->user_name }}</td>
+<td>{{ $users->email }}</td>
 <td>{{ $users->role_description }}</td>
 <td>{{ $users->created_at }}</td>
 <td>
@@ -217,7 +217,7 @@ type: 'PUT',
 data: {
 _token: '{{ csrf_token() }}'
 },
-success: function (response) { 
+success: function (response) {
 Swal.fire('Reset!', response.message , 'success');
 setTimeout(function () {
 location.reload();

@@ -18,12 +18,6 @@
 <button class="btn btn-sm btn-primary" style="font-family: monospace;">
 Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
 </button>
-{{-- <button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button> --}}
 </div>
 </div>
 @endpush
@@ -45,7 +39,8 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 <div class="d-flex align-items-center">
 <div class="p-2 border border-danger rounded-circle me-3">
 <div class="icon-box md bg-danger-subtle rounded-5">
-<i class="ri-microscope-line fs-4 text-danger"></i>
+<i class="ri-receipt-line fs-4 text-danger"></i>
+
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -71,7 +66,9 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 <div class="d-flex align-items-center">
 <div class="p-2 border border-warning rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
+{{-- <i class="fs-4 text-warning">₵</i> --}}
+<i class="ri-file-text-line fs-4 text-danger"></i>
+
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -99,8 +96,8 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 @section('main_content_body')
 <div class="row mb-2">
 <div class="col-12">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ratesModal">
-Update Rates
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ratesModal">
+Update Rate
 </button>
 </div>
 </div>
@@ -144,33 +141,4 @@ $today = Carbon::today();
 @endsection
 
 @push('customed_js')
-<script type="text/javascript">
-$(document).ready(function(){
-
-
-$(document).on('click','#delClicked',function(){
-const form = this.closest('form');
-_alert('This Customer',form);
-});
-
-
-
-function _alert(mheader,form){
-Swal.fire({
-title: `Delete `+mheader+` ?`,
-text: "This action cannot be undone!",
-icon: 'warning',
-showCancelButton: true,
-confirmButtonColor: '#d33',
-cancelButtonColor: '#3085d6',
-confirmButtonText: 'Yes, delete it!',
-reverseButtons: true
-}).then((result) => {
-if (result.isConfirmed) {
-form.submit();
-}
-});
-}
-});
-</script>
 @endpush
