@@ -218,8 +218,6 @@ $('#currentCustomer2').show();
 $('#newCustomer2').hide();
 $('#newCustomer').hide();
 
-// Change selects
-
 $('#membership_preselected').change(function() {
 var selected = $(this).val();
 if (selected === '1') {
@@ -257,39 +255,15 @@ draggable: true
 });
 });
 
-
-
-
-
-
-
-
-
-
-
-
 $(document).on('click','.userWaiver',function(){
 const url = $(this).data('url');
 _waiverAlert(url);
 });
 
-
-
-
-
 $(document).on('click','.userDeletes',function(){
 const url = $(this).data('url');
 _deleteAlert(url);
 });
-
-
-
-
-
-
-
-
-
 
 function _waiverAlert(url){
 Swal.fire({
@@ -302,7 +276,7 @@ cancelButtonColor: '#3085d6',
 confirmButtonText: 'Confirm Waiver',
 reverseButtons: true
 }).then((result) => {
-if (result.isConfirmed) {
+if (result.isConfirmed) { console.log(data);
 $.ajax({
 url: url,
 type: 'PUT',
@@ -310,7 +284,7 @@ data: {
 _token: '{{ csrf_token() }}'
 },
 success: function (response) {
-Swal.fire('Waiver Completed Successfully !', response.message , 'success');
+Swal.fire('Waiver Completed Successfully !', response.data , 'success');
 setTimeout(function () {
 location.reload();
 }, 3000);
@@ -319,13 +293,6 @@ location.reload();
 }
 });
 }
-
-
-
-
-
-
-
 
 function _deleteAlert(url){
 Swal.fire({

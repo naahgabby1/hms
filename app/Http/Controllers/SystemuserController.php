@@ -65,7 +65,7 @@ Systemuser::create([
 'password' => Hash::make($default)
 ]);
 }
-$notification = array('success'=>"User Entry Saved");
+$notification = array('success'=>"New User Added");
 return back()->with($notification);
 }
 
@@ -88,7 +88,7 @@ Systemuser::findOrFail($id)->update([
 'user_role'=>$request->input('role_type_edits'),
 'email'=>$request->input('user_email_edits')
 ]);
-$notification = array('success'=>"User Entry Updated");
+$notification = array('success'=>"User Account Updated");
 return back()->with($notification);
 }
 

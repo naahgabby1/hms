@@ -50,7 +50,6 @@ if ($this->userRoles->isEither([1])) {
 $delete_permission = 1;
 }
 $GymTrainers = DB::table('gym_trainers')->where('status', 0)->get();
-
 return view('pages.gym.clients',
 compact('title','breadCrumbs','GymCustomers','GymTransactions','MemType','GymTrainers','delete_permission','GymCustomers_data'));
 }
@@ -63,7 +62,6 @@ $title = 'Gym Activities';
 $breadCrumbs = 'Gym Activities';
 $delete_permission = 0;
 $now = Carbon::now();
-
 $PaymentSums = [
 'this_month' => DB::table('gym_payments')
 ->whereYear('date_time', now()->year)
@@ -73,8 +71,6 @@ $PaymentSums = [
 ->whereYear('date_time', now()->year)
 ->sum('amount'),
 ];
-
-
 
 $currentYear = Carbon::now()->year;
 $GymCustomers = DB::table('vw_gymcustomers as g')
@@ -96,7 +92,6 @@ if ($this->userRoles->isEither([1])) {
 $delete_permission = 1;
 }
 $GymTrainers = DB::table('gym_trainers')->where('status', 0)->get();
-
 return view('pages.gym.index',compact(
 'title',
 'breadCrumbs',
@@ -114,8 +109,6 @@ public function save_gym_payment(Request $request){
 $request->validate([
 'paid_amounts' => 'required|numeric'
 ]);
-
-// dd($request->input('id'));
 
 if ($request->input('paid_amounts_hidden')==1) {
 GymTransactions::where('gym_client_id', $request->input('id'))->update([
@@ -142,11 +135,7 @@ GymPayments::create([
 'paid_to' => $this->userDetails->username()
 ]);
 }
-$notification = array(
-'message'=>"Gym Payment Recorded Successfully",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"Gym Payment Saved");
 return back()->with($notification);
 }
 
@@ -181,11 +170,7 @@ Gym::create([
 'entered_by' => $this->userDetails->username()
 ]);
 
-
-$notification = array(
-'success'=>"Gym Customer Registered Successfully",
-'message' => 'Gym Customer Registered Successfully'
-);
+$notification = array('success'=>"Gym Customer Registered");
 return back()->with($notification);
 }
 
@@ -200,7 +185,6 @@ if ($request->input('membership_preselected')==1) {
 $request->validate([
 'membership_registered' => 'required'
 ]);
-// date_time 	payment_enteredby 	payment_datetime
 DB::table('gym_transactions')->insert([
 'gym_client_group' => 1,
 'gym_client' => $request->input('membership_registered_phone_hidden'),
@@ -220,38 +204,19 @@ DB::table('gym_transactions')->insert([
 'client_group' => 'Onetime Client'
 ]);
 }
-
-$notification = array(
-'message'=>"Gym Transaction Saved Successfully",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
+$notification = array('success'=>"Transaction Saved");
 return back()->with($notification);
 }
 
-
-
-public function gym_waiver(Request $request, $id){
-Gym::findOrFail($id)->update([
+public function gym_waiver($id){
+DB::table('gym_transactions')->where('id', $id)->update([
 'status' => 1,
 ]);
-$notification = array(
-'message'=>"Hall Booking Entry Updated",
-'type' => 'success',
-'notification' => 'SUCCESS',
-);
-return back()->with($notification);
+return response()->json([
+'success' => true,
+'data' => 'Transaction Waived'
+]);
 }
-
-
-
-
-
-
-
-
-
-
 
 public function gym_destroy($id){
 DB::table('gym_transactions')->where('id', $id)->delete();
@@ -260,6 +225,5 @@ return response()->json([
 'data' => 'Gym Data Entry Deleted'
 ]);
 }
-
 
 }

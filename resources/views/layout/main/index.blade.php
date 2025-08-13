@@ -221,29 +221,45 @@ data-bs-toggle="dropdown" aria-expanded="false">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
 @if(Session::has('success'))
-toastr.success("{{ Session::get('success') }}", 'SUCCESS');
+toastr.success("{{ strtoupper(Session::get('success')) }}", 'SUCCESS', {
+closeButton: true,
+progressBar: true,
+timeOut: 4000
+});
 @endif
 
 @if(Session::has('error'))
-toastr.error("{{ Session::get('error') }}", 'ERROR');
+toastr.error("{{ strtoupper(Session::get('error')) }}", 'ERROR', {
+closeButton: true,
+progressBar: true,
+timeOut: 4000
+});
 @endif
 
 @if(Session::has('info'))
-toastr.info("{{ Session::get('info') }}, 'INFO'");
+toastr.info("{{ strtoupper(Session::get('info')) }}", 'INFO', {
+closeButton: true,
+progressBar: true,
+timeOut: 4000
+});
 @endif
 
 @if(Session::has('warning'))
-toastr.warning("{{ Session::get('warning') }}", 'WARNING');
+toastr.warning("{{ strtoupper(Session::get('warning')) }}", 'WARNING', {
+closeButton: true,
+progressBar: true,
+timeOut: 4000
+});
 @endif
 </script>
 
 <script>
 @if ($errors->any())
 @foreach ($errors->all() as $error)
-toastr.error("{{ strtoupper($error) }}", 'ACTION FAILED', {
+toastr.error("{{ strtoupper(strtoupper($error)) }}", 'ACTION FAILED', {
 closeButton: true,
 progressBar: true,
-timeOut: 5000
+timeOut: 4000
 });
 @endforeach
 @endif
