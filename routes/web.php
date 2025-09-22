@@ -20,6 +20,8 @@ use App\Http\Controllers\HomeController;
 
 
 // Authentications
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
 Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('login', [LoginController::class, 'auth_login'])->name('login.authentication');
 Route::get('forget-password', [LoginController::class, 'showforgotpassform'])->name('forgetpassword');

@@ -22,7 +22,7 @@
 <body>
 @include('layout.main.partials.loader')
 <div class="page-wrapper">
-<div class="app-header d-flex align-items-center">
+<div class="app-header d-flex align-items-center" style="background: #0f8284">
 <div class="d-flex">
 <button class="toggle-sidebar">
 <i class="ri-menu-line"></i>
@@ -32,135 +32,44 @@
 </button>
 </div>
 <div class="app-brand ms-3">
-<a href="index.html" class="d-lg-block d-none">
-<img src="{{asset('app_assets/assets/images/logo.jpg')}}" class="logo" alt="Medicare Admin Template">
+<a href="{{ route('dashboard') }}" class="d-lg-block d-none">
+<h6 class="text-uppercase" style="font-family: monospace; color:white;padding-top:10px;font-weight:bold">
+{{ hotel_details()->name }}</h6>
 </a>
-<a href="index.html" class="d-lg-none d-md-block">
-<img src="{{asset('app_assets/assets/images/logo-sm.svg')}}" class="logo" alt="Medicare Admin Template">
+<a href="{{ route('dashboard') }}" class="d-lg-none d-md-block">
+<img src="{{asset('app_assets/assets/logo/logo.jpg')}}" class="logo" alt="Logo">
 </a>
 </div>
 <div class="header-actions">
-<div class="search-container d-lg-block d-none mx-3">
-<input type="text" class="form-control" id="searchId" placeholder="Search">
-<i class="ri-search-line"></i>
-</div>
 <div class="d-lg-flex d-none gap-2">
 <div class="dropdown">
 <a class="dropdown-toggle header-icon" href="#!" role="button" data-bs-toggle="dropdown"
 aria-expanded="false">
-<i class="ri-alarm-warning-line"></i>
-<span class="count-label success"></span>
+<i class="ri-account-circle-line"></i>
+<span class="count-label danger"></span>
 </a>
-<div class="dropdown-menu dropdown-menu-end dropdown-300">
-<h5 class="fw-semibold px-3 py-2 text-primary">Users Online</h5>
-<div class="scroll300">
+<div class="dropdown-menu dropdown-menu-end dropdown-300 align-content-center">
+<center>
+<h5 class="fw-semibold px-3 py-2 text-primary">You Are Online</h5>
+<div class="scroll200">
 <div class="p-3">
-<div class="d-flex py-2">
-<div class="icon-box md bg-info rounded-circle me-3">
-<span class="fw-bold fs-6 text-white">DS</span>
-</div>
-<div class="m-0">
-<h6 class="mb-1 fw-semibold">Douglass Shaw</h6>
-<p class="mb-1">
-Appointed as a new President 2014-2025
-</p>
-<p class="small m-0 opacity-50">Today, 07:30pm</p>
-</div>
-</div>
-<div class="d-flex py-2">
-<div class="icon-box md bg-danger rounded-circle me-3">
-<span class="fw-bold fs-6 text-white">WG</span>
-</div>
-<div class="m-0">
-<h6 class="mb-1 fw-semibold">Willie Garrison</h6>
-<p class="mb-1">
-Congratulate, James for new job.
-</p>
-<p class="small m-0 opacity-50">Today, 08:00pm</p>
-</div>
-</div>
-<div class="d-flex py-2">
-<div class="icon-box md bg-warning rounded-circle me-3">
-<span class="fw-bold fs-6 text-white">TJ</span>
-</div>
-<div class="m-0">
-<h6 class="mb-1 fw-semibold">Terry Jenkins</h6>
-<p class="mb-1">
-Lewis added new doctors training schedule.
-</p>
-<p class="small m-0 opacity-50">Today, 09:30pm</p>
-</div>
-</div>
+<center>
+<img src="{{asset('app_assets/assets/logo/logo.jpg')}}"
+class="img-shadow img-3x me-3"
+style="height:60%;width:60%"
+alt="Logo">
+</center>
 </div>
 </div>
 <div class="d-grid m-3">
-<a href="javascript:void(0)" class="btn btn-primary">Logout</a>
+<button class="btn btn-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+Logout
+</button>
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+@csrf
+</form>
 </div>
-</div>
-</div>
-<div class="dropdown">
-<a class="dropdown-toggle header-icon" href="#!" role="button" data-bs-toggle="dropdown"
-aria-expanded="false">
-<i class="ri-message-3-line"></i>
-<span class="count-label"></span>
-</a>
-<div class="dropdown-menu dropdown-menu-end dropdown-300">
-<h5 class="fw-semibold px-3 py-2 text-primary">Active Bookings</h5>
-<div class="scroll300">
-<div class="p-3">
-<div class="d-flex py-2">
-<img src="{{asset('app_assets/assets/images/user3.png')}}" class="img-shadow img-3x me-3 rounded-5"
-alt="Hospital Admin Templates">
-<div class="m-0">
-<h6 class="mb-1 fw-semibold">Nick Gonzalez</h6>
-<p class="mb-1">
-Appointed as a new President 2014-2025
-</p>
-<p class="small m-0 opacity-50">Today, 07:30pm</p>
-</div>
-</div>
-<div class="d-flex py-2">
-<img src="{{asset('app_assets/assets/images/user1.png')}}" class="img-shadow img-3x me-3 rounded-5"
-alt="Hospital Admin Templates">
-<div class="m-0">
-<h6 class="mb-1 fw-semibold">Clyde Fowler</h6>
-<p class="mb-1">
-Congratulate, James for new job.
-</p>
-<p class="small m-0 opacity-50">Today, 08:00pm</p>
-</div>
-</div>
-<div class="d-flex py-2">
-<img src="{{asset('app_assets/assets/images/user4.png')}}" class="img-shadow img-3x me-3 rounded-5"
-alt="Hospital Admin Templates">
-<div class="m-0">
-<h6 class="mb-1 fw-semibold">Sophie Michiels</h6>
-<p class="mb-1">
-Lewis added new doctors training schedule.
-</p>
-<p class="small m-0 opacity-50">Today, 09:30pm</p>
-</div>
-</div>
-</div>
-</div>
-<div class="d-grid m-3">
-<a href="#" class="btn btn-primary">Logout</a>
-</div>
-</div>
-</div>
-</div>
-<div class="dropdown ms-2">
-<a id="userSettings" class="dropdown-toggle d-flex align-items-center" href="#!" role="button"
-data-bs-toggle="dropdown" aria-expanded="false">
-<div class="avatar-box">QHR<span class="status busy"></span></div>
-</a>
-<div class="dropdown-menu dropdown-menu-end shadow-lg">
-<div class="px-3 py-2">
-<span class="small">Admin</span>
-<h6 class="m-0">Gabriel Duon-Naah</h6>
-</div>
-<div class="mx-3 my-2 d-grid">
-<a href="login.html" class="btn btn-danger">Logout</a>
+</center>
 </div>
 </div>
 </div>
@@ -181,7 +90,7 @@ data-bs-toggle="dropdown" aria-expanded="false">
 <div class="app-footer bg-white">
 <div class="row">
 <div class="col-xl-6 col-md-6 col-xxl-6 col-sm-12 col-xs-12 text-start" style="padding-top: 10px">
-<span style="padding-top: 20px">© Quabennya Hills Resort {{ Date('Y')}}</span>
+<span style="padding-top: 20px; color: #0f8284;">© Quabennya Hills Resort</span>
 </div>
 <div class="col-xl-6 col-md-6 col-xxl-6 col-sm-12 col-xs-12 text-end">
 <a href="{{ route('dashboard')}}" class="btn btn-outline-primary me-2">Hotel Management</a>

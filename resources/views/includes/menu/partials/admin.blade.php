@@ -1,6 +1,7 @@
 <nav id="sidebar" class="sidebar-wrapper">
 <div class="sidebar-profile">
-<img src="{{asset('app_assets/assets/images/user6.png')}}" class="img-shadow img-3x me-3 rounded-5" alt="Hospital Admin Templates">
+
+<img src="{{asset('app_assets/assets/logo/logo.jpg')}}" class="img-shadow img-3x me-3 rounded-5">
 <div class="m-0">
 <h5 class="mb-1 profile-name text-nowrap text-truncate">{{ Auth::guard('logindetails')->user()->first_name }}</h5>
 <p class="m-0 small profile-name text-nowrap text-truncate">{{ Auth::guard('logindetails')->user()->role_description }}</p>
@@ -75,18 +76,6 @@
 </li>
 </ul>
 </li>
-{{-- <li class="treeview">
-<a href="#!">
-<i class="ri-secure-payment-line"></i>
-<span class="menu-text">Human Resources</span>
-</a>
-<ul class="treeview-menu">
-<li>
-<a href="{{ route('index.staffpage')}}">Staff List</a>
-</li>
-</ul>
-</li> --}}
-
 <li class="treeview">
 <a href="#!">
 <i class="ri-group-2-line"></i>
@@ -98,8 +87,6 @@
 </li>
 </ul>
 </li>
-
-
 <li class="treeview">
 <a href="#!">
 <i class="ri-group-line"></i>
@@ -130,7 +117,7 @@
 </li>
 </ul>
 </div>
-<div class="sidebar-contact">
+<div class="sidebar-contact" style="background: #0f8284">
 <p class="fw-light mb-1 text-nowrap text-truncate">Emergency Contact</p>
 <h5 class="m-0 lh-1 text-nowrap text-truncate">0242634489</h5>
 <i class="ri-phone-line"></i>
