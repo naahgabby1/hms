@@ -59,12 +59,12 @@ value="male" {{ $reservation->gender === 'male' ? 'checked' : '' }}>
 <label class="form-check-label" for="gender">Male</label>
 </div>
 <div class="form-check form-check-inline">
-<input class="form-check-input" type="radio" name="gender_edit" id="gender_edit"
+<input class="form-check-input" type="radio" name="gender_edits" id="gender_edits"
 value="female" {{ $reservation->gender === 'female' ? 'checked' : '' }}>
 <label class="form-check-label" for="gender">Female</label>
 </div>
 </div>
-@error('gender')<small class="text-danger">{{ $message }}</small>@enderror
+@error('gender_edits')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
 

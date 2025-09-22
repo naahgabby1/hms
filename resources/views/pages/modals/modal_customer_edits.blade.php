@@ -74,6 +74,17 @@ Customer Update
 </div>
 </div>
 
+<div class="col-xxl-12 col-lg-12 col-sm-12">
+<div class="mb-3">
+<label class="form-label" for="date_to">Category <span class="text-danger">*</span></label>
+<select class="form-select" id="category" name="category_edits">
+<option value="{{ $customer->personal_or_coporate }}">{{ $customer->personal_or_coporate == 1 ? 'Personal Customer' : 'Corporate Customer' }}</option>
+<option value="1">Personal Customer</option>
+<option value="2">Corporate Customer</option>
+</select>
+@error('category_edits')<small class="text-danger">{{ $message }}</small>@enderror
+</div>
+</div>
 
 </div>
 </div>

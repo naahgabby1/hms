@@ -7,8 +7,8 @@ aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 @csrf
 @method('POST')
 <div class="modal-header">
-<h5 class="modal-title" id="cusModalLabel">
-Customers
+<h5 class="modal-title text-uppercase" id="cusModalLabel">
+Add Customer
 </h5>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
@@ -56,15 +56,15 @@ value="female">
 </div>
 <div class="col-xxl-4 col-lg-4 col-sm-6">
 <div class="mb-3">
-    <label class="form-label" for="country">Country <span class="text-danger">*</span></label>
-    <select class="form-select" id="country" name="country">
-    <option value="">Select Country</option>
-    @foreach($Countries as $country)
-    <option value="{{ $country->name }}">{{ $country->name }}</option>
-    @endforeach
-    </select>
-    @error('country')<small class="text-danger">{{ $message }}</small>@enderror
-    </div>
+<label class="form-label" for="country">Country <span class="text-danger">*</span></label>
+<select class="form-select" id="country" name="country">
+<option value="">Select Country</option>
+@foreach($Countries as $country)
+<option value="{{ $country->name }}">{{ $country->name }}</option>
+@endforeach
+</select>
+@error('country')<small class="text-danger">{{ $message }}</small>@enderror
+</div>
 </div>
 <div class="col-xxl-4 col-lg-4 col-sm-6">
 <div class="mb-3">
@@ -73,7 +73,17 @@ value="female">
 @error('date_to')<small class="text-danger">{{ $message }}</small>@enderror
 </div>
 </div>
-
+<div class="col-xxl-12 col-lg-12 col-sm-12">
+<div class="mb-3">
+<label class="form-label" for="date_to">Category <span class="text-danger">*</span></label>
+<select class="form-select" id="category" name="category">
+<option value="">Select Category</option>
+<option value="1">Personal Customer</option>
+<option value="2">Corporate Customer</option>
+</select>
+@error('category')<small class="text-danger">{{ $message }}</small>@enderror
+</div>
+</div>
 
 </div>
 </div>

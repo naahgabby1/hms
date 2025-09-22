@@ -22,8 +22,25 @@ user-select: none;
 
 <div class="watermark">PAID</div>
 @php
-$binary_sum = array();
+// $sub2=0;
+// $sub1=0;
+// $extra_days = 0;
+// $duration=0;
+// $binary_sum = array();
+// $duration = Carbon::parse($printing_paid_data->date_from)->diffInDays(Carbon::parse($printing_paid_data->date_to));
+// $dateToCheck = Carbon::parse($printing_paid_data->date_to);
+// $today = Carbon::today();
+// if ($dateToCheck->isSameDay($today)) {
+// if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
+// $duration = $duration+1;
+// }
+// }
+// if ($today->gt($dateToCheck->addDays(1))) {
+// $extra_days = $dateToCheck->diffInDays($today);
+// }
+// $actual_duration = $duration + $extra_days;
 @endphp
+
 <section class="content" >
 <div class="container-fluid" style="padding-top: 2px">
 <div class="row">
@@ -34,7 +51,7 @@ $binary_sum = array();
 <span style="font-family:'Times New Roman', Times, serif; font-size:23px;" >
 <u>
 <a href="{{ route('booking')}}">
-<img src="{{asset('app_assets/assets/logo/logox.jpg')}}" alt="logo.jpg" style="width: 100px;height: 100px">
+<img src="{{asset('app_assets/assets/logo/logo.jpg')}}" alt="logo.jpg" style="width: 100px;height: 100px">
 </a>
 </u>
 </span>
@@ -70,18 +87,14 @@ $binary_sum = array();
 <td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px">{{ ucwords(strtolower($printing_data->name)) }}</td>
 <td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px;text-align: center;">{{ ucwords(strtolower($printing_data->room)) }}</td>
 <td style="border: 1px solid black;width:500px;text-align: center;height: 30px;text-align: center;">
-{{ $printing_paid_data->days }}
-@
-{{ ($printing_data->occupancy == 1 ? $printing_data->fees : $printing_data->fees_double) }}
+{{ $printing_paid_data->days }} @ {{ $printing_data->fees }}
 </td>
 <td style="border: 1px solid black;width:300px;text-align: right;height: 30px;padding-right: 10px">
-{{ number_format($printing_paid_data->days * ($printing_data->occupancy == 1 ? $printing_data->fees : $printing_data->fees_double),2) }}
+{{ number_format($printing_paid_data->days * $printing_data->fees,2) }}
 </td>
 </tr>
 @foreach ($printing_data->multiple_customers_fromview as $xcustom)
-@php
-$binary_sum[] = $printing_paid_data->days*($xcustom->occupancy == 1 ? $xcustom->fee : $xcustom->fee_double);
-@endphp
+
 <tr style="border: 1px solid black">
 <td style="border: 1px solid black;width:700px;height: 30px;padding-left: 10px">
 {{ ucwords(strtolower($xcustom->first_name)) }} {{ ucwords(strtolower($xcustom->last_names)) }}
@@ -101,10 +114,7 @@ $binary_sum[] = $printing_paid_data->days*($xcustom->occupancy == 1 ? $xcustom->
 @php
 $discount = $printing_paid_data->discount;
 $vat = $printing_paid_data->vat;
-$xsubtotal = $printing_paid_data->amount - $discount + $vat ;
-$msum = array_sum($binary_sum);
-$sub1 = $printing_paid_data->days * ($printing_data->occupancy == 1 ? $printing_data->fees : $printing_data->fees_double);
-$subtotalxx = $sub1 + $msum;
+$xsubtotal = $printing_paid_data->amount + $discount + $vat ;
 @endphp
 <br><div style="border-bottom:2px dashed; #000; width:100%;"></div><br>
 <table id="simpletable" class="table table-striped table-bordered nowrap">
@@ -112,7 +122,7 @@ $subtotalxx = $sub1 + $msum;
 <tr>
 <th style="width:500px;"><em></em></th>
 <th style="width:500px;text-align: right;">Sub Total</th>
-<th style="width:500px; text-align: right;">{{ number_format($subtotalxx,2) }}</th>
+<th style="width:500px; text-align: right;">{{ number_format($xsubtotal,2) }}</th>
 </tr>
 </thead>
 <tbody style="border: 1px solid black">

@@ -114,6 +114,7 @@ New Customer Entry
 <tr>
 <th>#</th>
 <th>Name</th>
+<th>Category</th>
 <th>Phone number</th>
 <th>Date Registered</th>
 <th><center>Action</center></th>
@@ -129,6 +130,7 @@ $duration=0;
 <tr>
 <td>{{ $nx }}</td>
 <td>{{ $customer->first_name }} {{$customer->last_names }}</td>
+<td>{{ $customer->personal_or_coporate == 1 ? 'Personal Customer' : 'Corporate Customer' }}</td>
 <td>{{ $customer->phone_number }}</td>
 @php
 $today = Carbon::today();

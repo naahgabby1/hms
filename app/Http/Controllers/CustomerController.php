@@ -47,6 +47,7 @@ compact(
 ));
 }
 
+
 public function save_customers(Request $request){
 $title = 'Customers';
 $breadCrumbs = 'Hotel Customers';
@@ -54,12 +55,8 @@ $validated = $request->validate([
 'first_name' => 'required|string|max:255',
 'last_names' => 'required|string|max:255',
 'phone_number' => 'required|max:25',
-'gender' => 'required'
-], [
-'first_name.required' => 'Please enter first name.',
-'last_names.required' => 'Please enter last name',
-'phone_number.required' => 'Please enter phone number',
-'gender.required' => 'Please select gender'
+'gender' => 'required',
+'category' => 'required'
 ]);
 
 $Customer = new Customer();
@@ -69,12 +66,10 @@ $Customer->phone_number = $request->input('phone_number');
 $Customer->gender = $request->input('gender');
 $Customer->country = $request->input('country');
 $Customer->address = $request->input('address');
+$Customer->personal_or_coporate = $request->input('category');
 $Customer->save();
 
-$notification = array(
-'message'=>"Reservation Successfully Updated..!!!",
-'alert-type'=>'success',
-);
+$notification = array('success'=>"Customer Data Saved");
 return back()->with($notification,compact('title','breadCrumbs'));
 }
 
@@ -89,14 +84,11 @@ Customer::findOrFail($id)->update([
 'phone_number'=>$request->input('phone_number_edits'),
 'gender'=>$request->input('gender_edits'),
 'country'=>$request->input('country_edits'),
-'address'=>$request->input('address_edits')
+'address'=>$request->input('address_edits'),
+'personal_or_coporate'=>$request->input('category_edits')
 ]);
-$notification = array(
-'message'=>"Customer Successfully Updated..!!!",
-'alert-type'=>'success',
-);
+$notification = array('success'=>"Customer Data Updated");
 return back()->with($notification,compact('title','breadCrumbs'));
-
 }
 
 
@@ -105,10 +97,7 @@ public function destroy_customers($id){
 $title = 'Customers';
 $breadCrumbs = 'Hotel Customers';
 Customer::findOrFail($id)->delete();
-$notification = array(
-'message'=>"Customer Successfully Deleted..!!!",
-'alert-type'=>'success',
-);
+$notification = array('success'=>"Customer Data Deleted");
 return back()->with($notification,compact('title','breadCrumbs'));
 }
 

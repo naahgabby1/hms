@@ -75,7 +75,7 @@
 </li>
 </ul>
 </li>
-<li class="treeview">
+{{-- <li class="treeview">
 <a href="#!">
 <i class="ri-secure-payment-line"></i>
 <span class="menu-text">Human Resources</span>
@@ -84,11 +84,8 @@
 <li>
 <a href="{{ route('index.staffpage')}}">Staff List</a>
 </li>
-{{-- <li>
-<a href="{{ route('salary.staff')}}">Staff Salary</a>
-</li> --}}
 </ul>
-</li>
+</li> --}}
 
 <li class="treeview">
 <a href="#!">

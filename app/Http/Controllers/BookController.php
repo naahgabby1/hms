@@ -432,10 +432,10 @@ public function personal_reservation_editted(Request $request, $rid){
 $title = 'Reservation';
 $breadCrumbs = 'Reservation Update';
 $validated = $request->validate([
-'first_name_edits' => 'required|string|max:255',
-'last_name_edits' => 'required|string|max:255',
+'first_name_edits' => 'required|string',
+'last_name_edits' => 'required|string',
 'mobile_phone_edits' => 'required|max:25',
-'gender_edits' => 'required|max:25',
+'gender_edits' => 'required',
 'date_to_edits' => 'required',
 'country_edits' => 'required',
 'city_edits' => 'required'
@@ -917,9 +917,19 @@ return back()->with($notification);
 
 
 
-public function confirm_reservation_into_booked(){
-$title = 'Customers';
-
+public function confirm_reservation_into_booked(Request $request, $id){
+$title = 'Booking';
+$breadCrumbs = 'Booking Update';
+$validated = $request->validate([
+'occupancy' => 'required',
+]);
+Book::where('id', $id)->update([
+'occupancy' => $request->input('occupancy'),
+'status' => 1,
+'res_payment' => $request->input('payments')
+]);
+$notification = array('success'=>"Reservation Confirmed");
+return back()->with($notification,compact('title','breadCrumbs'));
 }
 
 

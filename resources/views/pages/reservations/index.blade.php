@@ -15,13 +15,9 @@
 @push('breadcrumbs_right')
 <div class="ms-auto d-lg-flex d-none flex-row">
 <div class="d-flex flex-row gap-1 day-sorting">
-<button class="btn btn-sm btn-primary">Today</button>
-<button class="btn btn-sm">7d</button>
-<button class="btn btn-sm">2w</button>
-<button class="btn btn-sm">1m</button>
-<button class="btn btn-sm">3m</button>
-<button class="btn btn-sm">6m</button>
-<button class="btn btn-sm">1y</button>
+<button class="btn btn-sm btn-primary" style="font-family: monospace;">
+Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></span>
+</button>
 </div>
 </div>
 @endpush
@@ -29,7 +25,6 @@
 @push('page_head')
 
 @endpush
-
 
 @push('page_head2')
 <div class="row gx-3">
@@ -39,26 +34,22 @@
 <div class="d-flex align-items-center">
 <div class="p-2 border border-success rounded-circle me-3">
 <div class="icon-box md bg-success-subtle rounded-5">
-<i class="ri-surgical-mask-line fs-4 text-success"></i>
+<i class="ri-key-line fs-4 text-success"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
-
 @php
 $total = $Reserved_data->sum('fees');
 @endphp
-
 <h2 class="lh-1">{{ count($Reserved_data) }}</h2>
 <p class="m-0">Active Reservations</p>
 </div>
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-success" href="{{ route('reservation') }}">
-<span>View All</span>
 <i class="ri-arrow-right-line text-success ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-success">+40%</p>
 <span class="badge bg-success-subtle text-success small">as at now</span>
 </div>
 </div>
@@ -71,7 +62,7 @@ $total = $Reserved_data->sum('fees');
 <div class="d-flex align-items-center">
 <div class="p-2 border border-primary rounded-circle me-3">
 <div class="icon-box md bg-primary-subtle rounded-5">
-<i class="ri-lungs-line fs-4 text-primary"></i>
+<i class="ri-key-line fs-4 text-primary"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -81,11 +72,9 @@ $total = $Reserved_data->sum('fees');
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-primary" href="#">
-<span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-primary">+30%</p>
 <span class="badge bg-primary-subtle text-primary small">as at now</span>
 </div>
 </div>
@@ -98,7 +87,7 @@ $total = $Reserved_data->sum('fees');
 <div class="d-flex align-items-center">
 <div class="p-2 border border-danger rounded-circle me-3">
 <div class="icon-box md bg-danger-subtle rounded-5">
-<i class="ri-microscope-line fs-4 text-danger"></i>
+<i class="ri-wallet-line fs-4 text-danger"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -108,11 +97,9 @@ $total = $Reserved_data->sum('fees');
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-danger" href="#">
-<span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-danger">+60%</p>
 <span class="badge bg-danger-subtle text-danger small">as at now</span>
 </div>
 </div>
@@ -125,7 +112,7 @@ $total = $Reserved_data->sum('fees');
 <div class="d-flex align-items-center">
 <div class="p-2 border border-warning rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
+<i class="ri-wallet-line fs-4 text-warning"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -135,11 +122,9 @@ $total = $Reserved_data->sum('fees');
 </div>
 <div class="d-flex align-items-end justify-content-between mt-1">
 <a class="text-warning" href="#">
-<span>View All</span>
 <i class="ri-arrow-right-line ms-1"></i>
 </a>
 <div class="text-end">
-<p class="mb-0 text-warning">+20%</p>
 <span class="badge bg-warning-subtle text-warning small">as at now</span>
 </div>
 </div>
@@ -148,8 +133,6 @@ $total = $Reserved_data->sum('fees');
 </div>
 </div>
 @endpush
-
-
 
 @section('main_content_body')
 <div class="row mb-2">
@@ -165,9 +148,9 @@ Corporate Reservation
 </div>
 </div>
 
-
 @include('pages.modals.modal_personal_reservation')
 @include('pages.modals.modal_corporate_reservation')
+
 <div class="row gx-3">
 <div class="col-sm-12">
 <div class="card">
@@ -185,7 +168,7 @@ Corporate Reservation
 <th>Days</th>
 <th>Room</th>
 <th>Reservation Date</th>
-<th>Action</th>
+<th><center>Action</center></th>
 </tr>
 </thead>
 <tbody>
@@ -220,30 +203,32 @@ $duration = $duration+1;
 </td>
 <td>{{ Carbon::parse($reservation->date_entered)->format('d-M-Y') }}</td>
 <td>
-<button type="button" class="btn btn-success" data-bs-toggle="modal"
+<center>
+<button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
 data-bs-target="#confirmationModal{{$reservation->id}}">
 <i class="ri-thumb-up-line"></i>
 </button>
 
 
 @if($reservation->category==1)
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
 data-bs-target="#cusresModalUpdates{{$reservation->id}}">
 <i class="ri-edit-line"></i>
 </button>
 @else
-<button type="button" class="btn btn-info" data-bs-toggle="modal"
+<button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
 data-bs-target="#corResUpdates{{$reservation->id}}">
 <i class="ri-edit-line"></i>
 </button>
 @endif
 
-<button type="submit" id="canClicked" class="btn btn-warning" data-cxid="{{ $reservation->id }}">
+<button type="submit" id="canClicked" class="btn btn-warning btn-sm" data-cxid="{{ $reservation->id }}">
 <i class="ri-close-fill"></i>
 </button>
-<button type="button" id="delClicked" class="btn btn-danger" data-id="{{ $reservation->id }}">
+<button type="button" id="delClicked" class="btn btn-danger btn-sm" data-id="{{ $reservation->id }}">
 <i class="ri-delete-bin-line"></i>
 </button>
+</center>
 </td>
 </tr>
 @php

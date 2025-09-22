@@ -48,7 +48,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 <div class="d-flex align-items-center">
 <div class="p-2 border border-success rounded-circle me-3">
 <div class="icon-box md bg-success-subtle rounded-5">
-<i class="ri-surgical-mask-line fs-4 text-success"></i>
+<i class="ri-key-line fs-4 text-success"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -73,7 +73,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 <div class="d-flex align-items-center">
 <div class="p-2 border border-primary rounded-circle me-3">
 <div class="icon-box md bg-primary-subtle rounded-5">
-<i class="ri-lungs-line fs-4 text-primary"></i>
+<i class="ri-key-line fs-4 text-primary"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -98,7 +98,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 <div class="d-flex align-items-center">
 <div class="p-2 border border-danger rounded-circle me-3">
 <div class="icon-box md bg-danger-subtle rounded-5">
-<i class="ri-microscope-line fs-4 text-danger"></i>
+<i class="ri-wallet-line fs-4 text-danger"></i>
 </div>
 </div>
 <div class="d-flex flex-column">
@@ -123,7 +123,7 @@ Today : {{ date('d-m-Y')}} <span id="clock" style="font-family: monospace;"></sp
 <div class="d-flex align-items-center">
 <div class="p-2 border border-warning rounded-circle me-3">
 <div class="icon-box md bg-warning-subtle rounded-5">
-<i class="fs-4 text-warning">₵</i>
+<i class="ri-wallet-line fs-4 text-warning"></i>
 </div>
 </div>
 <div class="d-flex flex-column">

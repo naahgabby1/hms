@@ -129,7 +129,8 @@ Charges for nights spent in our Hotel/Guest house for a period of days
 </h6>
 </td>
 <td>
-<h6>{{ number_format($actual_duration*$checkoutdata->fees,2) }}<br>
+<h6>{{ number_format(($actual_duration)*
+($checkoutdata->occupancy == 1 ? $checkoutdata->fees : $checkoutdata->fees_double),2) }}<br>
 @foreach ($checkoutdata->multiple_customers_fromview as $customer)
 @php
 $binary_sum[] = $actual_duration*($customer->occupancy == 1 ? $customer->fee : $customer->fee_double);
@@ -154,11 +155,11 @@ $sub1 = $checkoutdata->occupancy == 1 ? ($actual_duration * $checkoutdata->fees)
 $subtotal = $sub1 + $msum;
 $discount = $vat_discounted->discount_amount * $subtotal;
 $vat = $vat_discounted->vat_amount * $subtotal;
-$final_amount = $subtotal - ($discount + $vat);
+$final_amount = $subtotal - ($discount) + $vat;
 @endphp
 <p>{{ number_format($subtotal,2) }}</p>
-<p>{{ number_format($discount,2) }}</p>
-<p>{{ number_format($vat,2) }}</p>
+<p>-{{ number_format($discount,2) }}</p>
+<p>+{{ number_format($vat,2) }}</p>
 <h5 class="mt-4 text-primary">{{ number_format($final_amount,2) }}</h5>
 </td>
 </tr>
